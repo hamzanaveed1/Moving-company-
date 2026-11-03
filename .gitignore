@@ -1,7 +1,8 @@
-node_modules/
-dist/
+!.env.example
+.DS_Store
 .astro/
 .env
 .env.*
-!.env.example
-.DS_Store
+.vercel/
+dist/
+node_modules/

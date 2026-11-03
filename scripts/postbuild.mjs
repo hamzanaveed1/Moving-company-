@@ -10,10 +10,14 @@
  *   SECURITY_CONTACT       e.g. mailto:security@loadby.co.uk (defaults to the site email)
  *   SITE_URL               canonical origin
  */
-import { mkdirSync, writeFileSync, existsSync } from 'node:fs';
+import { mkdirSync, writeFileSync, readFileSync, existsSync } from 'node:fs';
 
+// Modes:  (none)            write dist/ files after a build
+//         --write-vercel    regenerate ./vercel.json (commit the result)
+//         --check-vercel    exit 1 if ./vercel.json is out of date (used in CI)
+const mode = process.argv[2] || '';
 const DIST = 'dist';
-if (!existsSync(DIST)) throw new Error('Run `astro build` first');
+if (!mode && !existsSync(DIST)) throw new Error('Run `astro build` first');
 
 const site = (process.env.SITE_URL || 'https://loadby.co.uk').replace(/\/$/, '');
 const formEndpoint = process.env.PUBLIC_FORM_ENDPOINT || '';
@@ -76,6 +80,36 @@ const securityHeaders = {
   'X-Permitted-Cross-Domain-Policies': 'none',
 };
 
+// ---------- Vercel (does not read _headers; it needs vercel.json committed at the repo root) ----------
+const vercelConfig = {
+  $schema: 'https://openapi.vercel.sh/vercel.json',
+  trailingSlash: true,
+  headers: [
+    { source: '/(.*)', headers: Object.entries(securityHeaders).map(([key, value]) => ({ key, value })) },
+    { source: '/_astro/(.*)', headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }] },
+    ...['/logo.png', '/og-default.png', '/apple-touch-icon.png', '/favicon.svg'].map((source) => ({
+      source,
+      headers: [{ key: 'Cache-Control', value: 'public, max-age=604800' }],
+    })),
+  ],
+};
+const vercelJson = JSON.stringify(vercelConfig, null, 2) + '\n';
+
+if (mode === '--write-vercel') {
+  writeFileSync('vercel.json', vercelJson);
+  console.log(`wrote vercel.json (${adsClient ? 'AdSense' : 'strict'} CSP)`);
+  process.exit(0);
+}
+if (mode === '--check-vercel') {
+  const current = existsSync('vercel.json') ? readFileSync('vercel.json', 'utf8') : '';
+  if (current !== vercelJson) {
+    console.error('vercel.json is out of date. Run: npm run vercel:config  (then commit it)');
+    process.exit(1);
+  }
+  console.log('vercel.json is up to date');
+  process.exit(0);
+}
+
 const block = (path, headers) => `${path}\n${Object.entries(headers).map(([k, v]) => `  ${k}: ${v}`).join('\n')}\n`;
 
 // NOTE: no Cache-Control on /* so HTML keeps the host default (always revalidate). Only fingerprinted assets are cached forever.
@@ -100,6 +134,13 @@ writeFileSync(
 if (adsClient) {
   const pub = adsClient.replace(/^ca-/, '');
   writeFileSync(`${DIST}/ads.txt`, `google.com, ${pub}, DIRECT, f08c47fec0942fa0\n`);
+}
+
+if (process.env.VERCEL) {
+  const current = existsSync('vercel.json') ? readFileSync('vercel.json', 'utf8') : '';
+  if (current !== vercelJson) {
+    console.warn('\n!! WARNING: vercel.json does not match the headers this build needs (for example you enabled AdSense or an external form endpoint).\n!! Run `npm run vercel:config` locally with the same environment variables and commit vercel.json, or the live CSP will be wrong.\n');
+  }
 }
 
 console.log(`postbuild: wrote _headers (${adsClient ? 'AdSense CSP' : 'strict CSP'}), security.txt${adsClient ? ', ads.txt' : ''}`);

@@ -14,6 +14,7 @@ npm run build      # outputs ./dist (61 pages)
 npm run preview
 npm test           # form function tests
 npm run audit:site # SEO + security audit of dist/ (after build)
+npm run vercel:config # regenerate vercel.json headers (commit the result)
 npm run a11y       # axe-core scan (needs preview running + Playwright)
 npm run images     # regenerate illustrated images (blog covers, hero, social card, logo)
 ```
@@ -36,7 +37,7 @@ Needs Node 22+.
 
 1. **`src/data/site.ts`**: brand name, phone, WhatsApp, email, address, hours, company/VAT number, insurance/trade-body claims. Empty trust fields are hidden, not shown blank.
 2. **Domain**: set `SITE_URL` in your host's environment variables (see `.env.example`). Canonicals, sitemap and social tags use it.
-3. **Lead delivery**: on Cloudflare Pages set `RESEND_API_KEY`, `TO_EMAIL`, `FROM_EMAIL`, `SITE_URL` (see `docs/DEPLOY.md`). Elsewhere set `PUBLIC_FORM_ENDPOINT`. With no endpoint the form falls back to the visitor's email app. **Test a real submission before you spend on ads.**
+3. **Lead delivery**: on Vercel or Cloudflare Pages set `RESEND_API_KEY`, `TO_EMAIL`, `FROM_EMAIL`, `SITE_URL` (see `docs/DEPLOY.md`). Elsewhere set `PUBLIC_FORM_ENDPOINT`. With no endpoint the form falls back to the visitor's email app. **Test a real submission before you spend on ads.**
 4. **Claims review**: service pages describe things like tail-lift vans, storage security, same-day delivery and quote turnaround. Check every operational statement is true for your business and edit `src/data/services.ts`, `locations.ts` and `routes.ts`. Remove cities and routes you do not serve.
 5. **Prices**: the cost guide (`src/content/blog/how-much-does-moving-house-cost-uk.md`) uses indicative market ranges. Replace with figures that match your pricing.
 6. **Legal pages**: privacy, terms and cookies are templates. Get them reviewed. Add a consent banner before adding GA4 or ad pixels.
@@ -56,7 +57,7 @@ Needs Node 22+.
 
 Full steps in [`docs/DEPLOY.md`](docs/DEPLOY.md). Short version:
 
-Cloudflare Pages is recommended (the quote function runs there). Build command `npm run build`, output directory `dist`. Any static host works if you use an external form endpoint.
+Vercel is the primary target and Cloudflare Pages is supported too. The quote form handler runs on both. Any static host works if you use an external form endpoint. Note that Vercel's free Hobby plan is for non-commercial use only.
 
 ## SEO built in
 

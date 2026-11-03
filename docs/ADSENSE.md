@@ -28,7 +28,7 @@ A sensible plan: build traffic and leads first, then enable ads on the blog if t
 3. In your host's environment variables set:
    - `PUBLIC_ADSENSE_CLIENT=ca-pub-XXXXXXXXXXXXXXXX` (your publisher ID)
    - optional `PUBLIC_ADSENSE_SLOT=...` (a manual in-article ad unit ID). Without it, Google "auto ads" place ads and you control them in the AdSense console. Exclude any page you do not want ads on.
-4. Redeploy. The build then: adds the loader to blog articles, writes `/ads.txt`, and **relaxes the Content-Security-Policy for Google** (documented in `scripts/postbuild.mjs`).
+4. **On Vercel, regenerate `vercel.json`** with the same variable and commit it (`PUBLIC_ADSENSE_CLIENT=ca-pub-... npm run vercel:config`), because Vercel reads headers from that file. Then redeploy. The build then: adds the loader to blog articles, writes `/ads.txt`, and **relaxes the Content-Security-Policy for Google** (documented in `scripts/postbuild.mjs`).
 5. Open an article in a browser with DevTools open and confirm there are no CSP errors. This relaxation was written to Google's published guidance but could not be tested against live ads from here.
 6. Check `https://loadby.co.uk/ads.txt` shows `google.com, pub-..., DIRECT, f08c47fec0942fa0`.
 
