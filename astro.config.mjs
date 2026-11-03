@@ -2,7 +2,7 @@ import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
 // Set SITE_URL in your host's env vars (or edit the fallback) before launch.
-const site = process.env.SITE_URL || 'https://www.example.co.uk';
+const site = process.env.SITE_URL || 'https://loadby.co.uk';
 
 // On Cloudflare Pages the bundled /api/quote function handles the form, so wire it up automatically.
 if (process.env.CF_PAGES && !process.env.PUBLIC_FORM_ENDPOINT) process.env.PUBLIC_FORM_ENDPOINT = '/api/quote';

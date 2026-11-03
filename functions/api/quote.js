@@ -6,9 +6,9 @@
  *
  * Required env vars (Pages > Settings > Variables and Secrets):
  *   RESEND_API_KEY   secret
- *   TO_EMAIL         where leads go, e.g. leads@your-domain.co.uk
- *   FROM_EMAIL       a sender on a domain verified in Resend, e.g. "Website <quotes@your-domain.co.uk>"
- *   SITE_URL         e.g. https://www.your-domain.co.uk  (used for the Origin check)
+ *   TO_EMAIL         where leads go, e.g. leads@loadby.co.uk
+ *   FROM_EMAIL       a sender on a domain verified in Resend, e.g. "Website <quotes@loadby.co.uk>"
+ *   SITE_URL         e.g. https://loadby.co.uk  (used for the Origin check)
  */
 
 const MAX_BODY = 8 * 1024;

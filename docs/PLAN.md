@@ -1,6 +1,6 @@
 # Moving Company Website: Master Plan (UK)
 
-> Working brand name in the code is **Movera**. It is a placeholder. Change it in one file: `src/data/site.ts`.
+> Brand: **Loadby** (loadby.co.uk). Brand name, contact details and claims live in one file: `src/data/site.ts`.
 
 ## 1. Goal
 

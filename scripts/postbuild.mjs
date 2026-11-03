@@ -7,7 +7,7 @@
  * Environment:
  *   PUBLIC_FORM_ENDPOINT   absolute URL of an external form endpoint (adds its origin to connect-src)
  *   PUBLIC_ADSENSE_CLIENT  e.g. ca-pub-1234567890123456. Relaxes the CSP for Google ads (see docs/ADSENSE.md)
- *   SECURITY_CONTACT       e.g. mailto:security@your-domain.co.uk (defaults to the site email)
+ *   SECURITY_CONTACT       e.g. mailto:security@loadby.co.uk (defaults to the site email)
  *   SITE_URL               canonical origin
  */
 import { mkdirSync, writeFileSync, existsSync } from 'node:fs';
@@ -15,10 +15,10 @@ import { mkdirSync, writeFileSync, existsSync } from 'node:fs';
 const DIST = 'dist';
 if (!existsSync(DIST)) throw new Error('Run `astro build` first');
 
-const site = (process.env.SITE_URL || 'https://www.example.co.uk').replace(/\/$/, '');
+const site = (process.env.SITE_URL || 'https://loadby.co.uk').replace(/\/$/, '');
 const formEndpoint = process.env.PUBLIC_FORM_ENDPOINT || '';
 const adsClient = process.env.PUBLIC_ADSENSE_CLIENT || '';
-const securityContact = process.env.SECURITY_CONTACT || 'mailto:hello@example.co.uk';
+const securityContact = process.env.SECURITY_CONTACT || 'mailto:hello@loadby.co.uk';
 
 // ---------- Content-Security-Policy ----------
 const connect = ["'self'"];

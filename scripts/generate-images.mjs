@@ -117,7 +117,7 @@ const van = (x, y, s = 1, accent = C.amber) => `
     <rect x="0" y="-62" width="262" height="30" fill="${C.navy2}"/>
     <rect x="0" y="-92" width="262" height="12" fill="${accent}"/>
     <rect x="30" y="-160" width="54" height="54" rx="12" fill="${C.navy}"/>
-    <path d="M43 -116 V-142 L57 -129 L71 -142 V-116" stroke="${accent}" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M42 -144 V-114 H68" stroke="${accent}" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="51" y="-135" width="13" height="13" rx="2.5" fill="${C.amberL}"/>
     <path d="M98 -140 h120" stroke="${C.navy2}" stroke-width="12" stroke-linecap="round"/>
     <path d="M98 -118 h80" stroke="#cfd8e6" stroke-width="10" stroke-linecap="round"/>
     <path d="M262 -150 L322 -150 Q346 -148 358 -118 L378 -84 Q386 -70 386 -50 L386 -32 L262 -32 Z" fill="#fff"/>
@@ -138,7 +138,7 @@ const lorry = (x, y, s = 1) => `
     <rect x="0" y="-92" width="430" height="54" fill="${C.navy2}"/>
     <rect x="0" y="-132" width="430" height="14" fill="${C.amber}"/>
     <rect x="44" y="-226" width="76" height="76" rx="16" fill="${C.navy}"/>
-    <path d="M62 -166 V-200 L82 -183 L102 -200 V-166" stroke="${C.amber}" stroke-width="10" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M60 -206 V-168 H96" stroke="${C.amber}" stroke-width="10" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="72" y="-194" width="18" height="18" rx="3.5" fill="${C.amberL}"/>
     <path d="M150 -204 h200" stroke="${C.navy2}" stroke-width="16" stroke-linecap="round"/>
     <path d="M150 -176 h140" stroke="#cfd8e6" stroke-width="12" stroke-linecap="round"/>
     <path d="M430 -210 L500 -210 Q526 -208 540 -170 L560 -118 Q568 -100 568 -78 L568 -38 L430 -38 Z" fill="#fff"/>
@@ -328,8 +328,8 @@ scenes.og = (W = 1200, H = 630) => frame(W, H, `
   <rect x="0" y="520" width="${W}" height="110" fill="#14233c"/>
   ${road(W, 540, 80)}
   ${van(660, 610, 1.1)}
-  <g transform="translate(70 90)"><rect width="84" height="84" rx="22" fill="${C.amber}"/><path d="M24 58 V30 L42 46 L60 30 V58" stroke="${C.navy}" stroke-width="9" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>
-  <text x="176" y="148" font-family="Inter, sans-serif" font-weight="800" font-size="54" fill="#fff">Movera</text>
+  <g transform="translate(70 90)"><rect width="84" height="84" rx="22" fill="${C.amber}"/><path d="M25 22 V62 H62" stroke="${C.navy}" stroke-width="9" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="38" y="38" width="18" height="18" rx="3.5" fill="${C.navy}" opacity=".55"/></g>
+  <text x="176" y="148" font-family="Inter, sans-serif" font-weight="800" font-size="54" fill="#fff">Loadby</text>
   <text x="70" y="270" font-family="Inter, sans-serif" font-weight="800" font-size="62" fill="#fff">Stress-free removals</text>
   <text x="70" y="342" font-family="Inter, sans-serif" font-weight="800" font-size="62" fill="${C.amber}">across the UK</text>
   <text x="70" y="404" font-family="Inter, sans-serif" font-weight="500" font-size="28" fill="#c9d6ee">House · Flat · Office · City-to-city</text>`);
@@ -353,7 +353,7 @@ await sharp(Buffer.from(scenes.hero(1200, 1000))).webp({ quality: 90, effort: 5 
 await sharp(Buffer.from(scenes.og())).png().toFile('public/og-default.png');
 
 // Logo mark (SVG + PNG for schema) and favicon
-const mark = (s) => `<svg xmlns="http://www.w3.org/2000/svg" width="${s}" height="${s}" viewBox="0 0 96 96"><rect width="96" height="96" rx="24" fill="${C.navy}"/><path d="M26 66 V32 L48 52 L70 32 V66" stroke="${C.amber}" stroke-width="10" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const mark = (s) => `<svg xmlns="http://www.w3.org/2000/svg" width="${s}" height="${s}" viewBox="0 0 96 96"><rect width="96" height="96" rx="24" fill="${C.navy}"/><path d="M28 24 V68 H70" stroke="${C.amber}" stroke-width="10" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="43" y="42" width="21" height="21" rx="4" fill="${C.amberL}"/></svg>`;
 writeFileSync('public/favicon.svg', mark(96));
 await sharp(Buffer.from(mark(512))).png().toFile('public/logo.png');
 await sharp(Buffer.from(mark(180))).png().toFile('public/apple-touch-icon.png');

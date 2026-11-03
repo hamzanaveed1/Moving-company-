@@ -1,6 +1,6 @@
-# Movera: UK moving company website
+# Loadby: UK moving company website (loadby.co.uk)
 
-Fast, SEO-first lead-generation site for a UK removals company. Built with [Astro](https://astro.build) (static HTML, almost no JavaScript). "Movera" is a placeholder name.
+Fast, SEO-first lead-generation site for a UK removals company. Built with [Astro](https://astro.build) (static HTML, almost no JavaScript).
 
 - Plan and strategy: [`docs/PLAN.md`](docs/PLAN.md)
 - Content plan: [`docs/CONTENT-ROADMAP.md`](docs/CONTENT-ROADMAP.md)

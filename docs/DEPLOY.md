@@ -6,7 +6,7 @@ Why Cloudflare Pages: free, global CDN with Brotli and HTTP/3 (fast), free TLS, 
 1. Cloudflare dashboard > **Workers & Pages** > **Create** > **Pages** > **Connect to Git** > choose this repository.
 2. Production branch: `ccr-c8e41046-yqojnb` for now (change to `main` once you merge).
 3. Framework preset: **Astro**. Build command `npm run build`. Output directory `dist`.
-4. Environment variables (Production): `NODE_VERSION` = `22`, `SITE_URL` = `https://www.your-domain.co.uk`, `SECURITY_CONTACT` = `mailto:security@your-domain.co.uk`.
+4. Environment variables (Production): `NODE_VERSION` = `22`, `SITE_URL` = `https://loadby.co.uk`, `SECURITY_CONTACT` = `mailto:security@loadby.co.uk`.
 5. Save and Deploy. You get `https://<project>.pages.dev` immediately.
 
 ## 2. Make the quote form deliver leads
@@ -14,7 +14,7 @@ Why Cloudflare Pages: free, global CDN with Brotli and HTTP/3 (fast), free TLS, 
 2. In Pages > **Settings > Variables and Secrets** add (Production):
    - `RESEND_API_KEY` (Secret)
    - `TO_EMAIL` = where leads should arrive
-   - `FROM_EMAIL` = `Website <quotes@your-domain.co.uk>` (must be on the verified domain)
+   - `FROM_EMAIL` = `Website <quotes@loadby.co.uk>` (must be on the verified domain)
    - `SITE_URL` = your public URL (used for the Origin check)
 3. Redeploy. The build detects Cloudflare and points the form at `/api/quote` automatically.
 4. **Submit a real test quote** and confirm the email arrives. This path is covered by unit tests but has not been exercised against live Cloudflare/Resend.
@@ -25,11 +25,13 @@ Why Cloudflare Pages: free, global CDN with Brotli and HTTP/3 (fast), free TLS, 
 - 2FA on Cloudflare, GitHub, your registrar and your email.
 - Optional: once everything works for a few weeks, add your domain to the HSTS preload list (hstspreload.org). It is hard to reverse, so only do it when you are sure about HTTPS everywhere.
 
-## 4. Custom domain + Google
-1. Pages > **Custom domains** > add your domain (buy it through Cloudflare Registrar or point DNS).
-2. Google Search Console: add the domain property, submit `https://your-domain/sitemap-index.xml`.
-3. Claim your Google Business Profile using the exact name, address and phone in `src/data/site.ts`.
-4. Run PageSpeed Insights on the live URL as a final check.
+## 4. Custom domain (loadby.co.uk) + Google
+1. Register `loadby.co.uk` (Cloudflare Registrar, Namecheap or any UK registrar). If it is not on Cloudflare yet, add the domain to Cloudflare and switch the nameservers at your registrar.
+2. Pages > **Custom domains** > add `loadby.co.uk` (the canonical address used in the site) and also `www.loadby.co.uk`. Then add a Cloudflare **Redirect Rule** sending `www.loadby.co.uk/*` to `https://loadby.co.uk/$1` (301) so only one version is indexed.
+3. Email: the site shows `hello@loadby.co.uk`. Create it before launch (Cloudflare **Email Routing** forwards it to your own inbox for free; add `security@` the same way). Then verify `loadby.co.uk` in Resend so `quotes@loadby.co.uk` can send.
+4. Google Search Console: add the domain property, submit `https://loadby.co.uk/sitemap-index.xml`.
+5. Claim your Google Business Profile using the exact name, address and phone in `src/data/site.ts`.
+6. Run PageSpeed Insights on the live URL as a final check.
 
 ## Local checks before every deploy
 ```bash
