@@ -1,18 +1,19 @@
 ---
-import { Image } from 'astro:assets';
+import { Picture } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
-interface Props { post: CollectionEntry<'blog'>; eager?: boolean }
-const { post, eager = false } = Astro.props;
+interface Props { post: CollectionEntry<'blog'>; eager?: boolean; level?: 2 | 3 }
+const { post, eager = false, level = 3 } = Astro.props;
+const Heading = `h${level}` as 'h2' | 'h3';
 const d = post.data;
 const date = d.publishedAt.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
 ---
 <a class="card post-card" href={`/blog/${post.id}/`}>
   <div class="thumb">
-    <Image src={d.image} alt={d.imageAlt} width={640} height={360} widths={[360, 640, 960]} sizes="(max-width: 700px) 92vw, 380px" loading={eager ? 'eager' : 'lazy'} format="webp" />
+    <Picture formats={['avif', 'webp']} src={d.image} alt={d.imageAlt} width={640} height={360} widths={[360, 640, 960]} sizes="(max-width: 700px) 92vw, 380px" loading={eager ? 'eager' : 'lazy'} />
   </div>
   <div class="body">
     <span class="tag">{d.category}</span>
-    <h3>{d.title}</h3>
+    <Heading>{d.title}</Heading>
     <p>{d.description}</p>
     <div class="meta">{date} · {d.readingTime} min read</div>
   </div>

@@ -18,7 +18,7 @@ const groups = [
   <PageHero eyebrow="Free tool" h1="Your UK moving house checklist" lead="Tick items off as you go. Your progress is saved in your browser only, and you can print the list." crumbs={crumbs} actions={false} />
   <section class="section">
     <div class="container narrow">
-      <div class="todo-bar" aria-live="polite"><span data-count>0 / 0 done</span><div class="bar" role="progressbar" aria-label="Checklist progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i data-bar></i></div><button class="btn btn-ghost" style="min-height:38px;padding:.4rem 1rem" type="button" onclick="window.print()">Print</button></div>
+      <div class="todo-bar" aria-live="polite"><span data-count>0 / 0 done</span><div class="bar" role="progressbar" aria-label="Checklist progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i data-bar></i></div><button class="btn btn-ghost" style="min-height:38px;padding:.4rem 1rem" type="button" data-print>Print</button></div>
       <div class="stack" style="--gap:1.5rem">
         {groups.map((g) => (
           <section class="todo-group" data-group={g.id}>
@@ -68,5 +68,6 @@ const groups = [
   document.querySelector('[data-reset]')?.addEventListener('click', () => {
     if (confirm('Reset all ticks?')) { boxes.forEach((b) => (b.checked = false)); save(); render(); }
   });
+  document.querySelector('[data-print]')?.addEventListener('click', () => window.print());
   render();
 </script>

@@ -9,7 +9,8 @@
   --navy-700: #1d4a85;
   --navy-100: #e3ebf7;
   --amber-500: #f5a524;
-  --amber-600: #e08a00;
+  --amber-600: #b36200; /* large text + icons on light backgrounds (>=3:1) */
+  --amber-700: #8a5300; /* small text on light backgrounds (>=4.5:1) */
   --amber-100: #fff1d6;
   --green-600: #1c8a5c;
   --red-600: #c93a3f;
@@ -68,7 +69,7 @@ ul, ol { margin: 0 0 1em; padding-left: 1.25em; }
 .section.dark h2, .section.dark h3 { color: #fff; }
 .section-head { max-width: 720px; margin-bottom: clamp(1.75rem, 4vw, 3rem); }
 .section-head.center { margin-inline: auto; text-align: center; }
-.eyebrow { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--amber-600); margin-bottom: 0.9rem; }
+.eyebrow { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--amber-700); margin-bottom: 0.9rem; }
 .eyebrow::before { content: ''; width: 24px; height: 2px; background: currentColor; }
 .dark .eyebrow { color: var(--amber-500); }
 .lead { font-size: clamp(1.1rem, 1.8vw, 1.3rem); color: var(--muted); line-height: 1.6; }
@@ -276,7 +277,7 @@ fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
 .form-status.ok { display: block; background: #e4f6ed; color: #0f5a3b; } .form-status.err { display: block; background: #fdeaea; color: #8f1d22; }
 .aside-card { background: var(--navy-900); color: #cbd8ef; border-radius: 24px; padding: 1.75rem; position: sticky; top: calc(var(--header-h) + 16px); }
 .aside-card h2 { color: #fff; font-size: 1.4rem; }
-.aside-card a { color: #fff; font-weight: 700; }
+.aside-card a:not(.btn) { color: #fff; font-weight: 700; }
 .aside-card .ticks svg { color: var(--amber-500); }
 .aside-card .ticks { margin: 1rem 0 1.5rem; font-size: 0.97rem; }
 
@@ -286,7 +287,7 @@ fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
 .post-card .thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
 a.post-card:hover .thumb img { transform: scale(1.04); }
 .post-card .body { padding: 1.4rem 1.5rem 1.6rem; display: flex; flex-direction: column; flex: 1; }
-.post-card h3 { font-size: 1.25rem; margin: 0.6rem 0 0.4rem; }
+.post-card h2, .post-card h3 { font-size: 1.25rem; letter-spacing: -0.01em; margin: 0.6rem 0 0.4rem; }
 .post-card .meta { font-size: 0.85rem; color: var(--muted); margin-top: auto; padding-top: 0.75rem; }
 .post-hero { background: var(--bg); padding-top: clamp(2rem, 5vw, 3.5rem); }
 .post-hero h1 { font-size: clamp(2rem, 4.4vw, 3.2rem); max-width: 860px; }
@@ -312,10 +313,13 @@ a.post-card:hover .thumb img { transform: scale(1.04); }
 .prose a { font-weight: 600; }
 .prose blockquote { margin-inline: 0; padding: 1.1rem 1.4rem; border-left: 4px solid var(--amber-500); background: var(--amber-100); border-radius: 0 12px 12px 0; }
 .prose blockquote p { margin: 0; color: #5b3b00; }
-.prose table { width: 100%; border-collapse: collapse; font-size: 0.97rem; display: block; overflow-x: auto; }
+.table-scroll { overflow-x: auto; border-radius: 12px; border: 1px solid var(--line); }
+.table-scroll:focus-visible { outline-offset: 2px; }
+.prose table { width: 100%; min-width: 560px; border-collapse: collapse; font-size: 0.97rem; }
 .prose th, .prose td { text-align: left; padding: 0.75rem 1rem; border-bottom: 1px solid var(--line); vertical-align: top; }
 .prose th { background: var(--navy-900); color: #fff; font-weight: 700; white-space: nowrap; }
 .prose tr:nth-child(even) td { background: #faf6ee; }
+.prose .table-scroll { margin-block: 1.4em; }
 .prose hr { border: 0; border-top: 1px solid var(--line); margin-block: 2.5rem; }
 .prose-legal { max-width: 75ch; }
 .prose-legal h2 { font-size: 1.5rem; margin-top: 2em; }
@@ -366,3 +370,7 @@ a.post-card:hover .thumb img { transform: scale(1.04); }
 .table-wrap th { background: var(--navy-900); color: #fff; font-size: 0.85rem; letter-spacing: 0.04em; text-transform: uppercase; }
 .table-wrap tr:last-child td { border-bottom: 0; }
 .table-wrap a { font-weight: 700; }
+
+/* Ads: space is reserved so ads never shift the layout (CLS), and they are always labelled. */
+.ad-slot { margin: 2.5rem 0; padding: 0.5rem 0 0; min-height: 280px; text-align: center; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.ad-label { display: block; font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.5rem; }

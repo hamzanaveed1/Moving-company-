@@ -5,7 +5,7 @@ import { site, nav } from '../data/site';
 const path = Astro.url.pathname;
 const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
 ---
-<div class="topbar">
+<aside class="topbar" aria-label="Contact details">
   <div class="container">
     <span class="tb-hours"><Icon name="clock" />{site.hours}</span>
     <div class="tb-links">
@@ -13,7 +13,7 @@ const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWit
       <a href={`mailto:${site.email}`}><Icon name="mail" />{site.email}</a>
     </div>
   </div>
-</div>
+</aside>
 <header class="site-header">
   <div class="container">
     <Logo />

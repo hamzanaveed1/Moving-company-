@@ -45,6 +45,11 @@ export const site = {
   // ---- Geo (used in LocalBusiness schema) ----
   geo: { lat: 53.4808, lng: -2.2426 },
 
+  // Google AdSense (OFF by default). Set PUBLIC_ADSENSE_CLIENT=ca-pub-XXXXXXXXXXXXXXXX only after your
+  // AdSense account is approved. See docs/ADSENSE.md. Ads only ever load on blog articles.
+  adsenseClient: (import.meta.env.PUBLIC_ADSENSE_CLIENT as string | undefined) || '',
+  adsenseSlot: (import.meta.env.PUBLIC_ADSENSE_SLOT as string | undefined) || '',
+
   // Form endpoint (set in your host's env vars)
   formEndpoint: (import.meta.env.PUBLIC_FORM_ENDPOINT as string | undefined) || '',
   formAccessKey: (import.meta.env.PUBLIC_FORM_ACCESS_KEY as string | undefined) || '',

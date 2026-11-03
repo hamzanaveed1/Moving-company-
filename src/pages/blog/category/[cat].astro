@@ -16,6 +16,6 @@ const crumbs = [{ name: 'Home', href: '/' }, { name: 'Blog', href: '/blog/' }, {
 ---
 <BaseLayout title={`${cat} Moving Guides | UK Removals Blog`} description={`Moving guides in the "${cat}" category: practical UK advice from a professional removals team.`} schema={[breadcrumbSchema(crumbs)]}>
   <PageHero eyebrow="Category" h1={`${cat} guides`} crumbs={crumbs} actions={false} />
-  <section class="section"><div class="container"><div class="grid cols-3">{posts.map((p: any) => <PostCard post={p} />)}</div></div></section>
+  <section class="section"><div class="container"><div class="grid cols-3">{posts.map((p: any) => <PostCard post={p} level={2} />)}</div></div></section>
   <CtaBand />
 </BaseLayout>

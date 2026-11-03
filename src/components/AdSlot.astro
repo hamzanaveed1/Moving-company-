@@ -1,0 +1,13 @@
+---
+import { site } from '../data/site';
+// Renders nothing unless AdSense is configured AND a manual ad-unit id is set. With only
+// PUBLIC_ADSENSE_CLIENT set, Google "auto ads" place ads, controlled from your AdSense account.
+const show = Boolean(site.adsenseClient && site.adsenseSlot);
+---
+{show && (
+  <aside class="ad-slot" aria-label="Advertisement">
+    <span class="ad-label">Advertisement</span>
+    <ins class="adsbygoogle" style="display:block" data-ad-client={site.adsenseClient} data-ad-slot={site.adsenseSlot} data-ad-format="auto" data-full-width-responsive="true"></ins>
+  </aside>
+)}
+{show && <script src="../scripts/ads.ts"></script>}

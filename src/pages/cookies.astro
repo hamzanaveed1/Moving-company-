@@ -8,14 +8,18 @@ import { site } from '../data/site';
   <!-- OWNER: if you add analytics (e.g. GA4), ads or a chat widget, add a consent banner and update this page BEFORE enabling them (PECR). -->
   <section class="section">
     <div class="container narrow prose prose-legal">
-      <p>This website does not currently use advertising, analytics or other non-essential cookies, so no consent banner is shown.</p>
+      {site.adsenseClient ? (
+        <p>Our blog articles show advertising served by Google AdSense. Google and its partners may use cookies and similar technologies to show and measure ads, and to personalise them where you agree. You are asked for your choice by Google's consent message when you first visit an article, and you can change it at any time using the privacy settings link shown there. Pages other than blog articles do not load advertising.</p>
+      ) : (
+        <p>This website does not currently use advertising, analytics or other non-essential cookies, so no consent banner is shown.</p>
+      )}
       <h2>What we do store</h2>
       <ul>
         <li><strong>Browser storage for the moving checklist.</strong> If you use our <a href="/moving-checklist/">moving checklist</a>, your ticks are saved in your own browser (local storage) so they are there when you come back. This stays on your device and is never sent to us. It is strictly necessary for the feature you asked for.</li>
         <li><strong>Hosting logs.</strong> Our host may keep basic technical logs (such as IP address and pages requested) for security and reliability.</li>
       </ul>
-      <h2>If this changes</h2>
-      <p>If we add analytics or marketing tools in future, we will ask for your consent before they set anything and update this page.</p>
+      {!site.adsenseClient && (<><h2>If this changes</h2>
+      <p>If we add analytics or marketing tools in future, we will ask for your consent before they set anything and update this page.</p></>)}
       <p>Questions? Email <a href={`mailto:${site.email}`}>{site.email}</a>.</p>
     </div>
   </section>

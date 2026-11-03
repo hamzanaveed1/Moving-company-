@@ -195,6 +195,16 @@ const extras = [
     set('moveType', qs.get('type'));
     set('moveDate', qs.get('date'));
 
+    // Tie each error message to its field so screen readers announce it
+    form.querySelectorAll<HTMLElement>('[data-err]').forEach((span) => {
+      const name = span.dataset.err!;
+      span.id = `err-${name}`;
+      span.setAttribute('role', 'alert');
+      const el = form.elements.namedItem(name);
+      const target = el instanceof RadioNodeList ? (el[0] as HTMLElement) : (el as HTMLElement | null);
+      target?.setAttribute('aria-describedby', span.id);
+    });
+
     const postcode = /^[A-Za-z]{1,2}\d[A-Za-z\d]?(\s*\d[A-Za-z]{2})?$/;
     const rules: Record<string, (v: string, f: HTMLFormElement) => string> = {
       moveType: (_v, f) => (f.querySelector('input[name=moveType]:checked') ? '' : 'Please choose a type of move.'),
@@ -280,8 +290,14 @@ const extras = [
           submit.disabled = false;
         }
       } catch {
+        // Never lose a lead: offer a ready-to-send email with the same details.
+        const lines = Object.entries(data).map(([k, v]) => `${k}: ${v}`).join('\n');
+        const link = document.createElement('a');
+        link.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines)}`;
+        link.textContent = 'email us your details';
         status.className = 'form-status err';
-        status.textContent = 'Sorry, we could not send your request. Please call us or email us directly and we will sort your quote.';
+        status.textContent = 'Sorry, we could not send your request just now. Please call us or ';
+        status.append(link, '. Your details are filled in for you.');
         submit.disabled = false;
       }
     });

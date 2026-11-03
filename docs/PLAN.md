@@ -123,4 +123,5 @@ Everything on the site serves one of two actions: **Get a free quote** (primary)
 | 2 | Core pages: home, services (8), quote, contact, about, FAQ, legal | Done |
 | 3 | Local SEO: 12 city pages, 14 route pages | Done |
 | 4 | Content: 6 blog posts with images, RSS, checklist tool | Done |
+| 4b | Hardening: strict CSP/headers, server-side form function, security.txt, CI, Dependabot, accessibility fixes, AVIF images, AdSense-ready layer (off by default) | Done |
 | 5 | Next: real photos/reviews, GA4 + Search Console, more blog posts monthly, backlinks and GBP | Owner / next sprint |

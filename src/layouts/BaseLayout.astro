@@ -4,6 +4,7 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { site, abs } from '../data/site';
 import { businessSchema, websiteSchema } from '../lib/seo';
+import { criticalFonts } from './fonts';
 
 interface Props {
   title: string;
@@ -15,10 +16,12 @@ interface Props {
   type?: 'website' | 'article';
   publishedAt?: Date;
   updatedAt?: Date;
+  /** Load the AdSense script on this page (only has an effect if PUBLIC_ADSENSE_CLIENT is set) */
+  ads?: boolean;
   /** Extra JSON-LD objects for this page */
   schema?: object[];
 }
-const { title, description, image = '/og-default.png', imageAlt, noindex = false, type = 'website', publishedAt, updatedAt, schema = [] } = Astro.props;
+const { title, description, image = '/og-default.png', imageAlt, noindex = false, type = 'website', publishedAt, updatedAt, ads = false, schema = [] } = Astro.props;
 
 // Append the brand only if it keeps the title within ~60 characters
 const brandSuffix = ` | ${site.name}`;
@@ -39,7 +42,9 @@ const jsonLd = [businessSchema(), websiteSchema(), ...schema];
     <meta name="theme-color" content="#0c1f3d" />
     <meta name="format-detection" content="telephone=yes" />
 
+    {criticalFonts.map((href) => <link rel="preload" as="font" type="font/woff2" href={href} crossorigin />)}
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="manifest" href="/site.webmanifest" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <link rel="alternate" type="application/rss+xml" title={`${site.name} blog`} href="/rss.xml" />
@@ -59,6 +64,7 @@ const jsonLd = [businessSchema(), websiteSchema(), ...schema];
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
 
+    {ads && site.adsenseClient && <script async src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${site.adsenseClient}`} crossorigin="anonymous"></script>}
     {jsonLd.map((s) => <script type="application/ld+json" set:html={JSON.stringify(s)} />)}
   </head>
   <body>

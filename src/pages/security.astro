@@ -1,0 +1,23 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import { site } from '../data/site';
+---
+<BaseLayout title="Security & Responsible Disclosure" description={`How to report a security issue on the ${site.name} website, and what we do to keep visitor data safe.`}>
+  <PageHero eyebrow="Security" h1="Security and responsible disclosure" lead="We take the safety of your information seriously. If you think you have found a vulnerability, please tell us." actions={false} />
+  <section class="section">
+    <div class="container narrow prose prose-legal">
+      <h2>Report a vulnerability</h2>
+      <p>Email <a href={`mailto:${site.email}`}>{site.email}</a> with a description and steps to reproduce. Please give us reasonable time to fix the issue before sharing it publicly, and do not access or change other people's data. We will acknowledge your report and keep you informed.</p>
+      <h2>What we do</h2>
+      <ul>
+        <li>The whole site is served over HTTPS with HSTS.</li>
+        <li>A strict Content Security Policy blocks unexpected scripts, frames and plugins.</li>
+        <li>This website runs no third-party scripts by default, and sets no tracking cookies.</li>
+        <li>Quote requests are validated on the server and only used to prepare your quote.</li>
+        <li>Dependencies are monitored and updated for known vulnerabilities.</li>
+      </ul>
+      <p>Our machine-readable contact is at <a href="/.well-known/security.txt">/.well-known/security.txt</a>.</p>
+    </div>
+  </section>
+</BaseLayout>
