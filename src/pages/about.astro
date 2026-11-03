@@ -1,0 +1,44 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Icon from '../components/Icon.astro';
+import { site } from '../data/site';
+import { breadcrumbSchema } from '../lib/seo';
+const crumbs = [{ name: 'Home', href: '/' }, { name: 'About', href: '/about/' }];
+---
+<BaseLayout title="About Us | How We Plan and Run Your Move" description={`${site.name} is a UK removals company for local and long-distance moves. Meet the principles behind how we plan and run every move.`} schema={[breadcrumbSchema(crumbs)]}>
+  <PageHero eyebrow="About us" h1="Removals run like a plan, not a gamble" lead={`${site.name} moves homes and offices across the UK: within a city, and between cities. Here is how we think about the job.`} crumbs={crumbs} />
+  <section class="section">
+    <div class="container narrow prose">
+      <h2>What we believe</h2>
+      <p>Most of what goes wrong on moving day is decided weeks earlier: a vague quote, a van that is too small, a parking restriction nobody checked. So we put the effort in before the day. We ask more questions than you expect, we plan for the building and the street, and we tell you plainly what is and is not included.</p>
+      <!-- OWNER: add your real company story here (founding year, team, vans, coverage). Do not publish claims you cannot back up. -->
+      <h2>How we work</h2>
+    </div>
+    <div class="container" style="margin-top:1.5rem">
+      <div class="grid cols-4">
+        <div class="card"><div class="icon-box"><Icon name="list" /></div><h3>Plan first</h3><p>Access, stairs, parking and timings are agreed before moving day.</p></div>
+        <div class="card"><div class="icon-box"><Icon name="shield" /></div><h3>Protect everything</h3><p>Blankets, wrap and floor protection as standard, and loads secured for the road.</p></div>
+        <div class="card"><div class="icon-box"><Icon name="pound" /></div><h3>Price honestly</h3><p>Written fixed quotes that say what is included. If something changes, we tell you before, not after.</p></div>
+        <div class="card"><div class="icon-box"><Icon name="users" /></div><h3>Be reachable</h3><p>A real person who knows your move, on the phone or WhatsApp.</p></div>
+      </div>
+    </div>
+  </section>
+  <section class="section alt">
+    <div class="container narrow">
+      <div class="section-head"><span class="eyebrow">Company details</span><h2>Who you are dealing with</h2></div>
+      <dl style="display:grid;grid-template-columns:max-content 1fr;gap:.6rem 2rem;margin:0">
+        <dt><strong>Trading name</strong></dt><dd style="margin:0">{site.name}</dd>
+        <dt><strong>Legal name</strong></dt><dd style="margin:0">{site.legalName}</dd>
+        {site.companyNumber && (<><dt><strong>Company number</strong></dt><dd style="margin:0">{site.companyNumber}</dd></>)}
+        {site.vatNumber && (<><dt><strong>VAT number</strong></dt><dd style="margin:0">{site.vatNumber}</dd></>)}
+        <dt><strong>Address</strong></dt><dd style="margin:0">{site.address.street}, {site.address.city}, {site.address.postcode}</dd>
+        <dt><strong>Phone</strong></dt><dd style="margin:0"><a href={`tel:${site.phoneHref}`}>{site.phone}</a></dd>
+        {site.trust.insuredText && (<><dt><strong>Insurance</strong></dt><dd style="margin:0">{site.trust.insuredText}</dd></>)}
+        {site.trust.tradeBody && (<><dt><strong>Trade body</strong></dt><dd style="margin:0">{site.trust.tradeBody}</dd></>)}
+      </dl>
+    </div>
+  </section>
+  <CtaBand />
+</BaseLayout>

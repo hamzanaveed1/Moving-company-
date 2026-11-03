@@ -1,0 +1,32 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import QuoteForm from '../../components/QuoteForm.astro';
+import Icon from '../../components/Icon.astro';
+import { site } from '../../data/site';
+import { breadcrumbSchema } from '../../lib/seo';
+const crumbs = [{ name: 'Home', href: '/' }, { name: 'Get a quote', href: '/get-a-quote/' }];
+---
+<BaseLayout
+  title="Get a Free Removals Quote | Fixed-Price, No Obligation"
+  description="Get a free, fixed-price removals quote in about two minutes. Tell us your postcodes, property size and date and we will send a clear written quote."
+  schema={[breadcrumbSchema(crumbs)]}
+>
+  <PageHero eyebrow="Free quote" h1="Get your free removals quote" lead="Four short steps, about two minutes. We will review your details and send a clear, written fixed price." crumbs={crumbs} actions={false} />
+  <section class="section">
+    <div class="container quote-wrap">
+      <QuoteForm />
+      <aside class="aside-card">
+        <h2>What happens next</h2>
+        <ul class="ticks">
+          <li><Icon name="tick" /><span>We review your details and may call or message with a couple of questions.</span></li>
+          <li><Icon name="tick" /><span>You receive a written fixed-price quote that lists what is included.</span></li>
+          <li><Icon name="tick" /><span>Happy? Confirm your date and we plan the move with you.</span></li>
+        </ul>
+        <p>Prefer to talk it through?</p>
+        <p><a href={`tel:${site.phoneHref}`}>{site.phone}</a><br /><a href={`https://wa.me/${site.whatsapp}`} rel="noopener">WhatsApp us</a><br /><a href={`mailto:${site.email}`}>{site.email}</a></p>
+        <p style="font-size:.85rem;margin:0">Your details are used only to prepare and discuss your quote. See our <a href="/privacy-policy/">privacy policy</a>.</p>
+      </aside>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,21 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PageHero from '../../../components/PageHero.astro';
+import PostCard from '../../../components/PostCard.astro';
+import CtaBand from '../../../components/CtaBand.astro';
+import { breadcrumbSchema } from '../../../lib/seo';
+import { slugify } from '../../../lib/slug';
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  const cats = [...new Set(posts.map((p) => p.data.category))];
+  return cats.map((c) => ({ params: { cat: slugify(c) }, props: { cat: c, posts: posts.filter((p) => p.data.category === c) } }));
+}
+const { cat, posts } = Astro.props;
+const crumbs = [{ name: 'Home', href: '/' }, { name: 'Blog', href: '/blog/' }, { name: cat, href: `/blog/category/${slugify(cat)}/` }];
+---
+<BaseLayout title={`${cat} Moving Guides | UK Removals Blog`} description={`Moving guides in the "${cat}" category: practical UK advice from a professional removals team.`} schema={[breadcrumbSchema(crumbs)]}>
+  <PageHero eyebrow="Category" h1={`${cat} guides`} crumbs={crumbs} actions={false} />
+  <section class="section"><div class="container"><div class="grid cols-3">{posts.map((p: any) => <PostCard post={p} />)}</div></div></section>
+  <CtaBand />
+</BaseLayout>

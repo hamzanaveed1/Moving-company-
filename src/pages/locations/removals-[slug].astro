@@ -1,0 +1,104 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import FaqList from '../../components/FaqList.astro';
+import QuoteAside from '../../components/QuoteAside.astro';
+import Icon from '../../components/Icon.astro';
+import { locations } from '../../data/locations';
+import type { Location } from '../../data/locations';
+import { services } from '../../data/services';
+import { routes } from '../../data/routes';
+import { abs } from '../../data/site';
+import { breadcrumbSchema, faqSchema } from '../../lib/seo';
+
+export function getStaticPaths() {
+  return locations.map((l) => ({ params: { slug: l.slug }, props: { loc: l } }));
+}
+const { loc } = Astro.props as { loc: Location };
+const path = `/locations/removals-${loc.slug}/`;
+const crumbs = [{ name: 'Home', href: '/' }, { name: 'Locations', href: '/locations/' }, { name: `Removals ${loc.name}`, href: path }];
+const locRoutes = loc.routes.map((s) => routes.find((r) => r.slug === s)).filter(Boolean) as typeof routes;
+const nearby = locations.filter((l) => l.slug !== loc.slug && l.nation === loc.nation).slice(0, 5);
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: `Removals in ${loc.name}`,
+  serviceType: 'Removals',
+  url: abs(path),
+  provider: { '@id': abs('/#business') },
+  areaServed: { '@type': 'City', name: loc.name },
+};
+---
+<BaseLayout title={loc.title} description={loc.description} schema={[schema, breadcrumbSchema(crumbs), faqSchema(loc.faqs)]}>
+  <PageHero eyebrow={`${loc.region}, ${loc.nation}`} h1={loc.h1} lead={loc.intro[0]} crumbs={crumbs} quoteHref={`/get-a-quote/`}>
+    <div class="facts">
+      <div class="fact"><b>{loc.name}</b><span>{loc.region}</span></div>
+      <div class="fact"><b>{loc.areas.length}+ areas</b><span>covered locally</span></div>
+      <div class="fact"><b>{locRoutes.length} routes</b><span>to and from {loc.name}</span></div>
+    </div>
+  </PageHero>
+
+  <section class="section">
+    <div class="container quote-wrap">
+      <div>
+        <div class="prose">
+          {loc.intro.slice(1).map((p) => <p>{p}</p>)}
+          <h2>What affects a move in {loc.name}</h2>
+        </div>
+        <div class="grid cols-2" style="margin-top:1.5rem">
+          {loc.localNotes.map((n) => <div class="card"><h3>{n.title}</h3><p>{n.text}</p></div>)}
+        </div>
+        <div class="prose" style="margin-top:2.5rem">
+          <h2>Areas we cover in and around {loc.name}</h2>
+          <p>Including {loc.areas.join(', ')}. Postcodes: {loc.postcodes}.</p>
+          <h2>Busiest times</h2>
+          <p>{loc.peakTimes}</p>
+        </div>
+      </div>
+      <QuoteAside title={`Quote for ${loc.name}`} />
+    </div>
+  </section>
+
+  <section class="section alt">
+    <div class="container">
+      <div class="section-head"><span class="eyebrow">Services</span><h2>Removal services in {loc.name}</h2></div>
+      <div class="grid cols-4">
+        {services.map((s) => (
+          <a class="card" href={`/services/${s.slug}/`}><div class="icon-box"><Icon name={s.icon} /></div><h3>{s.name}</h3><span class="more">Details <Icon name="arrow" /></span></a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {locRoutes.length > 0 && (
+    <section class="section">
+      <div class="container">
+        <div class="section-head"><span class="eyebrow">City to city</span><h2>Long-distance moves from {loc.name}</h2></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th scope="col">Route</th><th scope="col">Distance</th><th scope="col">Drive time</th><th scope="col">Plan</th></tr></thead>
+            <tbody>
+              {locRoutes.map((r) => <tr><td><a href={`/routes/${r.slug}/`}>{r.from} → {r.to}</a></td><td>~{r.miles} miles</td><td>{r.drive}</td><td>{r.plan}</td></tr>)}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <section class="section alt">
+    <div class="container narrow">
+      <div class="section-head center"><span class="eyebrow">FAQs</span><h2>Moving in {loc.name}: your questions</h2></div>
+      <FaqList faqs={loc.faqs} />
+    </div>
+  </section>
+
+  <section class="section tight">
+    <div class="container">
+      <h2 style="font-size:1.4rem">Nearby locations</h2>
+      <ul class="pills">{nearby.map((l) => <li><a class="pill" href={`/locations/removals-${l.slug}/`}>Removals {l.name}</a></li>)}</ul>
+    </div>
+  </section>
+  <CtaBand title={`Moving in ${loc.name}?`} text={`Tell us your postcodes and date and we will send a fixed-price quote for your ${loc.name} move.`} />
+</BaseLayout>

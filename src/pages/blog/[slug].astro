@@ -1,0 +1,82 @@
+---
+import { getCollection, render } from 'astro:content';
+import { Image, getImage } from 'astro:assets';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import PostCard from '../../components/PostCard.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { site, abs } from '../../data/site';
+import { breadcrumbSchema } from '../../lib/seo';
+import { slugify } from '../../lib/slug';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+const { post } = Astro.props;
+const d = post.data;
+const { Content, headings } = await render(post);
+const toc = headings.filter((h) => h.depth === 2);
+const all = await getCollection('blog');
+const related = (d.related.length ? all.filter((p) => d.related.includes(p.id)) : all.filter((p) => p.id !== post.id)).slice(0, 3);
+const og = await getImage({ src: d.image, width: 1200, height: 630, format: 'jpg' });
+const path = `/blog/${post.id}/`;
+const crumbs = [{ name: 'Home', href: '/' }, { name: 'Blog', href: '/blog/' }, { name: d.title, href: path }];
+const fmt = (x: Date) => x.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+const article = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: d.title,
+  description: d.description,
+  image: [abs(og.src)],
+  datePublished: d.publishedAt.toISOString(),
+  dateModified: (d.updatedAt ?? d.publishedAt).toISOString(),
+  inLanguage: 'en-GB',
+  mainEntityOfPage: abs(path),
+  author: { '@type': 'Organization', name: site.name, url: abs('/') },
+  publisher: { '@type': 'Organization', name: site.name, logo: { '@type': 'ImageObject', url: abs('/logo.png') } },
+};
+const cta = d.cta ?? { label: 'Get a free quote', href: '/get-a-quote/' };
+---
+<BaseLayout title={d.title} description={d.description} image={og.src} imageAlt={d.imageAlt} type="article" publishedAt={d.publishedAt} updatedAt={d.updatedAt} schema={[article, breadcrumbSchema(crumbs)]}>
+  <article>
+    <header class="post-hero">
+      <div class="container">
+        <Breadcrumbs crumbs={crumbs} light />
+        <a class="tag" href={`/blog/category/${slugify(d.category)}/`} style="text-decoration:none">{d.category}</a>
+        <h1 style="margin-top:.75rem">{d.title}</h1>
+        <p class="lead" style="max-width:760px">{d.description}</p>
+        <div class="post-meta">
+          <span>By the {site.name} team</span>
+          <span>Published <time datetime={d.publishedAt.toISOString()}>{fmt(d.publishedAt)}</time></span>
+          {d.updatedAt && <span>Updated <time datetime={d.updatedAt.toISOString()}>{fmt(d.updatedAt)}</time></span>}
+          <span>{d.readingTime} min read</span>
+        </div>
+        <div class="post-cover">
+          <Image src={d.image} alt={d.imageAlt} width={1200} height={675} widths={[640, 960, 1200]} sizes="(max-width: 1240px) 94vw, 1200px" loading="eager" fetchpriority="high" format="webp" />
+        </div>
+      </div>
+    </header>
+    <div class="container post-layout">
+      <div class="prose"><Content /></div>
+      <aside>
+        <nav class="toc" aria-label="Table of contents">
+          <h2>In this guide</h2>
+          <ol>{toc.map((h) => <li><a href={`#${h.slug}`}>{h.text}</a></li>)}</ol>
+          <div class="cta-mini">
+            <p style="margin:0 0 .75rem;font-weight:700;color:var(--navy-900)">Planning a move?</p>
+            <a class="btn btn-primary btn-block" href={cta.href}>{cta.label}</a>
+          </div>
+        </nav>
+      </aside>
+    </div>
+  </article>
+
+  <section class="section alt">
+    <div class="container">
+      <div class="section-head"><span class="eyebrow">Keep reading</span><h2>More moving guides</h2></div>
+      <div class="grid cols-3">{related.map((p) => <PostCard post={p} />)}</div>
+    </div>
+  </section>
+  <CtaBand />
+</BaseLayout>

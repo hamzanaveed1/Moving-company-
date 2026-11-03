@@ -1,0 +1,12 @@
+---
+import type { Crumb } from '../lib/seo';
+interface Props { crumbs: Crumb[]; light?: boolean }
+const { crumbs, light = false } = Astro.props;
+---
+<nav class:list={['crumbs', { light }]} aria-label="Breadcrumb">
+  <ol>
+    {crumbs.map((c, i) => (
+      <li>{i === crumbs.length - 1 ? <span aria-current="page">{c.name}</span> : <a href={c.href}>{c.name}</a>}</li>
+    ))}
+  </ol>
+</nav>

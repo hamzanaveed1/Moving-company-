@@ -1,0 +1,22 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import { site } from '../data/site';
+---
+<BaseLayout title="Cookie Notice" description={`How ${site.name} uses cookies and browser storage. In short: no tracking or advertising cookies are set on this website.`}>
+  <PageHero eyebrow="Legal" h1="Cookie notice" lead="Short version: we do not set tracking cookies." actions={false} />
+  <!-- OWNER: if you add analytics (e.g. GA4), ads or a chat widget, add a consent banner and update this page BEFORE enabling them (PECR). -->
+  <section class="section">
+    <div class="container narrow prose prose-legal">
+      <p>This website does not currently use advertising, analytics or other non-essential cookies, so no consent banner is shown.</p>
+      <h2>What we do store</h2>
+      <ul>
+        <li><strong>Browser storage for the moving checklist.</strong> If you use our <a href="/moving-checklist/">moving checklist</a>, your ticks are saved in your own browser (local storage) so they are there when you come back. This stays on your device and is never sent to us. It is strictly necessary for the feature you asked for.</li>
+        <li><strong>Hosting logs.</strong> Our host may keep basic technical logs (such as IP address and pages requested) for security and reliability.</li>
+      </ul>
+      <h2>If this changes</h2>
+      <p>If we add analytics or marketing tools in future, we will ask for your consent before they set anything and update this page.</p>
+      <p>Questions? Email <a href={`mailto:${site.email}`}>{site.email}</a>.</p>
+    </div>
+  </section>
+</BaseLayout>

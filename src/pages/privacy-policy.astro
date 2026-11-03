@@ -1,0 +1,35 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import { site } from '../data/site';
+const updated = '3 November 2026';
+---
+<BaseLayout title="Privacy Policy" description={`How ${site.name} collects, uses and protects your personal data under UK GDPR.`}>
+  <PageHero eyebrow="Legal" h1="Privacy policy" lead={`Last updated ${updated}`} actions={false} />
+  <!-- OWNER: this is a template. Have it reviewed against your real data flows (form provider, email, analytics) before launch. -->
+  <section class="section">
+    <div class="container narrow prose prose-legal">
+      <p>This policy explains how {site.legalName} ("we", "us") uses personal data collected through this website. We are the data controller. Contact us at <a href={`mailto:${site.email}`}>{site.email}</a> or {site.address.street}, {site.address.city}, {site.address.postcode}.</p>
+      <h2>What we collect</h2>
+      <p>When you request a quote or contact us we collect: your name, phone number, email address, the addresses (postcodes) you are moving from and to, details of your move (property size, date, access, extras and notes), and anything else you choose to tell us. If you call or message us we also keep a record of that conversation.</p>
+      <h2>Why we use it, and our lawful basis</h2>
+      <ul>
+        <li><strong>To respond to your enquiry and prepare a quote.</strong> Lawful basis: taking steps at your request before entering a contract.</li>
+        <li><strong>To provide the moving service you book.</strong> Lawful basis: performance of a contract.</li>
+        <li><strong>To keep records and handle claims or disputes, and to improve our service.</strong> Lawful basis: our legitimate interests.</li>
+        <li><strong>To comply with legal obligations,</strong> such as accounting and tax records.</li>
+      </ul>
+      <p>We do not sell your data and we do not send marketing emails unless you have asked for them.</p>
+      <h2>Who we share it with</h2>
+      <p>We share data only with providers who help us run the business, such as our website host, our email and form-handling providers, and our crews for the purpose of carrying out your move. These providers act on our instructions. Some may process data outside the UK, in which case we rely on appropriate safeguards.</p>
+      <h2>How long we keep it</h2>
+      <p>If you do not book, we keep your enquiry for up to 12 months. If you book, we keep records for as long as needed to provide the service and meet legal and accounting requirements, usually up to 6 years.</p>
+      <h2>Cookies and tracking</h2>
+      <p>See our <a href="/cookies/">cookie notice</a>. This site does not use advertising or analytics cookies unless we tell you and ask for your consent first.</p>
+      <h2>Your rights</h2>
+      <p>Under UK GDPR you have the right to access your data, correct it, ask us to delete it, restrict or object to processing, and to data portability. To exercise these rights, email <a href={`mailto:${site.email}`}>{site.email}</a>. You can also complain to the Information Commissioner's Office at <a href="https://ico.org.uk" rel="noopener">ico.org.uk</a> or on 0303 123 1113.</p>
+      <h2>Changes</h2>
+      <p>We may update this policy and will change the date above when we do.</p>
+    </div>
+  </section>
+</BaseLayout>

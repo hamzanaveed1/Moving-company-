@@ -1,0 +1,42 @@
+---
+import Icon from './Icon.astro';
+import Logo from './Logo.astro';
+import { site, nav } from '../data/site';
+const path = Astro.url.pathname;
+const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
+---
+<div class="topbar">
+  <div class="container">
+    <span class="tb-hours"><Icon name="clock" />{site.hours}</span>
+    <div class="tb-links">
+      <a href={`tel:${site.phoneHref}`}><Icon name="phone" />{site.phone}</a>
+      <a href={`mailto:${site.email}`}><Icon name="mail" />{site.email}</a>
+    </div>
+  </div>
+</div>
+<header class="site-header">
+  <div class="container">
+    <Logo />
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Open menu" data-menu-btn>
+      <Icon name="menu" />
+    </button>
+    <nav class="nav" id="site-nav" aria-label="Main" data-nav data-open="false">
+      {nav.map((n) => <a href={n.href} aria-current={isActive(n.href) ? 'page' : undefined}>{n.label}</a>)}
+      <a class="btn btn-primary" href="/get-a-quote/">Get a free quote</a>
+    </nav>
+  </div>
+</header>
+<script>
+  const btn = document.querySelector<HTMLButtonElement>('[data-menu-btn]');
+  const nav = document.querySelector<HTMLElement>('[data-nav]');
+  btn?.addEventListener('click', () => {
+    const open = nav?.getAttribute('data-open') !== 'true';
+    nav?.setAttribute('data-open', String(open));
+    btn.setAttribute('aria-expanded', String(open));
+    btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    document.body.style.overflow = open && window.innerWidth <= 980 ? 'hidden' : '';
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && nav?.getAttribute('data-open') === 'true') btn?.click();
+  });
+</script>

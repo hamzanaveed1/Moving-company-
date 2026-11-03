@@ -1,0 +1,31 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import Icon from '../../components/Icon.astro';
+import { services } from '../../data/services';
+import { breadcrumbSchema } from '../../lib/seo';
+const crumbs = [{ name: 'Home', href: '/' }, { name: 'Services', href: '/services/' }];
+---
+<BaseLayout
+  title="Removal Services UK | House, Flat, Office & Long-Distance"
+  description="Explore our removal services: house, flat and office removals, long-distance moves, local moves, packing, storage and man and van. Free fixed-price quotes."
+  schema={[breadcrumbSchema(crumbs)]}
+>
+  <PageHero eyebrow="Services" h1="Removal services for every kind of move" lead="Pick the service that fits, or tell us about your move and we will recommend the right one." crumbs={crumbs} />
+  <section class="section">
+    <div class="container">
+      <div class="grid cols-2">
+        {services.map((s) => (
+          <a class="card" href={`/services/${s.slug}/`}>
+            <div class="icon-box"><Icon name={s.icon} /></div>
+            <h2 style="font-size:1.5rem">{s.name}</h2>
+            <p>{s.summary}</p>
+            <span class="more">Read more <Icon name="arrow" /></span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+  <CtaBand />
+</BaseLayout>

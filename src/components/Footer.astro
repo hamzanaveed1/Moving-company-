@@ -1,0 +1,64 @@
+---
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import { site } from '../data/site';
+import { services } from '../data/services';
+import { locations } from '../data/locations';
+const year = new Date().getFullYear();
+---
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div>
+      <Logo />
+      <p>{site.tagline}. House, flat and office removals, local moves and long-distance city-to-city relocations.</p>
+      <p>
+        <a href={`tel:${site.phoneHref}`}><strong>{site.phone}</strong></a><br />
+        <a href={`mailto:${site.email}`}>{site.email}</a>
+      </p>
+      <address style="font-style:normal">
+        {site.address.street}, {site.address.city}<br />{site.address.postcode}
+      </address>
+    </div>
+    <div>
+      <h2>Services</h2>
+      <ul>{services.map((s) => <li><a href={`/services/${s.slug}/`}>{s.name}</a></li>)}</ul>
+    </div>
+    <div>
+      <h2>Locations</h2>
+      <ul>
+        {locations.slice(0, 8).map((l) => <li><a href={`/locations/removals-${l.slug}/`}>Removals {l.name}</a></li>)}
+        <li><a href="/locations/"><strong>All locations →</strong></a></li>
+      </ul>
+    </div>
+    <div>
+      <h2>Company</h2>
+      <ul>
+        <li><a href="/about/">About us</a></li>
+        <li><a href="/get-a-quote/">Get a quote</a></li>
+        <li><a href="/routes/">City-to-city routes</a></li>
+        <li><a href="/blog/">Moving guides</a></li>
+        <li><a href="/moving-checklist/">Moving checklist</a></li>
+        <li><a href="/faq/">FAQs</a></li>
+        <li><a href="/contact/">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="container footer-bottom">
+    <span>
+      © {year} {site.legalName}.
+      {site.companyNumber && ` Registered in England & Wales No. ${site.companyNumber}.`}
+      {site.vatNumber && ` VAT ${site.vatNumber}.`}
+    </span>
+    <nav aria-label="Legal">
+      <a href="/privacy-policy/">Privacy</a>
+      <a href="/terms/">Terms</a>
+      <a href="/cookies/">Cookies</a>
+      <a href="/rss.xml">RSS</a>
+    </nav>
+  </div>
+</footer>
+<div class="mobile-bar" role="navigation" aria-label="Quick actions">
+  <a class="btn btn-ghost" href={`tel:${site.phoneHref}`}><Icon name="phone" /> Call</a>
+  <a class="btn btn-ghost" href={`https://wa.me/${site.whatsapp}`} rel="noopener"><Icon name="whatsapp" /> WhatsApp</a>
+  <a class="btn btn-primary" href="/get-a-quote/">Free quote</a>
+</div>

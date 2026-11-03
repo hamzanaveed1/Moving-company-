@@ -1,0 +1,29 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import PostCard from '../../components/PostCard.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { breadcrumbSchema } from '../../lib/seo';
+import { slugify } from '../../lib/slug';
+const posts = (await getCollection('blog')).sort((a, b) => +b.data.publishedAt - +a.data.publishedAt);
+const cats = [...new Set(posts.map((p) => p.data.category))];
+const crumbs = [{ name: 'Home', href: '/' }, { name: 'Blog', href: '/blog/' }];
+---
+<BaseLayout
+  title="Moving Guides & Advice | UK Removals Blog"
+  description="Practical UK moving guides: costs, checklists, packing, long-distance moves and choosing a removal company. Written by people who move homes every day."
+  schema={[breadcrumbSchema(crumbs)]}
+>
+  <PageHero eyebrow="The blog" h1="Moving guides and advice" lead="Practical, honest guides to moving house in the UK, from costs and checklists to packing and long-distance moves." crumbs={crumbs} actions={false} />
+  <section class="section">
+    <div class="container">
+      <ul class="pills" style="margin-bottom:2rem">
+        <li><a class="pill" href="/blog/" aria-current="page" style="background:var(--navy-900);color:#fff">All</a></li>
+        {cats.map((c) => <li><a class="pill" href={`/blog/category/${slugify(c)}/`}>{c}</a></li>)}
+      </ul>
+      <div class="grid cols-3">{posts.map((p, i) => <PostCard post={p} eager={i < 3} />)}</div>
+    </div>
+  </section>
+  <CtaBand />
+</BaseLayout>

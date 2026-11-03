@@ -1,0 +1,90 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import FaqList from '../../components/FaqList.astro';
+import QuoteAside from '../../components/QuoteAside.astro';
+import Icon from '../../components/Icon.astro';
+import { routes } from '../../data/routes';
+import type { RouteItem } from '../../data/routes';
+import { getLocation } from '../../data/locations';
+import { abs } from '../../data/site';
+import { breadcrumbSchema, faqSchema } from '../../lib/seo';
+
+export function getStaticPaths() {
+  return routes.map((r) => ({ params: { slug: r.slug }, props: { route: r } }));
+}
+const { route: r } = Astro.props as { route: RouteItem };
+const path = `/routes/${r.slug}/`;
+const crumbs = [{ name: 'Home', href: '/' }, { name: 'Routes', href: '/routes/' }, { name: `${r.from} to ${r.to}`, href: path }];
+const from = getLocation(r.fromSlug);
+const to = getLocation(r.toSlug);
+const others = routes.filter((x) => x.slug !== r.slug && (x.fromSlug === r.fromSlug || x.toSlug === r.toSlug || x.fromSlug === r.toSlug || x.toSlug === r.fromSlug)).slice(0, 4);
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: `${r.from} to ${r.to} removals`,
+  serviceType: 'Long-distance removals',
+  url: abs(path),
+  provider: { '@id': abs('/#business') },
+  areaServed: [{ '@type': 'City', name: r.from }, { '@type': 'City', name: r.to }],
+};
+---
+<BaseLayout title={r.title} description={r.description} schema={[schema, breadcrumbSchema(crumbs), faqSchema(r.faqs)]}>
+  <PageHero eyebrow="Long-distance removals" h1={`${r.from} to ${r.to} removals`} lead={r.intro[0]} crumbs={crumbs} quoteHref={`/get-a-quote/`}>
+    <div class="facts">
+      <div class="fact"><b>~{r.miles} miles</b><span>by road</span></div>
+      <div class="fact"><b>{r.drive}</b><span>driving time</span></div>
+      <div class="fact"><b>{r.roads}</b><span>main roads</span></div>
+      <div class="fact"><b style="font-size:1.05rem">{r.plan}</b><span>typical plan</span></div>
+    </div>
+  </PageHero>
+
+  <section class="section">
+    <div class="container quote-wrap">
+      <div>
+        <div class="prose">
+          {r.intro.slice(1).map((p) => <p>{p}</p>)}
+          <h2>Why people move from {r.from} to {r.to}</h2>
+          <p>{r.whyPeopleMove}</p>
+          <h2>What to plan for on this route</h2>
+          <ul class="ticks" style="list-style:none;padding:0">
+            {r.considerations.map((c) => <li><Icon name="tick" /><span>{c}</span></li>)}
+          </ul>
+          <h2>How we run {r.from} to {r.to} moves</h2>
+          <p>We work out the realistic timings, including legal driver hours, loading and unloading, then give you an earliest and latest arrival. You can choose a dedicated load (your belongings only, direct, most flexible) or a shared load where that is available and cheaper. If your completion dates move, storage-in-transit is available.</p>
+          <p>The route also works in reverse: we regularly move customers from {r.to} to {r.from}.</p>
+        </div>
+      </div>
+      <QuoteAside title={`${r.from} to ${r.to} quote`} />
+    </div>
+  </section>
+
+  <section class="section alt">
+    <div class="container split">
+      <div>
+        <h2>Local guides for both ends</h2>
+        <ul class="ticks" style="list-style:none;padding:0">
+          {from && <li><Icon name="pin" /><span><a href={`/locations/removals-${from.slug}/`}>Removals in {from.name}</a>: access, parking and property types.</span></li>}
+          {to && <li><Icon name="pin" /><span><a href={`/locations/removals-${to.slug}/`}>Removals in {to.name}</a>: access, parking and property types.</span></li>}
+          <li><Icon name="route" /><span><a href="/services/long-distance-removals/">Long-distance removals</a>: how our city-to-city service works.</span></li>
+          <li><Icon name="box" /><span><a href="/services/packing-service/">Packing service</a>: let us pack before the journey.</span></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Frequently asked questions</h2>
+        <FaqList faqs={r.faqs} />
+      </div>
+    </div>
+  </section>
+
+  {others.length > 0 && (
+    <section class="section tight">
+      <div class="container">
+        <h2 style="font-size:1.4rem">Related routes</h2>
+        <ul class="pills">{others.map((o) => <li><a class="pill" href={`/routes/${o.slug}/`}>{o.from} → {o.to}</a></li>)}</ul>
+      </div>
+    </section>
+  )}
+  <CtaBand title={`Moving from ${r.from} to ${r.to}?`} text="Share your postcodes and date and we will send a fixed price and a delivery plan." />
+</BaseLayout>

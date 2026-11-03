@@ -1,0 +1,36 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import Icon from '../components/Icon.astro';
+import { site } from '../data/site';
+import { breadcrumbSchema } from '../lib/seo';
+const crumbs = [{ name: 'Home', href: '/' }, { name: 'Contact', href: '/contact/' }];
+const contactSchema = { '@context': 'https://schema.org', '@type': 'ContactPage', name: `Contact ${site.name}`, mainEntity: { '@id': `${site.url.replace(/\/$/, '')}/#business` } };
+---
+<BaseLayout title="Contact Us | Call, WhatsApp or Email" description={`Contact ${site.name} by phone, WhatsApp or email, or request a quote online. Open ${site.hours}.`} schema={[breadcrumbSchema(crumbs), contactSchema]}>
+  <PageHero eyebrow="Contact" h1="Talk to a real person about your move" lead="Call, message or send us the details. We reply quickly and we will tell you honestly if we are not the right fit." crumbs={crumbs} actions={false} />
+  <section class="section">
+    <div class="container">
+      <div class="grid cols-3">
+        <a class="card" href={`tel:${site.phoneHref}`}><div class="icon-box"><Icon name="phone" /></div><h2 style="font-size:1.3rem">Call us</h2><p>{site.hours}</p><span class="more">{site.phone}</span></a>
+        <a class="card" href={`https://wa.me/${site.whatsapp}`} rel="noopener"><div class="icon-box"><Icon name="whatsapp" /></div><h2 style="font-size:1.3rem">WhatsApp</h2><p>Send photos of large items or your inventory.</p><span class="more">Start a chat</span></a>
+        <a class="card" href={`mailto:${site.email}`}><div class="icon-box"><Icon name="mail" /></div><h2 style="font-size:1.3rem">Email</h2><p>We aim to reply within one working day.</p><span class="more">{site.email}</span></a>
+      </div>
+      <div class="split mt-3">
+        <div>
+          <h2>Find us</h2>
+          <address style="font-style:normal;font-size:1.1rem">
+            <strong>{site.legalName}</strong><br />
+            {site.address.street}<br />{site.address.city}, {site.address.region}<br />{site.address.postcode}
+          </address>
+          <p class="mt-2"><strong>Opening hours:</strong> {site.hours}</p>
+        </div>
+        <div class="card">
+          <h2 style="font-size:1.5rem">Want a price?</h2>
+          <p>The fastest way to a fixed price is our short quote form. It takes about two minutes.</p>
+          <a class="btn btn-primary" href="/get-a-quote/">Get a free quote <Icon name="arrow" /></a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

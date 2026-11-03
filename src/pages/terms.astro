@@ -1,0 +1,31 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import { site } from '../data/site';
+---
+<BaseLayout title="Website Terms of Use" description={`Terms of use for the ${site.name} website, including how information, quotes and bookings work and the law that applies.`}>
+  <PageHero eyebrow="Legal" h1="Website terms of use" lead="Terms for using this website. Your removal contract is set out separately in your written quote and booking confirmation." actions={false} />
+  <!-- OWNER: have a solicitor draft your removal booking terms (liability limits, cancellation, claims). This page covers the website only. -->
+  <section class="section">
+    <div class="container narrow prose prose-legal">
+      <h2>About these terms</h2>
+      <p>This website is operated by {site.legalName}. By using it you agree to these terms.</p>
+      <h2>Information on this site</h2>
+      <p>We work to keep the information accurate, but it is general guidance. Prices, ranges and timings on this website and in our guides are indicative only. They are not an offer. Your price is the written fixed quote we send you for your specific move.</p>
+      <h2>Quotes and bookings</h2>
+      <p>A removal contract is formed only when we confirm your booking in writing. The scope of service, price, insurance, deposit and cancellation terms are set out in your quote and booking confirmation.</p>
+      <h2>Acceptable use</h2>
+      <p>Do not misuse the site, attempt to disrupt it, or submit false or misleading enquiries.</p>
+      <h2>Intellectual property</h2>
+      <p>The content, design and illustrations on this website belong to us or our licensors. You may share links to our pages but may not copy our content for commercial use without permission.</p>
+      <h2>Links to other sites</h2>
+      <p>We are not responsible for the content of external sites we link to.</p>
+      <h2>Liability</h2>
+      <p>Nothing in these terms limits liability that cannot be limited by law, including for death or personal injury caused by negligence or for fraud. Otherwise, we are not liable for loss arising from your use of this website or reliance on general information on it.</p>
+      <h2>Governing law</h2>
+      <p>These terms are governed by the law of England and Wales, and the courts of England and Wales have jurisdiction, except that if you live in Scotland or Northern Ireland you may bring proceedings in your local courts.</p>
+      <h2>Contact</h2>
+      <p>Questions about these terms? Email <a href={`mailto:${site.email}`}>{site.email}</a>.</p>
+    </div>
+  </section>
+</BaseLayout>

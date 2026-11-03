@@ -1,0 +1,16 @@
+---
+import Icon from './Icon.astro';
+import { site } from '../data/site';
+interface Props { title?: string; href?: string }
+const { title = 'Get your fixed-price quote', href = '/get-a-quote/' } = Astro.props;
+---
+<aside class="aside-card">
+  <h2>{title}</h2>
+  <ul class="ticks">
+    <li><Icon name="tick" />Free, no-obligation quote</li>
+    <li><Icon name="tick" />Written fixed price</li>
+    <li><Icon name="tick" />Clear list of what is included</li>
+  </ul>
+  <a class="btn btn-primary btn-block" href={href}>Start my quote <Icon name="arrow" /></a>
+  <p style="margin:1rem 0 0;font-size:.95rem">Prefer to talk? Call <a href={`tel:${site.phoneHref}`}>{site.phone}</a> or <a href={`https://wa.me/${site.whatsapp}`} rel="noopener">WhatsApp us</a>.</p>
+</aside>

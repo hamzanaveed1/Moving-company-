@@ -1,0 +1,19 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { services } from '../data/services';
+---
+<BaseLayout title="Page Not Found" description="Sorry, we could not find that page." noindex>
+  <section class="section">
+    <div class="container narrow center">
+      <p class="eyebrow" style="justify-content:center">Error 404</p>
+      <h1>We could not find that page</h1>
+      <p class="lead">It may have moved. Try one of these instead.</p>
+      <ul class="pills" style="justify-content:center;margin:1.5rem 0">
+        <li><a class="pill" href="/">Home</a></li>
+        <li><a class="pill" href="/get-a-quote/">Get a quote</a></li>
+        {services.slice(0, 4).map((s) => <li><a class="pill" href={`/services/${s.slug}/`}>{s.name}</a></li>)}
+        <li><a class="pill" href="/contact/">Contact</a></li>
+      </ul>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,208 @@
+---
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+import FaqList from '../components/FaqList.astro';
+import CtaBand from '../components/CtaBand.astro';
+import PostCard from '../components/PostCard.astro';
+import hero from '../assets/img/hero.webp';
+import { site } from '../data/site';
+import { services } from '../data/services';
+import { locations } from '../data/locations';
+import { routes } from '../data/routes';
+import { generalFaqs } from '../data/faqs';
+import { reviews } from '../data/reviews';
+import { faqSchema } from '../lib/seo';
+
+const posts = (await getCollection('blog')).sort((a, b) => +b.data.publishedAt - +a.data.publishedAt).slice(0, 3);
+const faqs = generalFaqs.slice(0, 6);
+const featuredRoutes = routes.slice(0, 7);
+const trustExtras = [
+  site.trust.insuredText && { icon: 'shield', t: 'Insured moves', s: site.trust.insuredText },
+  site.trust.tradeBody && { icon: 'check', t: 'Trade body', s: site.trust.tradeBody },
+  site.trust.yearsTrading && { icon: 'clock', t: `${site.trust.yearsTrading} years trading`, s: 'Experienced crews' },
+  site.trust.movesCompleted && { icon: 'users', t: `${site.trust.movesCompleted} moves`, s: 'Completed for UK customers' },
+].filter(Boolean) as { icon: string; t: string; s: string }[];
+---
+<BaseLayout
+  title="Removals Company UK | House, Flat & Office Moves"
+  description="Professional removals across the UK: local moves and long-distance city-to-city relocations. Careful crews, fixed-price quotes. Get your free quote today."
+  schema={[faqSchema(faqs)]}
+>
+  <section class="hero">
+    <div class="container">
+      <div>
+        <span class="eyebrow">UK removals · house, flat &amp; office</span>
+        <h1>Moving made <em>simple</em>, anywhere in the UK</h1>
+        <p class="lead">Local moves, city-to-city relocations and everything in between. A planned day, a careful crew and a fixed price you agree before we lift a box.</p>
+
+        <form class="quickquote" action="/get-a-quote/" method="get" aria-label="Start your quote">
+          <div>
+            <label for="q-from">Moving from</label>
+            <input id="q-from" name="from" type="text" placeholder="Postcode" autocomplete="postal-code" required />
+          </div>
+          <div>
+            <label for="q-to">Moving to</label>
+            <input id="q-to" name="to" type="text" placeholder="Postcode" required />
+          </div>
+          <div class="full">
+            <label for="q-size">Property size</label>
+            <select id="q-size" name="size">
+              <option value="">Select size…</option>
+              <option>Studio / a few items</option><option>1 bedroom</option><option>2 bedrooms</option>
+              <option>3 bedrooms</option><option>4 bedrooms</option><option>5+ bedrooms</option>
+            </select>
+          </div>
+          <button class="btn btn-primary btn-lg btn-block full" type="submit">Get my free quote <Icon name="arrow" /></button>
+        </form>
+
+        <ul class="checks">
+          <li><Icon name="tick" />Fixed-price written quotes</li>
+          <li><Icon name="tick" />Trained, uniformed crews</li>
+          <li><Icon name="tick" />No obligation</li>
+        </ul>
+      </div>
+      <div class="hero-art">
+        <Image src={hero} alt="Removal van driving through a city skyline at sunset with moving boxes" width={900} height={750} widths={[480, 720, 900]} sizes="(max-width: 920px) 92vw, 540px" loading="eager" fetchpriority="high" format="webp" />
+        <div class="hero-badge"><Icon name="shield" /><div><strong>Planned, not guessed</strong>We ask about access, stairs and parking before we quote.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="trustbar">
+    <div class="container">
+      <div class="trust-item"><Icon name="pound" /><div>Fixed-price quotes<small>Know the cost up front</small></div></div>
+      <div class="trust-item"><Icon name="users" /><div>Trained crews<small>Careful, uniformed, on time</small></div></div>
+      <div class="trust-item"><Icon name="route" /><div>City to city<small>Planned routes across the UK</small></div></div>
+      <div class="trust-item"><Icon name="phone" /><div>One point of contact<small>From quote to unload</small></div></div>
+      {trustExtras.map((x) => <div class="trust-item"><Icon name={x.icon} /><div>{x.t}<small>{x.s}</small></div></div>)}
+    </div>
+  </div>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Our services</span>
+        <h2>Whatever you are moving, we have a team for it</h2>
+        <p class="lead">From a studio flat to a six-bedroom home or a growing office, each service is planned around your property, your access and your date.</p>
+      </div>
+      <div class="grid cols-4">
+        {services.map((s) => (
+          <a class="card" href={`/services/${s.slug}/`}>
+            <div class="icon-box"><Icon name={s.icon} /></div>
+            <h3>{s.name}</h3>
+            <p>{s.summary}</p>
+            <span class="more">Learn more <Icon name="arrow" /></span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section dark">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">How it works</span>
+        <h2>Four steps from first call to the last box</h2>
+      </div>
+      <ol class="steps">
+        <li><h3>Tell us about your move</h3><p>Two minutes online or one call. Postcodes, size, date and any access issues.</p></li>
+        <li><h3>Get a fixed quote</h3><p>A clear written price, the van and crew we plan to send, and what is included.</p></li>
+        <li><h3>We plan the details</h3><p>Timings, parking, lift bookings and optional packing are agreed before the day.</p></li>
+        <li><h3>Moving day, handled</h3><p>We protect, load, drive, unload and place everything where you want it.</p></li>
+      </ol>
+      <p class="mt-2"><a class="btn btn-primary btn-lg" href="/get-a-quote/">Start my quote <Icon name="arrow" /></a></p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container split">
+      <div>
+        <span class="eyebrow">City to city</span>
+        <h2>Popular long-distance routes</h2>
+        <p class="lead">Dedicated, scheduled moves between UK cities, with realistic drive times and a delivery window we stick to.</p>
+        <p><a class="btn btn-ghost" href="/routes/">See all routes <Icon name="arrow" /></a></p>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th scope="col">Route</th><th scope="col">Distance</th><th scope="col">Drive</th></tr></thead>
+          <tbody>
+            {featuredRoutes.map((r) => (
+              <tr><td><a href={`/routes/${r.slug}/`}>{r.from} → {r.to}</a></td><td>~{r.miles} mi</td><td>{r.drive}</td></tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="section alt">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Where we work</span>
+        <h2>Local expertise in cities across the UK</h2>
+        <p class="lead">Every city has its own streets, parking rules and property types. We plan each move around the place you are in.</p>
+      </div>
+      <ul class="pills">
+        {locations.map((l) => <li><a class="pill" href={`/locations/removals-${l.slug}/`}>Removals {l.name}</a></li>)}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Why people choose us</span>
+        <h2>We take the guesswork out of moving</h2>
+      </div>
+      <div class="grid cols-4">
+        <div class="card"><div class="icon-box"><Icon name="list" /></div><h3>Planned properly</h3><p>We ask about stairs, lifts, parking and long carries first, so the right van and crew turn up.</p></div>
+        <div class="card"><div class="icon-box"><Icon name="shield" /></div><h3>Handled with care</h3><p>Furniture is wrapped, floors and doorframes protected, and loads secured for the road.</p></div>
+        <div class="card"><div class="icon-box"><Icon name="pound" /></div><h3>Clear pricing</h3><p>A written fixed price that says what is included. No vague estimates, no day-of surprises.</p></div>
+        <div class="card"><div class="icon-box"><Icon name="phone" /></div><h3>Real people</h3><p>One contact who knows your move, from first call to final box. Phone, WhatsApp or email.</p></div>
+      </div>
+    </div>
+  </section>
+
+  {reviews.length > 0 && (
+    <section class="section alt">
+      <div class="container">
+        <div class="section-head"><span class="eyebrow">Reviews</span><h2>What customers say</h2></div>
+        <div class="grid cols-3">
+          {reviews.map((r) => (
+            <figure class="card" style="margin:0">
+              <div aria-label={`${r.rating} out of 5 stars`} style="color:#f5a524;letter-spacing:2px">{'★'.repeat(r.rating)}{'☆'.repeat(5 - r.rating)}</div>
+              <blockquote style="margin:.75rem 0;padding:0;border:0;background:none"><p>{r.text}</p></blockquote>
+              <figcaption><strong>{r.name}</strong>, {r.location}{r.source && ` · via ${r.source}`}</figcaption>
+            </figure>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Moving guides</span>
+        <h2>Advice from the people who do this every day</h2>
+      </div>
+      <div class="grid cols-3">{posts.map((p) => <PostCard post={p} />)}</div>
+      <p class="mt-2"><a class="btn btn-ghost" href="/blog/">All guides <Icon name="arrow" /></a></p>
+    </div>
+  </section>
+
+  <section class="section alt">
+    <div class="container narrow">
+      <div class="section-head center">
+        <span class="eyebrow">FAQs</span>
+        <h2>Questions we get asked most</h2>
+      </div>
+      <FaqList faqs={faqs} />
+      <p class="center mt-2"><a href="/faq/">See all FAQs →</a></p>
+    </div>
+  </section>
+
+  <CtaBand />
+</BaseLayout>

@@ -1,0 +1,20 @@
+---
+import Icon from './Icon.astro';
+import { site } from '../data/site';
+interface Props { title?: string; text?: string }
+const { title = 'Ready for a stress-free move?', text = 'Tell us about your move and get a clear, fixed-price quote, usually within a few hours.' } = Astro.props;
+---
+<section class="section tight">
+  <div class="container">
+    <div class="cta-band">
+      <div>
+        <h2>{title}</h2>
+        <p>{text}</p>
+      </div>
+      <div class="actions on-dark">
+        <a class="btn btn-primary btn-lg" href="/get-a-quote/">Get a free quote <Icon name="arrow" /></a>
+        <a class="btn btn-ghost btn-lg" href={`tel:${site.phoneHref}`}><Icon name="phone" /> {site.phone}</a>
+      </div>
+    </div>
+  </div>
+</section>

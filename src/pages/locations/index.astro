@@ -1,0 +1,38 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import Icon from '../../components/Icon.astro';
+import { locations } from '../../data/locations';
+import { breadcrumbSchema } from '../../lib/seo';
+const crumbs = [{ name: 'Home', href: '/' }, { name: 'Locations', href: '/locations/' }];
+const nations = ['England', 'Scotland', 'Wales'] as const;
+---
+<BaseLayout
+  title="Removals Across the UK | Local Moving Company Locations"
+  description="We move people in London, Manchester, Birmingham, Leeds, Liverpool, Bristol, Sheffield, Newcastle, Nottingham, Glasgow, Edinburgh and Cardiff. Find your city."
+  schema={[breadcrumbSchema(crumbs)]}
+>
+  <PageHero eyebrow="Locations" h1="Removals in cities across the UK" lead="Every city has its own streets, parking rules and property types. Choose yours to see how we plan a move there." crumbs={crumbs} />
+  <section class="section">
+    <div class="container">
+      {nations.map((n) => (
+        <div class="mb-0" style="margin-bottom:3rem">
+          <h2>{n}</h2>
+          <div class="grid cols-3">
+            {locations.filter((l) => l.nation === n).map((l) => (
+              <a class="card" href={`/locations/removals-${l.slug}/`}>
+                <div class="icon-box"><Icon name="pin" /></div>
+                <h3>Removals {l.name}</h3>
+                <p>{l.areas.slice(0, 4).join(', ')} and more.</p>
+                <span class="more">View {l.name} <Icon name="arrow" /></span>
+              </a>
+            ))}
+          </div>
+        </div>
+      ))}
+      <p class="notice">Do not see your town? We cover many areas around these cities and run routes between them. <a href="/contact/">Ask us</a> or <a href="/get-a-quote/">request a quote</a> with your postcodes.</p>
+    </div>
+  </section>
+  <CtaBand />
+</BaseLayout>

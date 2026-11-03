@@ -1,0 +1,70 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { site, abs } from '../data/site';
+import { businessSchema, websiteSchema } from '../lib/seo';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Path or absolute URL of a 1200x630 social image */
+  image?: string;
+  imageAlt?: string;
+  noindex?: boolean;
+  type?: 'website' | 'article';
+  publishedAt?: Date;
+  updatedAt?: Date;
+  /** Extra JSON-LD objects for this page */
+  schema?: object[];
+}
+const { title, description, image = '/og-default.png', imageAlt, noindex = false, type = 'website', publishedAt, updatedAt, schema = [] } = Astro.props;
+
+// Append the brand only if it keeps the title within ~60 characters
+const brandSuffix = ` | ${site.name}`;
+const fullTitle = Astro.url.pathname === '/' ? title : title.length + brandSuffix.length <= 62 ? title + brandSuffix : title;
+const canonical = abs(Astro.url.pathname);
+const ogImage = image.startsWith('http') ? image : abs(image);
+const jsonLd = [businessSchema(), websiteSchema(), ...schema];
+---
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large, max-snippet:-1'} />
+    <meta name="theme-color" content="#0c1f3d" />
+    <meta name="format-detection" content="telephone=yes" />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="alternate" type="application/rss+xml" title={`${site.name} blog`} href="/rss.xml" />
+
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:locale" content="en_GB" />
+    <meta property="og:type" content={type} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    {imageAlt && <meta property="og:image:alt" content={imageAlt} />}
+    {type === 'article' && publishedAt && <meta property="article:published_time" content={publishedAt.toISOString()} />}
+    {type === 'article' && (updatedAt || publishedAt) && <meta property="article:modified_time" content={(updatedAt ?? publishedAt)!.toISOString()} />}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    {jsonLd.map((s) => <script type="application/ld+json" set:html={JSON.stringify(s)} />)}
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <Header />
+    <main id="main"><slot /></main>
+    <Footer />
+  </body>
+</html>

@@ -1,0 +1,31 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { routes } from '../../data/routes';
+import { breadcrumbSchema } from '../../lib/seo';
+const crumbs = [{ name: 'Home', href: '/' }, { name: 'Routes', href: '/routes/' }];
+---
+<BaseLayout
+  title="City-to-City Removals UK | Long-Distance Moving Routes"
+  description="Long-distance removals between UK cities: London to Manchester, Birmingham, Bristol, Leeds, Edinburgh and more. Distances, drive times and fixed-price quotes."
+  schema={[breadcrumbSchema(crumbs)]}
+>
+  <PageHero eyebrow="Routes" h1="City-to-city removals across the UK" lead="Dedicated, scheduled long-distance moves between UK cities, with realistic drive times and a clear delivery plan." crumbs={crumbs} />
+  <section class="section">
+    <div class="container">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th scope="col">Route</th><th scope="col">Distance</th><th scope="col">Drive time</th><th scope="col">Roads</th><th scope="col">Typical plan</th></tr></thead>
+          <tbody>
+            {routes.map((r) => (
+              <tr><td><a href={`/routes/${r.slug}/`}>{r.from} → {r.to}</a></td><td>~{r.miles} miles</td><td>{r.drive}</td><td>{r.roads}</td><td>{r.plan}</td></tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-2 notice">Distances are approximate road miles and drive times exclude traffic and breaks. Every route is also available in reverse, and we cover many more city pairs. <a href="/get-a-quote/">Ask for yours</a>.</p>
+    </div>
+  </section>
+  <CtaBand title="Moving between cities?" text="Tell us where you are going and when. We will confirm the route plan and a fixed price." />
+</BaseLayout>

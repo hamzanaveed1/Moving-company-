@@ -1,0 +1,97 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import FaqList from '../../components/FaqList.astro';
+import QuoteAside from '../../components/QuoteAside.astro';
+import PostCard from '../../components/PostCard.astro';
+import Icon from '../../components/Icon.astro';
+import { services } from '../../data/services';
+import type { Service } from '../../data/services';
+import { locations } from '../../data/locations';
+import { abs } from '../../data/site';
+import { breadcrumbSchema, faqSchema } from '../../lib/seo';
+
+export function getStaticPaths() {
+  return services.map((s) => ({ params: { slug: s.slug }, props: { service: s } }));
+}
+const { service: s } = Astro.props as { service: Service };
+const crumbs = [{ name: 'Home', href: '/' }, { name: 'Services', href: '/services/' }, { name: s.name, href: `/services/${s.slug}/` }];
+const posts = (await getCollection('blog')).filter((p) => s.relatedPosts.includes(p.id));
+const others = services.filter((x) => x.slug !== s.slug).slice(0, 4);
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: s.name,
+  serviceType: s.name,
+  description: s.description,
+  url: abs(`/services/${s.slug}/`),
+  provider: { '@id': abs('/#business') },
+  areaServed: { '@type': 'Country', name: 'United Kingdom' },
+};
+---
+<BaseLayout title={s.title} description={s.description} schema={[serviceSchema, breadcrumbSchema(crumbs), faqSchema(s.faqs)]}>
+  <PageHero eyebrow={s.name} h1={s.h1} lead={s.summary} crumbs={crumbs} />
+
+  <section class="section">
+    <div class="container quote-wrap">
+      <div class="prose">
+        {s.intro.map((p) => <p>{p}</p>)}
+        <h2>What is included</h2>
+        <ul class="ticks" style="list-style:none;padding:0">
+          {s.included.map((i) => <li><Icon name="tick" /><span>{i}</span></li>)}
+        </ul>
+        <h2>Who this is best for</h2>
+        <ul>{s.bestFor.map((b) => <li>{b}</li>)}</ul>
+        <h2>Tips from our crews</h2>
+        <ul>{s.tips.map((t) => <li>{t}</li>)}</ul>
+      </div>
+      <QuoteAside title={`Quote for ${s.name.toLowerCase()}`} />
+    </div>
+  </section>
+
+  <section class="section dark">
+    <div class="container">
+      <div class="section-head"><span class="eyebrow">The process</span><h2>How a {s.name.toLowerCase()} job works</h2></div>
+      <ol class="steps">{s.process.map((p) => <li><h3>{p.title}</h3><p>{p.text}</p></li>)}</ol>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head"><span class="eyebrow">Where we work</span><h2>{s.name} in your city</h2></div>
+      <ul class="pills">
+        {locations.map((l) => <li><a class="pill" href={`/locations/removals-${l.slug}/`}>{l.name}</a></li>)}
+      </ul>
+    </div>
+  </section>
+
+  {posts.length > 0 && (
+    <section class="section alt">
+      <div class="container">
+        <div class="section-head"><span class="eyebrow">Guides</span><h2>Helpful reading before you book</h2></div>
+        <div class="grid cols-3">{posts.map((p) => <PostCard post={p} />)}</div>
+      </div>
+    </section>
+  )}
+
+  <section class="section">
+    <div class="container narrow">
+      <div class="section-head center"><span class="eyebrow">FAQs</span><h2>{s.name}: common questions</h2></div>
+      <FaqList faqs={s.faqs} />
+    </div>
+  </section>
+
+  <section class="section tight">
+    <div class="container">
+      <h2 style="font-size:1.4rem">Other services</h2>
+      <div class="grid cols-4">
+        {others.map((o) => (
+          <a class="card" href={`/services/${o.slug}/`}><div class="icon-box"><Icon name={o.icon} /></div><h3>{o.name}</h3><span class="more">View <Icon name="arrow" /></span></a>
+        ))}
+      </div>
+    </div>
+  </section>
+  <CtaBand />
+</BaseLayout>
