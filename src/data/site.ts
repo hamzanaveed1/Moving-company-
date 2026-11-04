@@ -9,7 +9,7 @@ const WEB3FORMS_ENDPOINT = 'https://api.web3forms.com/submit';
 
 export const site = {
   name: 'MovingPal',
-  legalName: 'MovingPal', // OWNER: change to your registered company name once incorporated, e.g. 'MovingPal Removals Ltd'
+  legalName: 'MovingPal', // OWNER: change to your registered compny name once incorporated, e.g. 'MovingPal Removals Ltd'
   tagline: 'Stress-free removals across the UK',
   url: (import.meta.env.SITE as string | undefined) || 'https://movingpal.co.uk',
   locale: 'en-GB',
@@ -52,7 +52,7 @@ export const site = {
 
   // Google Search Console, "HTML tag" verification: paste ONLY the content value of the meta tag Google gives you
   // (the long code after content=). Not needed if you verify with the DNS record instead.
-  googleSiteVerification: '',
+    googleSiteVerification: 'QfvY43LZ-1t96KzukvvOi5ttOYQdAmoKC5855Jz0KQg',
 
   // Form endpoint (set in your host's env vars)
   // If src/data/form-provider.json has a Web3Forms key, every form posts straight to Web3Forms with it.
