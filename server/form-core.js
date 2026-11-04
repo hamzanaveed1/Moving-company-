@@ -98,7 +98,7 @@ export function createFormHandler(def) {
     if (errors.length) return json({ ok: false, error: 'invalid', fields: errors }, 400);
 
     // 6. Deliver
-    if (!env.RESEND_API_KEY) return json({ ok: false, error: 'not_configured' }, 503);
+    if (!env.RESEND_API_KEY) { console.error('[form] Not sent: RESEND_API_KEY is not set in the environment variables.'); return json({ ok: false, error: 'not_configured' }, 503); }
     const to = env.TO_EMAIL || DEFAULT_TO;
     const from = env.FROM_EMAIL || DEFAULT_FROM;
     let res;
@@ -109,10 +109,17 @@ export function createFormHandler(def) {
         // Plain text only: customer-supplied content is never interpreted as HTML.
         body: JSON.stringify({ from, to: [to], reply_to: data[def.replyTo ?? 'email'], subject: def.subject(data).replace(/[\r\n]+/g, ' '), text: def.text(data) }),
       });
-    } catch {
+    } catch (err) {
+      console.error('[form] Not sent: could not reach Resend.', err?.message || '');
       return json({ ok: false, error: 'upstream' }, 502);
     }
-    if (!res.ok) return json({ ok: false, error: 'upstream' }, 502);
+    if (!res.ok) {
+      // Log Resend's reason (for example "domain is not verified") so it shows in the host's logs. No customer data is logged.
+      let reason = '';
+      try { reason = (await res.text()).slice(0, 300); } catch { /* ignore */ }
+      console.error(`[form] Not sent: Resend rejected the email (HTTP ${res.status}). ${reason}`);
+      return json({ ok: false, error: 'upstream' }, 502);
+    }
     return json({ ok: true });
   }
 

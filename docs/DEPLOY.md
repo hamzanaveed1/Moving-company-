@@ -25,6 +25,11 @@ The build detects Vercel and points the quote form at `/api/quote` and the conta
 1. Create a Resend account, verify `movingpal.co.uk` (it gives you DNS records to add), create an API key.
 2. Redeploy, then **submit a real test quote and a real contact message** and confirm both emails arrive. The handler is covered by unit tests and Vercel's own CLI built the function successfully, but it has not been exercised against live Vercel and Resend.
 
+### Test the forms before your domain is connected
+Resend lets you test without verifying a domain. Sign up at resend.com with the email address that should receive the test messages, create an API key, then set `RESEND_API_KEY`, `FROM_EMAIL` = `MovingPal <onboarding@resend.dev>` and `TO_EMAIL` = that same sign-up address. Redeploy and submit both forms. This test sender only delivers to the account owner's own address. For launch, verify `movingpal.co.uk` in Resend, delete `FROM_EMAIL` and `TO_EMAIL`, and redeploy: messages then go to `customersupport@movingpal.co.uk`.
+
+If a form shows "we could not send", open Vercel > your project > **Logs** and look at the `/api/quote` or `/api/contact` request. The log line says why: the key is missing, or Resend's own reason (for example, domain not verified).
+
 ## 4. Domain (movingpal.co.uk)
 1. Register `movingpal.co.uk` at any registrar.
 2. Vercel > **Settings > Domains**: add `movingpal.co.uk` and `www.movingpal.co.uk`. Vercel shows the exact DNS records to create at your registrar (typically an A record for the apex and a CNAME for `www`). Use the values Vercel displays.
