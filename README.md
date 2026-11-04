@@ -93,6 +93,6 @@ src/styles/      global.css design system
 scripts/         image generator
 ```
 
-## Analytics (Vercel Web Analytics)
+## Analytics (Vercel Web Analytics and Speed Insights)
 
-The site loads `@vercel/analytics` only on Vercel builds (`VERCEL=1`), from our own bundle, so the strict CSP is unchanged. It is cookieless and skips visitors who send Do Not Track. Turn it on once in the Vercel dashboard: Project > Analytics > Enable. Cookies and privacy pages already describe it.
+The site loads `@vercel/analytics` and `@vercel/speed-insights` only on Vercel builds (`VERCEL=1`), from our own bundle, so the strict CSP is unchanged. It is cookieless and skips visitors who send Do Not Track. Turn them on once in the Vercel dashboard: Project > Analytics > Enable, and Project > Speed Insights > Enable. Cookies and privacy pages already describe it.
