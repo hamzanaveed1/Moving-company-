@@ -1,20 +1,15 @@
 ---
 import { site } from '../data/site';
-// Mark: a road shaped like an "L" that ends in a taped parcel. "Load" (the parcel) + "by" (the route it travels).
-// Same artwork as public/favicon.svg and the social card (see scripts/generate-images.mjs).
+interface Props { light?: boolean }
+const { light = false } = Astro.props; // light = the version for dark backgrounds (footer)
+// Mark: the Loadby parcel-with-forward-arrow. Wordmark: "Load" + "by" in the brand font.
+// Artwork source: scripts/logo-mark.json (rebuilt into public/logo-mark*.svg by `npm run images`).
 const name = site.name; // "Loadby"
 const head = name.slice(0, 4);
 const tail = name.slice(4);
+const src = light ? '/logo-mark-light.svg' : '/logo-mark.svg';
 ---
 <a href="/" class="brand" aria-label={`${name} home`}>
-  <svg viewBox="0 0 96 96" aria-hidden="true" focusable="false">
-    <rect width="96" height="96" rx="24" fill="#0f2747"/>
-    <g transform="translate(-1 1)">
-      <path d="M33 22V51a17 17 0 0 0 17 17H55" fill="none" stroke="#f5a524" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/>
-      <path d="M33 30V51a17 17 0 0 0 17 17H52" fill="none" stroke="#0c1f3d" stroke-opacity=".55" stroke-width="2.2" stroke-dasharray="5 4.5"/>
-      <circle cx="33" cy="22" r="8" fill="#fff4dc"/>
-      <g transform="translate(53 50)"><rect width="30" height="30" rx="7.5" fill="#fff4dc"/><rect x="11.5" width="7" height="30" fill="#f5a524"/></g>
-    </g>
-  </svg>
+  <img class="brand-mark" src={src} width="37" height="41" alt="" decoding="async" />
   <span class="brand-name">{head}<span>{tail}</span></span>
 </a>

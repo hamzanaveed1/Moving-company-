@@ -24,21 +24,28 @@ const C = {
   green: '#22a06b', red: '#e5484d', teal: '#14b8a6',
 };
 
-// ---------- brand mark: a road shaped like an "L", ending in a taped parcel ----------
-// "Load" (the parcel) + "by" (the route it travels). One definition, reused for the favicon, app icons,
-// social card and the vans, so the logo is identical everywhere.
-const markInner = () => `<g transform="translate(-1 1)">
-  <path d="M33 22 V51 a17 17 0 0 0 17 17 H55" fill="none" stroke="${C.amber}" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M33 30 V51 a17 17 0 0 0 17 17 H52" fill="none" stroke="#0c1f3d" stroke-opacity=".55" stroke-width="2.2" stroke-dasharray="5 4.5"/>
-  <circle cx="33" cy="22" r="8" fill="#fff4dc"/>
-  <g transform="translate(53 50)"><rect width="30" height="30" rx="7.5" fill="#fff4dc"/><rect x="11.5" width="7" height="30" fill="${C.amber}"/></g>
-</g>`;
-/** Full badge. `round` = rounded app-icon corners; `border` adds a hairline for dark backgrounds. */
-const markSvg = (size, { round = true, border = false, id = 'mk' } = {}) => `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 96 96">
-<defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1d4a85"/><stop offset="1" stop-color="#0a1a33"/></linearGradient></defs>
-<rect width="96" height="96" rx="${round ? 24 : 0}" fill="url(#${id})"/>${border ? '<rect x=".75" y=".75" width="94.5" height="94.5" rx="23.5" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="1.5"/>' : ''}
-${markInner()}
-</svg>`;
+// ---------- brand mark: the Loadby logo ----------
+// The logo is a vector trace of the approved design (scripts/logo-mark.json: tight viewBox, silhouette clip
+// path and three flat colour layers). One definition drives every output below (site files, favicon, app icons,
+// social card, vans), so the logo is identical everywhere.
+const MARK = JSON.parse(readFileSync('scripts/logo-mark.json', 'utf8'));
+const MARK_COLORS = { light: '#F5A524', dark: '#DA8418', navy: '#0C1F3D' };
+const MARK_ASPECT = MARK.viewBox[2] / MARK.viewBox[3];
+let markUid = 0;
+const markBody = ({ onDark = false } = {}) => {
+  const id = `lbm${markUid++}`;
+  const layers = MARK.layers.map((l) => `<path d="${l.d}" fill="${l.role === 'navy' && onDark ? '#FFF4DC' : MARK_COLORS[l.role]}" fill-rule="evenodd"/>`).join('');
+  return `<defs><clipPath id="${id}"><path d="${MARK.clip}" clip-rule="evenodd"/></clipPath></defs><g clip-path="url(#${id})">${layers}</g>`;
+};
+/** Mark as a nested <svg> placed at (x, y) with the given height (width follows the aspect ratio). */
+const markEl = (x, y, h, opts) => `<svg x="${x}" y="${y}" width="${(h * MARK_ASPECT).toFixed(2)}" height="${h}" viewBox="${MARK.viewBox.join(' ')}">${markBody(opts)}</svg>`;
+/** Standalone SVG document of the mark (used for public/logo-mark*.svg). */
+const markDoc = (h, opts) => `<svg xmlns="http://www.w3.org/2000/svg" width="${(h * MARK_ASPECT).toFixed(1)}" height="${h}" viewBox="${MARK.viewBox.join(' ')}">${markBody(opts)}</svg>`;
+/** Square tile: mark centred on a white rounded square (favicon, app icons, schema logo). */
+const markTile = (size, { round = 0.22, scale = 0.72 } = {}) => {
+  const h = size * scale;
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}"><rect width="${size}" height="${size}" rx="${size * round}" fill="#ffffff"/>${markEl(((size - h * MARK_ASPECT) / 2).toFixed(2), ((size - h) / 2).toFixed(2), h)}</svg>`;
+};
 
 // Outlined text (real Manrope glyph shapes as vector paths, so the social card needs no installed fonts)
 const manrope = (w) => { const b = readFileSync(`node_modules/@fontsource/manrope/files/manrope-latin-${w}-normal.woff`); return opentype.parse(b.buffer.slice(b.byteOffset, b.byteOffset + b.byteLength)); };
@@ -156,8 +163,7 @@ const van = (x, y, s = 1, accent = C.amber) => `
     <rect x="0" y="-178" width="262" height="146" rx="16" fill="#fff"/>
     <rect x="0" y="-62" width="262" height="30" fill="${C.navy2}"/>
     <rect x="0" y="-92" width="262" height="12" fill="${accent}"/>
-    <rect x="30" y="-160" width="54" height="54" rx="12" fill="${C.navy}"/>
-    <g transform="translate(30 -160) scale(.5625)">${markInner()}</g>
+    ${markEl(32, -166, 62)}
     <path d="M98 -140 h120" stroke="${C.navy2}" stroke-width="12" stroke-linecap="round"/>
     <path d="M98 -118 h80" stroke="#cfd8e6" stroke-width="10" stroke-linecap="round"/>
     <path d="M262 -150 L322 -150 Q346 -148 358 -118 L378 -84 Q386 -70 386 -50 L386 -32 L262 -32 Z" fill="#fff"/>
@@ -177,8 +183,7 @@ const lorry = (x, y, s = 1) => `
     <rect x="0" y="-250" width="430" height="212" rx="16" fill="#fff"/>
     <rect x="0" y="-92" width="430" height="54" fill="${C.navy2}"/>
     <rect x="0" y="-132" width="430" height="14" fill="${C.amber}"/>
-    <rect x="44" y="-226" width="76" height="76" rx="16" fill="${C.navy}"/>
-    <g transform="translate(44 -226) scale(.7917)">${markInner()}</g>
+    ${markEl(46, -236, 86)}
     <path d="M150 -204 h200" stroke="${C.navy2}" stroke-width="16" stroke-linecap="round"/>
     <path d="M150 -176 h140" stroke="#cfd8e6" stroke-width="12" stroke-linecap="round"/>
     <path d="M430 -210 L500 -210 Q526 -208 540 -170 L560 -118 Q568 -100 568 -78 L568 -38 L430 -38 Z" fill="#fff"/>
@@ -368,10 +373,8 @@ scenes.og = (W = 1200, H = 630) => frame(W, H, `
   <rect x="0" y="520" width="${W}" height="110" fill="#14233c"/>
   ${road(W, 540, 80)}
   ${van(660, 610, 1.1)}
-  <g transform="translate(70 80)"><svg width="88" height="88" viewBox="0 0 96 96">
-    <defs><linearGradient id="ogm" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1d4a85"/><stop offset="1" stop-color="#0a1a33"/></linearGradient></defs>
-    <rect width="96" height="96" rx="24" fill="url(#ogm)"/><rect x=".75" y=".75" width="94.5" height="94.5" rx="23.5" fill="none" stroke="#fff" stroke-opacity=".3" stroke-width="1.5"/>${markInner()}</svg></g>
-  ${outline('Load', 180, 150, 58, '#ffffff')}${outline('by', 180 + textWidth('Load', 58), 150, 58, C.amber)}
+  ${markEl(70, 62, 100, { onDark: true })}
+  ${outline('Load', 184, 148, 58, '#ffffff')}${outline('by', 184 + textWidth('Load', 58), 148, 58, C.amber)}
   ${outline('Stress-free removals', 70, 272, 64, '#ffffff')}
   ${outline('across the UK', 70, 346, 64, C.amber)}
   ${outline('House · Flat · Office · City-to-city', 70, 410, 28, '#c9d6ee', 600, -0.01)}`);
@@ -394,8 +397,10 @@ for (const [slug, scene] of blog) {
 await sharp(Buffer.from(scenes.hero(1200, 1000))).webp({ quality: 90, effort: 5 }).toFile(`${OUT_IMG}/hero.webp`);
 await sharp(Buffer.from(scenes.og())).png().toFile('public/og-default.png');
 
-// Logo mark (SVG + PNG for schema) and favicon / app icons
-writeFileSync('public/favicon.svg', markSvg(96, { id: 'fav' }));
-await sharp(Buffer.from(markSvg(512, { id: 'lg' }))).png().toFile('public/logo.png');
-await sharp(Buffer.from(markSvg(180, { round: false, id: 'ap' }))).png().toFile('public/apple-touch-icon.png'); // iOS applies its own rounding
+// Logo files used by the website (public/) and by search engines
+writeFileSync('public/logo-mark.svg', markDoc(120));
+writeFileSync('public/logo-mark-light.svg', markDoc(120, { onDark: true })); // for dark backgrounds (footer)
+writeFileSync('public/favicon.svg', markTile(96));
+await sharp(Buffer.from(markTile(512, { round: 0, scale: 0.7 }))).png().toFile('public/logo.png'); // schema.org logo
+await sharp(Buffer.from(markTile(180, { round: 0, scale: 0.62 }))).png().toFile('public/apple-touch-icon.png'); // iOS applies its own rounding
 console.log('done');

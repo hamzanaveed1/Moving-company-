@@ -8,6 +8,7 @@ import { breadcrumbSchema } from '../../lib/seo';
 const crumbs = [{ name: 'Home', href: '/' }, { name: 'Get a quote', href: '/get-a-quote/' }];
 ---
 <BaseLayout
+  bodyClass="no-mobile-bar"
   title="Get a Free Removals Quote | Fixed-Price, No Obligation"
   description="Get a free, fixed-price removals quote in about two minutes. Tell us your postcodes, property size and date and we will send a clear written quote."
   schema={[breadcrumbSchema(crumbs)]}

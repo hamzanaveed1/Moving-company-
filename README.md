@@ -43,7 +43,7 @@ Needs Node 22+.
 6. **Legal pages**: privacy, terms and cookies are templates. Get them reviewed. Add a consent banner before adding GA4 or ad pixels.
 7. **Reviews**: add real reviews to `src/data/reviews.ts`. Review sections and rating schema only appear when it has entries.
 8. **Images**: the blog/hero images are original illustrations (no licensing issues). Swap in real photos by replacing files in `src/assets/blog/` and `src/assets/img/`.
-9. **Logo**: a road shaped like an "L" that ends in a taped parcel ("load" + the route it travels "by"), with a two-tone wordmark. The artwork lives in `src/components/Logo.astro` (header/footer) and `scripts/generate-images.mjs` (favicon, app icons, social card, vans). To use a professionally designed logo later, replace `Logo.astro`, `public/favicon.svg`, `public/logo.png`, `public/apple-touch-icon.png`, then run `npm run images` to refresh the social card.
+9. **Logo**: the approved parcel-with-arrow mark. The original AI-generated image is kept in `docs/brand/logo-source.jpg`; the site uses a clean vector trace of it (`scripts/logo-mark.json`), which `npm run images` turns into `public/logo-mark.svg`, `public/logo-mark-light.svg` (for dark backgrounds), the favicon, app icons, schema logo, social card and the vans in the illustrations. The header and footer use `src/components/Logo.astro` (mark + "Loadby" wordmark in Manrope). To replace the logo, re-trace the new artwork into `scripts/logo-mark.json` and run `npm run images`.
 
 ## Design system
 

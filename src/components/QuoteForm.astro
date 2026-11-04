@@ -2,99 +2,117 @@
 import Icon from './Icon.astro';
 import { site } from '../data/site';
 
-const moveTypes = [
-  ['house', 'House move'],
-  ['flat', 'Flat / apartment'],
-  ['office', 'Office / business'],
-  ['student', 'Student / small move'],
-  ['storage', 'Storage only'],
+// [value (also shown to the customer), icon]
+const moveTypes: [string, string][] = [
+  ['House move', 'home'],
+  ['Flat / apartment', 'building'],
+  ['Office / business', 'office'],
+  ['Student / small move', 'van'],
+  ['Storage only', 'warehouse'],
 ];
-const sizes = [
-  'Studio / a few items', '1 bedroom', '2 bedrooms', '3 bedrooms', '4 bedrooms', '5+ bedrooms', 'Office (small, 1–10 desks)', 'Office (larger)',
-];
+const sizes = ['Studio / a few items', '1 bedroom', '2 bedrooms', '3 bedrooms', '4 bedrooms', '5+ bedrooms', 'Office (small, 1–10 desks)', 'Office (larger)'];
 const access = [
-  'Ground floor / house with easy access',
+  'Ground floor / easy access',
   'Flat with a working lift',
   'Stairs, 1–2 floors (no lift)',
   'Stairs, 3+ floors (no lift)',
   'Not sure',
 ];
-const extras = [
-  ['packing', 'Packing service'],
-  ['materials', 'Boxes and materials'],
-  ['dismantle', 'Dismantle / rebuild furniture'],
-  ['storage', 'Storage'],
-  ['appliances', 'Disconnect appliances'],
-  ['piano', 'Piano / very heavy items'],
-];
+const extras = ['Packing service', 'Boxes and materials', 'Dismantle / rebuild furniture', 'Storage', 'Disconnect appliances', 'Piano / very heavy items'];
+const stepNames = ['Your move', 'Addresses', 'Date & extras', 'Contact'];
 ---
-<form class="form-card" id="quote-form" novalidate data-endpoint={site.formEndpoint} data-key={site.formAccessKey} data-email={site.email} data-brand={site.name}>
-  <ol class="progress" aria-hidden="true">
-    <li class="active"><span>Your move</span></li>
-    <li><span>Addresses</span></li>
-    <li><span>Date & extras</span></li>
-    <li><span>Contact</span></li>
-  </ol>
-
+<form class="form-card qf" id="quote-form" novalidate data-endpoint={site.formEndpoint} data-key={site.formAccessKey} data-email={site.email} data-brand={site.name}>
   <!-- Honeypot: real people never see or fill this -->
   <div class="hp" aria-hidden="true"><label>Website<input type="text" name="website" tabindex="-1" autocomplete="off" /></label></div>
 
+  <!-- Progress -->
+  <div class="qf-progress">
+    <ol class="stepper" aria-label="Progress">
+      {stepNames.map((n, i) => (
+        <li class={i === 0 ? 'active' : ''} aria-current={i === 0 ? 'step' : undefined}>
+          <span class="dot" aria-hidden="true"><b>{i + 1}</b><Icon name="tick" /></span>
+          <span class="lbl">{n}</span>
+        </li>
+      ))}
+    </ol>
+    <p class="step-count" aria-hidden="true"><span data-stepnum>Step 1</span> of 4 · <span data-stepname>Your move</span></p>
+  </div>
+
+  <!-- Step 1 -->
   <section class="step active" data-step="0" aria-labelledby="s0">
-    <h2 id="s0" tabindex="-1">What are you moving?</h2>
+    <div class="step-head">
+      <h2 id="s0" tabindex="-1">What are you moving?</h2>
+      <p>Pick the closest match. You can add details later.</p>
+    </div>
     <fieldset class="field">
-      <legend>Type of move <span class="hint">(required)</span></legend>
-      <div class="choice-grid">
-        {moveTypes.map(([, l]) => (
-          <label class="choice"><input type="radio" name="moveType" value={l} required /><span>{l}</span></label>
+      <legend>Type of move</legend>
+      <div class="opt-grid">
+        {moveTypes.map(([label, icon]) => (
+          <label class="opt"><input type="radio" name="moveType" value={label} required /><span><Icon name={icon} />{label}</span></label>
         ))}
       </div>
       <span class="error-msg" data-err="moveType"></span>
     </fieldset>
-    <div class="field">
-      <label for="size">Property size</label>
-      <select id="size" name="size" required>
-        <option value="">Select size…</option>
-        {sizes.map((s) => <option>{s}</option>)}
-      </select>
+    <fieldset class="field">
+      <legend>Property size</legend>
+      <div class="chips">
+        {sizes.map((s) => (
+          <label class="chip"><input type="radio" name="size" value={s} required /><span>{s}</span></label>
+        ))}
+      </div>
       <span class="error-msg" data-err="size"></span>
-    </div>
+    </fieldset>
   </section>
 
+  <!-- Step 2 -->
   <section class="step" data-step="1" aria-labelledby="s1">
-    <h2 id="s1" tabindex="-1">Where are you moving from and to?</h2>
-    <div class="form-grid">
-      <div class="field">
-        <label for="fromPostcode">Moving from (postcode)</label>
-        <input id="fromPostcode" name="fromPostcode" type="text" autocomplete="postal-code" placeholder="e.g. M1 1AA" required />
-        <span class="error-msg" data-err="fromPostcode"></span>
+    <div class="step-head">
+      <h2 id="s1" tabindex="-1">Where are you moving?</h2>
+      <p>Postcodes and access tell us the crew, van and time we need to plan.</p>
+    </div>
+    <div class="route-cards">
+      <div class="route-card">
+        <div class="route-title"><Icon name="pin" /><strong>Pick-up</strong></div>
+        <div class="field">
+          <label for="fromPostcode">Postcode</label>
+          <input id="fromPostcode" name="fromPostcode" type="text" autocomplete="postal-code" placeholder="e.g. M1 1AA" required />
+          <span class="error-msg" data-err="fromPostcode"></span>
+        </div>
+        <div class="field">
+          <label for="fromAccess">Access</label>
+          <select id="fromAccess" name="fromAccess" required>
+            <option value="">Select…</option>
+            {access.map((a) => <option>{a}</option>)}
+          </select>
+          <span class="error-msg" data-err="fromAccess"></span>
+        </div>
       </div>
-      <div class="field">
-        <label for="toPostcode">Moving to (postcode)</label>
-        <input id="toPostcode" name="toPostcode" type="text" placeholder="e.g. B1 1AA" required />
-        <span class="error-msg" data-err="toPostcode"></span>
-      </div>
-      <div class="field">
-        <label for="fromAccess">Access at pick-up</label>
-        <select id="fromAccess" name="fromAccess" required>
-          <option value="">Select…</option>
-          {access.map((a) => <option>{a}</option>)}
-        </select>
-        <span class="error-msg" data-err="fromAccess"></span>
-      </div>
-      <div class="field">
-        <label for="toAccess">Access at delivery</label>
-        <select id="toAccess" name="toAccess" required>
-          <option value="">Select…</option>
-          {access.map((a) => <option>{a}</option>)}
-        </select>
-        <span class="error-msg" data-err="toAccess"></span>
+      <div class="route-card">
+        <div class="route-title"><Icon name="route" /><strong>Delivery</strong></div>
+        <div class="field">
+          <label for="toPostcode">Postcode</label>
+          <input id="toPostcode" name="toPostcode" type="text" placeholder="e.g. B1 1AA" required />
+          <span class="error-msg" data-err="toPostcode"></span>
+        </div>
+        <div class="field">
+          <label for="toAccess">Access</label>
+          <select id="toAccess" name="toAccess" required>
+            <option value="">Select…</option>
+            {access.map((a) => <option>{a}</option>)}
+          </select>
+          <span class="error-msg" data-err="toAccess"></span>
+        </div>
       </div>
     </div>
-    <p class="form-note">Parking close to the door? Long carries or restricted streets change the crew and time we plan, so add details in the notes on the next step.</p>
+    <p class="form-note">Long carries, narrow streets and parking limits change what we plan. Add anything like that in the notes on the next step.</p>
   </section>
 
+  <!-- Step 3 -->
   <section class="step" data-step="2" aria-labelledby="s2">
-    <h2 id="s2" tabindex="-1">When, and what else do you need?</h2>
+    <div class="step-head">
+      <h2 id="s2" tabindex="-1">When, and what else?</h2>
+      <p>A flexible date can make your move easier to schedule.</p>
+    </div>
     <div class="form-grid">
       <div class="field">
         <label for="moveDate">Preferred moving date</label>
@@ -103,27 +121,39 @@ const extras = [
       </div>
       <fieldset class="field">
         <legend>Is your date flexible?</legend>
-        <div class="choice-grid">
-          <label class="choice"><input type="radio" name="flexible" value="Fixed date" checked /><span>Fixed date</span></label>
-          <label class="choice"><input type="radio" name="flexible" value="± 1–3 days" /><span>± 1–3 days</span></label>
-          <label class="choice"><input type="radio" name="flexible" value="Very flexible" /><span>Very flexible</span></label>
+        <div class="segmented">
+          <label><input type="radio" name="flexible" value="Fixed date" checked /><span>Fixed</span></label>
+          <label><input type="radio" name="flexible" value="± 1–3 days" /><span>± 1–3 days</span></label>
+          <label><input type="radio" name="flexible" value="Very flexible" /><span>Flexible</span></label>
         </div>
       </fieldset>
     </div>
     <fieldset class="field">
-      <legend>Extras <span class="hint">(optional)</span></legend>
-      <div class="choice-grid">
-        {extras.map(([, l]) => <label class="choice"><input type="checkbox" name="extras" value={l} /><span>{l}</span></label>)}
+      <legend>Extras <span class="hint">(optional, tick any)</span></legend>
+      <div class="chips">
+        {extras.map((l) => (
+          <label class="chip"><input type="checkbox" name="extras" value={l} /><span>{l}</span></label>
+        ))}
       </div>
     </fieldset>
     <div class="field">
       <label for="notes">Anything we should know? <span class="hint">(optional)</span></label>
-      <textarea id="notes" name="notes" placeholder="Parking restrictions, large items, lift booking, chain details…"></textarea>
+      <textarea id="notes" name="notes" rows="3" placeholder="Parking restrictions, large items, lift booking, chain details…"></textarea>
     </div>
   </section>
 
+  <!-- Step 4 -->
   <section class="step" data-step="3" aria-labelledby="s3">
-    <h2 id="s3" tabindex="-1">Where should we send your quote?</h2>
+    <div class="step-head">
+      <h2 id="s3" tabindex="-1">Where should we send your quote?</h2>
+      <p>We will review your move and reply with a written fixed price.</p>
+    </div>
+    <dl class="summary" aria-label="Your move so far">
+      <div><dt>Move</dt><dd data-sum="type">–</dd></div>
+      <div><dt>Size</dt><dd data-sum="size">–</dd></div>
+      <div><dt>Route</dt><dd data-sum="route">–</dd></div>
+      <div><dt>Date</dt><dd data-sum="date">–</dd></div>
+    </dl>
     <div class="form-grid">
       <div class="field">
         <label for="name">Full name</label>
@@ -142,25 +172,26 @@ const extras = [
       </div>
       <fieldset class="field full">
         <legend>Best time for a call</legend>
-        <div class="choice-grid">
-          <label class="choice"><input type="radio" name="callTime" value="Morning" /><span>Morning</span></label>
-          <label class="choice"><input type="radio" name="callTime" value="Afternoon" /><span>Afternoon</span></label>
-          <label class="choice"><input type="radio" name="callTime" value="Evening" /><span>Evening</span></label>
-          <label class="choice"><input type="radio" name="callTime" value="Email only" /><span>Email only</span></label>
+        <div class="chips">
+          {['Morning', 'Afternoon', 'Evening', 'Email only'].map((t) => (
+            <label class="chip"><input type="radio" name="callTime" value={t} /><span>{t}</span></label>
+          ))}
         </div>
       </fieldset>
       <div class="field full">
-        <label class="choice" style="display:block"><input type="checkbox" name="consent" required /><span><span>I agree to be contacted about my quote, as set out in the <a href="/privacy-policy/" target="_blank" rel="noopener">privacy policy</a>.</span></span></label>
+        <label class="consent"><input type="checkbox" name="consent" required /><span>I agree to be contacted about my quote, as set out in the <a href="/privacy-policy/" target="_blank" rel="noopener">privacy policy</a>.</span></label>
         <span class="error-msg" data-err="consent"></span>
       </div>
     </div>
   </section>
 
-  <div class="form-nav">
-    <button type="button" class="btn btn-ghost" data-back hidden>← Back</button>
-    <button type="button" class="btn btn-primary btn-lg" data-next style="margin-left:auto">Continue <Icon name="arrow" /></button>
-    <button type="submit" class="btn btn-primary btn-lg" data-submit hidden style="margin-left:auto">Get my free quote <Icon name="arrow" /></button>
+  <!-- Actions -->
+  <div class="qf-actions">
+    <button type="button" class="btn btn-ghost" data-back hidden><Icon name="arrow" class="flip" /> Back</button>
+    <button type="button" class="btn btn-primary btn-lg" data-next>Continue <Icon name="arrow" /></button>
+    <button type="submit" class="btn btn-primary btn-lg" data-submit hidden>Get my free quote <Icon name="arrow" /></button>
   </div>
+  <p class="qf-assure"><Icon name="lock" /> Free, no obligation. We only use your details to prepare your quote.</p>
   <div class="form-status" role="status" aria-live="polite" data-status></div>
 </form>
 
@@ -168,11 +199,14 @@ const extras = [
   const form = document.getElementById('quote-form') as HTMLFormElement | null;
   if (form) {
     const steps = [...form.querySelectorAll<HTMLElement>('.step')];
-    const bars = [...form.querySelectorAll<HTMLElement>('.progress li')];
+    const items = [...form.querySelectorAll<HTMLElement>('.stepper li')];
     const next = form.querySelector<HTMLButtonElement>('[data-next]')!;
     const back = form.querySelector<HTMLButtonElement>('[data-back]')!;
     const submit = form.querySelector<HTMLButtonElement>('[data-submit]')!;
     const status = form.querySelector<HTMLElement>('[data-status]')!;
+    const stepNum = form.querySelector<HTMLElement>('[data-stepnum]')!;
+    const stepName = form.querySelector<HTMLElement>('[data-stepname]')!;
+    const names = items.map((li) => li.querySelector('.lbl')!.textContent!);
     const openedAt = Date.now();
     let current = 0;
 
@@ -207,8 +241,8 @@ const extras = [
 
     const postcode = /^[A-Za-z]{1,2}\d[A-Za-z\d]?(\s*\d[A-Za-z]{2})?$/;
     const rules: Record<string, (v: string, f: HTMLFormElement) => string> = {
-      moveType: (_v, f) => (f.querySelector('input[name=moveType]:checked') ? '' : 'Please choose a type of move.'),
-      size: (v) => (v ? '' : 'Please select the size.'),
+      moveType: (v) => (v ? '' : 'Please choose a type of move.'),
+      size: (v) => (v ? '' : 'Please choose the size.'),
       fromPostcode: (v) => (postcode.test(v.trim()) ? '' : 'Enter a UK postcode, e.g. M1 1AA.'),
       toPostcode: (v) => (postcode.test(v.trim()) ? '' : 'Enter a UK postcode, e.g. B1 1AA.'),
       fromAccess: (v) => (v ? '' : 'Please select an option.'),
@@ -231,19 +265,50 @@ const extras = [
         span.textContent = msg;
         const input = el instanceof RadioNodeList ? (el[0] as HTMLElement) : (el as HTMLElement);
         input?.setAttribute('aria-invalid', msg ? 'true' : 'false');
+        input?.closest('.field, .route-card')?.classList.toggle('has-error', !!msg);
         if (msg) { ok = false; firstBad ??= input; }
       });
       (firstBad as HTMLElement | null)?.focus();
       return ok;
     };
 
+    // Clear an error as soon as the customer fixes the field
+    form.addEventListener('input', (e) => {
+      const t = e.target as HTMLInputElement;
+      if (!t.name || !rules[t.name]) return;
+      const span = form.querySelector<HTMLElement>(`[data-err="${t.name}"]`);
+      if (span?.textContent && !rules[t.name](t.type === 'radio' ? (form.elements.namedItem(t.name) as RadioNodeList).value : t.value, form)) {
+        span.textContent = '';
+        t.setAttribute('aria-invalid', 'false');
+        t.closest('.field, .route-card')?.classList.remove('has-error');
+      }
+    });
+
+    const fmtDate = (v: string) => (v ? new Date(v + 'T12:00:00').toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'long', year: 'numeric' }) : '–');
+    const fillSummary = () => {
+      const g = (n: string) => ((form.elements.namedItem(n) as HTMLInputElement | RadioNodeList)?.value ?? '') || '–';
+      const put = (k: string, v: string) => { const el = form.querySelector<HTMLElement>(`[data-sum="${k}"]`); if (el) el.textContent = v; };
+      put('type', g('moveType'));
+      put('size', g('size'));
+      put('route', `${g('fromPostcode').toUpperCase()} → ${g('toPostcode').toUpperCase()}`);
+      put('date', fmtDate((form.elements.namedItem('moveDate') as HTMLInputElement).value));
+    };
+
     const show = (i: number) => {
       current = i;
       steps.forEach((s, n) => s.classList.toggle('active', n === i));
-      bars.forEach((b, n) => { b.classList.toggle('active', n === i); b.classList.toggle('done', n < i); });
+      items.forEach((li, n) => {
+        li.classList.toggle('active', n === i);
+        li.classList.toggle('done', n < i);
+        if (n === i) li.setAttribute('aria-current', 'step'); else li.removeAttribute('aria-current');
+      });
+      stepNum.textContent = `Step ${i + 1}`;
+      stepName.textContent = names[i];
       back.hidden = i === 0;
       next.hidden = i === steps.length - 1;
       submit.hidden = i !== steps.length - 1;
+      if (i === steps.length - 1) fillSummary();
+      status.className = 'form-status';
       steps[i].querySelector<HTMLElement>('h2')?.focus({ preventScroll: true });
       form.scrollIntoView({ behavior: 'smooth', block: 'start' });
     };
@@ -251,7 +316,8 @@ const extras = [
     next.addEventListener('click', () => { if (validateStep(current)) show(current + 1); });
     back.addEventListener('click', () => show(current - 1));
     form.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' && (e.target as HTMLElement).tagName === 'INPUT' && (e.target as HTMLInputElement).type !== 'checkbox') {
+      const t = e.target as HTMLInputElement;
+      if (e.key === 'Enter' && t.tagName === 'INPUT' && t.type !== 'checkbox' && t.type !== 'radio') {
         e.preventDefault();
         if (current < steps.length - 1) next.click(); else form.requestSubmit();
       }
