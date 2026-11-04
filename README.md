@@ -52,7 +52,7 @@ Minimal and consistent by rule (documented at the top of `src/styles/global.css`
 ## Motion and interactivity (home page)
 
 - **Hero scene** (`src/components/HeroScene.astro`, `src/styles/home.css`): an inline SVG on one shared 12-second timeline, so van, skyline, road, wheels and route line stay in step. Each loop shows the next real route from `src/data/routes.ts`.
-- **Journey** (`Journey.astro`): the van drives along the steps as you scroll.
+- **Journey** (`Journey.astro`): a cinematic, pinned "how it works". The section sticks to the screen for about two screens of scrolling while a van glides (eased, with turning wheels, speed lines and headlight glow) along a road through the four stops to a "home" marker; phones get a vertical road and a top-down van. Not pinned with reduced motion, on short landscape screens, or without JavaScript.
 - **Route map** (`RouteMap.astro`): generated from the cities and routes in `src/data`; hover or tap a city to highlight its routes.
 - **Accessibility and battery**: a visible Pause button (WCAG 2.2.2), animation stops automatically when off-screen, and with "reduce motion" enabled everything is a still image. Scripts: `src/scripts/home.ts`.
 

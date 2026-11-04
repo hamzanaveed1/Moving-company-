@@ -43,44 +43,86 @@ document.querySelectorAll<HTMLElement>('[data-scene]').forEach((card) => {
 });
 
 /* ------------------------------------------------------------------ Scroll journey */
+// A pinned, cinematic version of "how it works": the section sticks to the screen while you scroll through
+// extra height, and the van's progress follows that scroll, eased so it glides instead of snapping.
 document.querySelectorAll<HTMLElement>('[data-journey]').forEach((j) => {
+  const stage = j.closest<HTMLElement>('[data-stage]');
+  const sticky = stage?.querySelector<HTMLElement>('.journey-sticky') ?? null;
   const steps = [...j.querySelectorAll<HTMLElement>('[data-step]')];
   const dots = steps.map((s) => s.querySelector<HTMLElement>('.jt-dot')!);
   const mobile = window.matchMedia('(max-width: 760px)');
+  let thresholds = steps.map((_, i) => i / steps.length); // where along the road each stop sits (0..1), measured below
+  let lengthPx = 600;
 
-  // Put the road exactly between the centres of the first and last stop, whatever the screen size
+  const canPin = () => !reduce && window.innerHeight >= 520; // short landscape phones: no pinning
+
+  // Put the road exactly through the centres of the stops, and continue past the last one to the "home" marker
   const measure = () => {
+    stage?.classList.toggle('is-pinned', canPin());
     const box = j.getBoundingClientRect();
-    const c = (d: HTMLElement) => { const r = d.getBoundingClientRect(); return { x: r.left + r.width / 2 - box.left, y: r.top + r.height / 2 - box.top }; };
-    const a = c(dots[0]), b = c(dots[dots.length - 1]);
+    const pts = dots.map((d) => { const r = d.getBoundingClientRect(); return { x: r.left + r.width / 2 - box.left, y: r.top + r.height / 2 - box.top }; });
+    const a = pts[0], z = pts[pts.length - 1];
     if (mobile.matches) {
+      const extra = 96, reserve = 56; // the van parks `reserve` px before the end of the road (see home.css)
+      const L = z.y + extra - a.y;
       j.style.setProperty('--tt', `${a.y}px`);
-      j.style.setProperty('--tb', `${box.height - b.y}px`);
+      j.style.setProperty('--tb', `${box.height - (z.y + extra)}px`);
+      thresholds = pts.map((p) => (p.y - a.y) / (L - reserve)); lengthPx = L - reserve;
     } else {
+      const extra = Math.min(120, Math.max(60, box.width - z.x - 30));
+      const reserve = 58; // the van parks `reserve` px before the end of the road (see home.css)
+      const L = z.x + extra - a.x;
       j.style.setProperty('--tl', `${a.x}px`);
-      j.style.setProperty('--tr', `${box.width - b.x}px`);
+      j.style.setProperty('--tr', `${box.width - (z.x + extra)}px`);
+      thresholds = pts.map((p) => (p.x - a.x) / (L - reserve)); lengthPx = L - reserve;
     }
   };
 
-  if (reduce) { measure(); window.addEventListener('resize', measure); return; } // static: full road, every step shown
+  const WHEEL_CIRCUMFERENCE = 36; // px, matches the van graphic
+  const render = (p: number, speed: number) => {
+    j.style.setProperty('--p', p.toFixed(4));
+    j.style.setProperty('--v', speed.toFixed(3));
+    j.style.setProperty('--rot', ((p * lengthPx) / WHEEL_CIRCUMFERENCE * 360).toFixed(1));
+    let last = -1;
+    steps.forEach((s, n) => { const on = p >= thresholds[n] - 0.004; s.classList.toggle('on', on); if (on) last = n; });
+    steps.forEach((s, n) => s.classList.toggle('cur', n === last));
+    j.classList.toggle('is-done', p >= 0.995);
+  };
+
+  if (reduce) { measure(); window.addEventListener('resize', measure); steps.forEach((s) => s.classList.add('on')); render(1, 0); return; } // still: full road, every step shown
 
   j.classList.add('is-live');
-  let queued = false;
-  const update = () => {
-    queued = false;
-    const vh = window.innerHeight;
-    const r = j.getBoundingClientRect();
-    // The van starts when the journey's top reaches 85% of the screen height and arrives after the page has
-    // scrolled a further ~45% of a screen (or most of the journey's own height when it is tall, as on phones).
-    const distance = Math.max(vh * 0.45, r.height * 0.8);
-    const p = clamp((vh * 0.85 - r.top) / distance);
-    j.style.setProperty('--p', p.toFixed(4));
-    steps.forEach((s, n) => s.classList.toggle('on', p >= n / (steps.length - 1) - 0.001));
+
+  // Where should the van be, according to how far the page has scrolled?
+  const target = (): number => {
+    if (canPin() && stage && sticky) {
+      const header = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-h')) || 68;
+      const travel = stage.getBoundingClientRect().height - sticky.offsetHeight;
+      const t = clamp((header - stage.getBoundingClientRect().top) / Math.max(1, travel));
+      return clamp((t - 0.06) / 0.86); // short holds at the start and end so the first and last frames are readable
+    }
+    const vh = window.innerHeight, r = j.getBoundingClientRect();
+    return clamp((vh * 0.85 - r.top) / Math.max(vh * 0.9, r.height * 1.2));
   };
-  const request = () => { if (!queued) { queued = true; requestAnimationFrame(update); } };
-  measure(); update();
-  window.addEventListener('scroll', request, { passive: true });
-  window.addEventListener('resize', () => { measure(); request(); }, { passive: true });
+
+  let cur = 0, goal = 0, prev = 0, raf = 0;
+  const frame = () => {
+    raf = 0;
+    cur += (goal - cur) * 0.075; // ease towards the scroll position: the van glides and lags a little
+    if (Math.abs(goal - cur) < 0.0004) cur = goal;
+    const speed = clamp(Math.abs(cur - prev) * 110); // visible speed lines and headlight only while it is actually moving
+    prev = cur;
+    render(cur, speed);
+    if (cur !== goal) raf = requestAnimationFrame(frame);
+  };
+  const onScroll = () => { goal = target(); if (!raf) raf = requestAnimationFrame(frame); };
+
+  measure();
+  cur = prev = goal = target(); // start where the page already is (e.g. after a reload part-way down)
+  render(cur, 0);
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', () => { measure(); onScroll(); }, { passive: true });
+  if (document.fonts?.ready) document.fonts.ready.then(() => { measure(); render(cur, 0); });
 });
 
 /* ------------------------------------------------------------------ UK route map */
