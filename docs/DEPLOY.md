@@ -25,6 +25,12 @@ The build detects Vercel and points the quote form at `/api/quote` and the conta
 1. Create a Resend account, verify `movingpal.co.uk` (it gives you DNS records to add), create an API key.
 2. Redeploy, then **submit a real test quote and a real contact message** and confirm both emails arrive. The handler is covered by unit tests and Vercel's own CLI built the function successfully, but it has not been exercised against live Vercel and Resend.
 
+### Quickest option: Web3Forms (no Resend, no Vercel settings)
+1. Go to web3forms.com, enter the address that should receive leads (for example `customersupport@movingpal.co.uk`) and copy the access key they email you.
+2. Paste it into `src/data/form-provider.json` as `web3formsAccessKey`.
+3. Run `npm run vercel:config` (it adds Web3Forms to the security policy), commit both files and push. Vercel redeploys.
+4. Submit both forms once to confirm they arrive. Free plan: 250 messages a month. When the key is set the bundled `/api` functions are not used.
+
 ### Test the forms before your domain is connected
 Resend lets you test without verifying a domain. Sign up at resend.com with the email address that should receive the test messages, create an API key, then set `RESEND_API_KEY`, `FROM_EMAIL` = `MovingPal <onboarding@resend.dev>` and `TO_EMAIL` = that same sign-up address. Redeploy and submit both forms. This test sender only delivers to the account owner's own address. For launch, verify `movingpal.co.uk` in Resend, delete `FROM_EMAIL` and `TO_EMAIL`, and redeploy: messages then go to `customersupport@movingpal.co.uk`.
 

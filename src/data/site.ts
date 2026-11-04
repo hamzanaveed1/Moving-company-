@@ -1,7 +1,12 @@
+import formProvider from './form-provider.json';
+
 /**
  * Single source of truth for the business. Edit this file first.
  * Anything left empty ('') is hidden on the site rather than shown as a blank or made-up claim.
  */
+const web3formsKey = String(formProvider.web3formsAccessKey || '').trim();
+const WEB3FORMS_ENDPOINT = 'https://api.web3forms.com/submit';
+
 export const site = {
   name: 'MovingPal',
   legalName: 'MovingPal', // OWNER: change to your registered company name once incorporated, e.g. 'MovingPal Removals Ltd'
@@ -49,8 +54,9 @@ export const site = {
   adsenseSlot: (import.meta.env.PUBLIC_ADSENSE_SLOT as string | undefined) || '',
 
   // Form endpoint (set in your host's env vars)
-  formEndpoint: (import.meta.env.PUBLIC_FORM_ENDPOINT as string | undefined) || '',
-  formAccessKey: (import.meta.env.PUBLIC_FORM_ACCESS_KEY as string | undefined) || '',
+  // If src/data/form-provider.json has a Web3Forms key, every form posts straight to Web3Forms with it.
+  formEndpoint: web3formsKey ? WEB3FORMS_ENDPOINT : (import.meta.env.PUBLIC_FORM_ENDPOINT as string | undefined) || '',
+  formAccessKey: web3formsKey || (import.meta.env.PUBLIC_FORM_ACCESS_KEY as string | undefined) || '',
   // Contact form posts to /api/contact when the bundled functions are in use; otherwise to the external endpoint.
   contactEndpoint: '',
 };

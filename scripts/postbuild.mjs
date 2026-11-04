@@ -20,7 +20,9 @@ const DIST = 'dist';
 if (!mode && !existsSync(DIST)) throw new Error('Run `astro build` first');
 
 const site = (process.env.SITE_URL || 'https://movingpal.co.uk').replace(/\/$/, '');
-const formEndpoint = process.env.PUBLIC_FORM_ENDPOINT || '';
+// A Web3Forms key in src/data/form-provider.json makes the forms post to Web3Forms, so that origin must be allowed.
+const web3formsKey = String(JSON.parse(readFileSync('src/data/form-provider.json', 'utf8')).web3formsAccessKey || '').trim();
+const formEndpoint = web3formsKey ? 'https://api.web3forms.com/submit' : process.env.PUBLIC_FORM_ENDPOINT || '';
 const adsClient = process.env.PUBLIC_ADSENSE_CLIENT || '';
 const securityContact = process.env.SECURITY_CONTACT || 'mailto:customersupport@movingpal.co.uk';
 
