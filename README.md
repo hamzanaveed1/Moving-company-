@@ -51,9 +51,9 @@ Minimal and consistent by rule (documented at the top of `src/styles/global.css`
 
 ## Light and dark mode
 
-- White light theme using the logo's navy; deep-blue dark theme; amber stays the accent in both. A sun/moon button in the header switches, remembers the choice, and (until chosen) follows the visitor's system setting live.
+- White light theme using the logo's navy; dark theme is a graphite ink (not navy) where amber becomes the main accent. A glass layer (frosted panels, amber-glass tags and selections, an ambient glow behind the page) is driven by tokens, subtle in light and richer in dark, with fallbacks for `prefers-reduced-transparency` and browsers without `backdrop-filter`. A sun/moon button in the header switches, remembers the choice, and (until chosen) follows the visitor's system setting live.
 - `public/theme-init.js` applies the theme before first paint (no white flash); `src/scripts/theme.ts` powers the button. Components use semantic tokens (`--bg`, `--surface`, `--heading`, `--sel` ...) defined for both themes at the top of `src/styles/global.css`. To change a colour, edit the token, not the component. The dark token block appears twice on purpose (explicit choice, and system-preference fallback); keep them identical.
-- The hero scene becomes a night scene (moon and stars), the logo swaps to its cream version, and the map and journey recolour automatically.
+- The hero scene becomes a calm dusk (small soft moon, warm horizon, glowing street lamps, the van's headlight beam), the logo swaps to its cream version, and the map and journey recolour automatically.
 - Verified with axe in both themes (0 contrast violations).
 
 ## Motion and interactivity (home page)

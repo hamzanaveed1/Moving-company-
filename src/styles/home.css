@@ -22,7 +22,7 @@
 .scene-card .scene { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 
 /* overlays */
-.scene-route { position: absolute; top: 0.75rem; left: 0.75rem; max-width: calc(100% - 4.5rem); display: inline-flex; align-items: center; gap: 0.4rem; background: var(--glass); backdrop-filter: blur(6px); padding: 0.4rem 0.75rem 0.4rem 0.45rem; border-radius: 999px; font-weight: 700; font-size: 0.84rem; color: var(--heading); box-shadow: var(--shadow-sm); white-space: nowrap; animation: sc-fade var(--T) linear infinite; }
+.scene-route { position: absolute; top: 0.75rem; left: 0.75rem; max-width: calc(100% - 4.5rem); display: inline-flex; align-items: center; gap: 0.4rem; background: var(--glass); -webkit-backdrop-filter: blur(12px) saturate(1.4); backdrop-filter: blur(12px) saturate(1.4); border: 1px solid var(--glass-border); padding: 0.4rem 0.75rem 0.4rem 0.45rem; border-radius: 999px; font-weight: 700; font-size: 0.84rem; color: var(--heading); box-shadow: var(--shadow-sm); white-space: nowrap; animation: sc-fade var(--T) linear infinite; }
 .scene-route svg { width: 15px; height: 15px; color: var(--muted); flex: none; }
 .scene-route .pin { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; font-size: 0.72rem; font-weight: 800; color: var(--navy-950); background: var(--amber-500); flex: none; }
 .scene-route .pin.b { background: var(--green-600); color: #fff; }
@@ -32,7 +32,7 @@
 .scene-pause .i-play { display: none; }
 .scene-pause[aria-pressed='true'] .i-pause { display: none; }
 .scene-pause[aria-pressed='true'] .i-play { display: block; }
-.scene-foot { position: absolute; left: 0.75rem; right: 0.75rem; bottom: 0.75rem; display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; background: rgb(12 31 61 / 0.88); backdrop-filter: blur(8px); color: #e6edf9; padding: 0.55rem 0.55rem 0.55rem 1rem; border-radius: 14px; font-size: 0.85rem; animation: sc-fade var(--T) linear infinite; }
+.scene-foot { position: absolute; left: 0.75rem; right: 0.75rem; bottom: 0.75rem; display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; background: var(--scene-foot); -webkit-backdrop-filter: blur(12px) saturate(1.4); backdrop-filter: blur(12px) saturate(1.4); border: 1px solid rgb(255 255 255 / 0.12); color: #e6edf9; padding: 0.55rem 0.55rem 0.55rem 1rem; border-radius: 14px; font-size: 0.85rem; animation: sc-fade var(--T) linear infinite; }
 .scene-stats { display: inline-flex; gap: 0.6rem; align-items: baseline; flex-wrap: wrap; }
 .scene-stats b { color: #fff; font-weight: 800; }
 .scene-link { display: inline-flex; align-items: center; gap: 0.35rem; background: var(--amber-500); color: var(--navy-950); font-weight: 700; font-size: 0.82rem; text-decoration: none; padding: 0.4rem 0.8rem; border-radius: 999px; white-space: nowrap; transition: background 0.2s; }
@@ -138,7 +138,7 @@
 .journey.is-done .jt-end { background: var(--green-600); border-color: var(--green-600); color: #fff; box-shadow: 0 0 0 7px rgb(28 138 92 / 0.16); }
 
 /* steps the van has reached */
-.journey-steps li.on .jt-dot { background: var(--sel); border-color: var(--sel); color: #fff; box-shadow: 0 0 0 5px var(--ring-soft); }
+.journey-steps li.on .jt-dot { background: var(--sel); border-color: var(--sel); color: var(--sel-ink); box-shadow: 0 0 0 5px var(--ring-soft); }
 .journey-steps li.cur .jt-dot { transform: scale(1.1); }
 .journey-steps li.cur .jt-dot::after { animation: jt-ping 1.8s var(--ease) infinite; }
 .journey-steps li.cur h3 { color: var(--heading); }
@@ -198,24 +198,22 @@
 @media (max-width: 900px) { .network { grid-template-columns: minmax(0, 1fr); } .network .routemap { order: 2; justify-self: stretch; max-width: none; } }
 
 
-/* ---------- Scene theming: day in light mode, night in dark mode (colours come from the theme tokens) ---------- */
+/* ---------- Scene theming: day in light mode, a calm dusk in dark mode (everything is driven by tokens) ---------- */
 .sc-sky-a { stop-color: var(--sc-sky-1); } .sc-sky-b { stop-color: var(--sc-sky-2); } .sc-sky-c { stop-color: var(--sc-sky-3); }
 .sc-sun-glow { stop-color: var(--sc-sun); } .sc-sun-core { fill: var(--sc-sun); }
-.sc-cloud { fill: var(--sc-cloud); }
+.sc-cloud { fill: var(--sc-cloud); opacity: var(--sc-cloud-o); }
 .sc-far-b { fill: var(--sc-far); } .sc-far-b.t { fill: var(--sc-far-2); }
 .sc-near-b { fill: var(--sc-near); }
-.sc-w-on { fill: var(--sc-win-on); } .sc-w-off { fill: var(--sc-win-off); }
+.sc-w-on { fill: var(--sc-win-on); filter: drop-shadow(0 0 2px rgb(255 207 122 / var(--sc-glow))); } .sc-w-off { fill: var(--sc-win-off); }
 .sc-sea-a { stop-color: var(--map-sea-1); } .sc-sea-b { stop-color: var(--map-sea-2); }
-:root[data-theme='dark'] .sc-w-on { filter: drop-shadow(0 0 2px rgb(255 210 122 / 0.8)); }
-:root[data-theme='dark'] .sc-sun-core { filter: drop-shadow(0 0 10px rgb(210 225 255 / 0.7)); }
-
-/* stars only exist at night */
-.sc-stars { opacity: 0; transition: opacity 0.6s; }
-.sc-star { fill: #fff; animation: sc-twinkle 4s ease-in-out infinite; }
-:root[data-theme='dark'] .sc-stars { opacity: 1; }
-@media (prefers-color-scheme: dark) { :root:not([data-theme]) .sc-stars { opacity: 1; } }
-@keyframes sc-twinkle { 0%, 100% { opacity: 0.35; } 50% { opacity: 1; } }
-@media (prefers-reduced-motion: reduce) { .sc-star { animation: none; opacity: 0.8; } }
-.sc-sun > circle:first-child { transition: opacity 0.4s; }
-:root[data-theme='dark'] .sc-sun > circle:first-child { opacity: 0.32; }
-@media (prefers-color-scheme: dark) { :root:not([data-theme]) .sc-sun > circle:first-child { opacity: 0.32; } }
+.sc-ground { fill: var(--sc-ground); } .sc-road { fill: var(--sc-road); } .sc-walk { fill: var(--sc-walk); } .sc-base { fill: var(--sc-base); } .sc-bldg-a { fill: var(--sc-bldg-a); }
+/* day <-> dusk crossfade: --sc-night is 0 by day and 1 at night */
+.sc-sun { opacity: calc(1 - var(--sc-night)); transition: opacity 0.6s; }
+.sc-moon { opacity: var(--sc-night); transition: opacity 0.6s; }
+.sc-horizon { opacity: calc(var(--sc-night) * 0.7); transition: opacity 0.6s; }
+.sc-lglow, .sc-lpool { opacity: var(--sc-night); transition: opacity 0.6s; }
+.sc-beam { opacity: calc(var(--sc-night) * 0.9); transition: opacity 0.6s; }
+.sc-stars { opacity: calc(var(--sc-night) * 0.55); transition: opacity 0.6s; }
+.sc-star { fill: #fff; animation: sc-twinkle 5s ease-in-out infinite; }
+@keyframes sc-twinkle { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.9; } }
+@media (prefers-reduced-motion: reduce) { .sc-star { animation: none; opacity: 0.7; } }

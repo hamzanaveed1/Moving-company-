@@ -19,7 +19,7 @@ const crumbs = [{ name: 'Home', href: '/' }, { name: 'Blog', href: '/blog/' }];
   <section class="section">
     <div class="container">
       <ul class="pills" style="margin-bottom:2rem">
-        <li><a class="pill" href="/blog/" aria-current="page" style="background:var(--sel);border-color:var(--sel);color:#fff">All</a></li>
+        <li><a class="pill" href="/blog/" aria-current="page" style="background:var(--on-bg);border-color:var(--on-border);color:var(--on-ink)">All</a></li>
         {cats.map((c) => <li><a class="pill" href={`/blog/category/${slugify(c)}/`}>{c}</a></li>)}
       </ul>
       <div class="grid cols-3">{posts.map((p, i) => <PostCard post={p} eager={i < 3} level={2} />)}</div>
