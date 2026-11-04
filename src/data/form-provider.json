@@ -1,4 +1,4 @@
 {
   "_note": "Web3Forms access key. Leave empty to use the bundled /api functions (Resend). The key is public by design (it is sent from the browser); it only lets forms be sent to the email address it was created for. Get one free at web3forms.com, paste it between the quotes, then run: npm run vercel:config, and commit.",
-  "web3formsAccessKey": ""
+  "web3formsAccessKey": "9a9be1ca-43e8-4bb6-b36a-685bfb0ff6fd"
 }
