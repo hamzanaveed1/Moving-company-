@@ -70,6 +70,13 @@ const outline = (text, x, y, size, fill, weight = 800, letterSpacing = -0.03) =>
 };
 const textWidth = (text, size, weight = 800, letterSpacing = -0.03) => FONTS[weight].getAdvanceWidth(text, size, { letterSpacing });
 
+/** The company name as painted on the side of a vehicle: "Moving" in navy + "Pal" in dark amber, sized to fit `maxW`. */
+const NAME_HEAD = 'Moving', NAME_TAIL = 'Pal';
+const vehicleName = (x, baseline, maxW) => {
+  const size = Math.floor((maxW / textWidth(NAME_HEAD + NAME_TAIL, 100)) * 100);
+  return outline(NAME_HEAD, x, baseline, size, '#0c1f3d') + outline(NAME_TAIL, x + textWidth(NAME_HEAD, size), baseline, size, '#b36200');
+};
+
 // ---------- deterministic random ----------
 function rng(seed) {
   let s = seed >>> 0;
@@ -164,8 +171,7 @@ const van = (x, y, s = 1, accent = C.amber) => `
     <rect x="0" y="-62" width="262" height="30" fill="${C.navy2}"/>
     <rect x="0" y="-92" width="262" height="12" fill="${accent}"/>
     ${markEl(32, -166, 62)}
-    <path d="M98 -140 h120" stroke="${C.navy2}" stroke-width="12" stroke-linecap="round"/>
-    <path d="M98 -118 h80" stroke="#cfd8e6" stroke-width="10" stroke-linecap="round"/>
+    ${vehicleName(102, -124, 146)}
     <path d="M262 -150 L322 -150 Q346 -148 358 -118 L378 -84 Q386 -70 386 -50 L386 -32 L262 -32 Z" fill="#fff"/>
     <path d="M276 -138 L318 -138 Q334 -136 342 -116 L352 -94 L276 -94 Z" fill="#a9d4f0"/>
     <path d="M276 -138 L318 -138 L304 -94 L276 -94 Z" fill="#fff" opacity=".35"/>
@@ -184,8 +190,7 @@ const lorry = (x, y, s = 1) => `
     <rect x="0" y="-92" width="430" height="54" fill="${C.navy2}"/>
     <rect x="0" y="-132" width="430" height="14" fill="${C.amber}"/>
     ${markEl(46, -236, 86)}
-    <path d="M150 -204 h200" stroke="${C.navy2}" stroke-width="16" stroke-linecap="round"/>
-    <path d="M150 -176 h140" stroke="#cfd8e6" stroke-width="12" stroke-linecap="round"/>
+    ${vehicleName(152, -180, 262)}
     <path d="M430 -210 L500 -210 Q526 -208 540 -170 L560 -118 Q568 -100 568 -78 L568 -38 L430 -38 Z" fill="#fff"/>
     <path d="M446 -196 L494 -196 Q512 -194 522 -170 L534 -140 L446 -140 Z" fill="#a9d4f0"/>
     <rect x="430" y="-92" width="138" height="54" fill="${C.navy2}"/>
