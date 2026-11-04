@@ -13,7 +13,7 @@ const { eyebrow, h1, lead, crumbs, quoteHref = '/get-a-quote/', actions = true }
     <h1>{h1}</h1>
     {lead && <p class="lead">{lead}</p>}
     {actions && (
-      <div class="actions on-dark">
+      <div class="actions">
         <a class="btn btn-primary btn-lg" href={quoteHref}>Get a free quote <Icon name="arrow" /></a>
         <a class="btn btn-ghost btn-lg" href={`tel:${site.phoneHref}`}><Icon name="phone" /> {site.phone}</a>
       </div>

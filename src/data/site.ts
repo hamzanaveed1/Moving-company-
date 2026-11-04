@@ -53,7 +53,11 @@ export const site = {
   // Form endpoint (set in your host's env vars)
   formEndpoint: (import.meta.env.PUBLIC_FORM_ENDPOINT as string | undefined) || '',
   formAccessKey: (import.meta.env.PUBLIC_FORM_ACCESS_KEY as string | undefined) || '',
+  // Contact form posts to /api/contact when the bundled functions are in use; otherwise to the external endpoint.
+  contactEndpoint: '',
 };
+site.contactEndpoint =
+  (import.meta.env.PUBLIC_CONTACT_ENDPOINT as string | undefined) || (site.formEndpoint === '/api/quote' ? '/api/contact' : site.formEndpoint);
 
 export const nav = [
   { label: 'Services', href: '/services/' },

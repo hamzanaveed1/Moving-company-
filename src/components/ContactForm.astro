@@ -1,0 +1,121 @@
+---
+import Icon from './Icon.astro';
+import { site } from '../data/site';
+const topics = ['General question', 'Existing booking', 'Business / office move', 'Feedback or complaint', 'Something else'];
+---
+<form class="form-card" id="contact-form" novalidate data-endpoint={site.contactEndpoint} data-key={site.formAccessKey} data-email={site.email} data-brand={site.name}>
+  <div class="hp" aria-hidden="true"><label>Website<input type="text" name="website" tabindex="-1" autocomplete="off" /></label></div>
+  <div data-fields>
+    <h2 id="contact-heading" style="font-size:1.5rem">Send us a message</h2>
+    <p class="form-note" style="margin-bottom:1.25rem">Need a price instead? <a href="/get-a-quote/">Get a free quote</a> is quicker.</p>
+    <div class="form-grid">
+      <div class="field">
+        <label for="c-name">Full name</label>
+        <input id="c-name" name="name" type="text" autocomplete="name" required />
+        <span class="error-msg" data-err="name"></span>
+      </div>
+      <div class="field">
+        <label for="c-email">Email</label>
+        <input id="c-email" name="email" type="email" autocomplete="email" required />
+        <span class="error-msg" data-err="email"></span>
+      </div>
+      <div class="field">
+        <label for="c-phone">Phone <span class="hint">(optional)</span></label>
+        <input id="c-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" />
+        <span class="error-msg" data-err="phone"></span>
+      </div>
+      <div class="field">
+        <label for="c-topic">What is it about?</label>
+        <select id="c-topic" name="topic" required>
+          <option value="">Select…</option>
+          {topics.map((t) => <option>{t}</option>)}
+        </select>
+        <span class="error-msg" data-err="topic"></span>
+      </div>
+      <div class="field full">
+        <label for="c-message">Your message</label>
+        <textarea id="c-message" name="message" rows="5" required></textarea>
+        <span class="error-msg" data-err="message"></span>
+      </div>
+      <div class="field full">
+        <label class="choice" style="display:block"><input type="checkbox" name="consent" required /><span><span>I agree to be contacted about my enquiry, as set out in the <a href="/privacy-policy/" target="_blank" rel="noopener">privacy policy</a>.</span></span></label>
+        <span class="error-msg" data-err="consent"></span>
+      </div>
+    </div>
+    <div class="form-nav" style="margin-top:1.25rem"><button type="submit" class="btn btn-primary btn-lg" data-submit>Send message <Icon name="arrow" /></button></div>
+    <div class="form-status" role="status" aria-live="polite" data-status></div>
+  </div>
+  <div class="form-success" data-success hidden>
+    <div class="icon-box"><Icon name="check" /></div>
+    <h2 tabindex="-1" style="font-size:1.5rem">Thanks, we have your message</h2>
+    <p>We aim to reply within one working day. For anything urgent, call <a href={`tel:${site.phoneHref}`}>{site.phone}</a>.</p>
+  </div>
+</form>
+
+<script>
+  const form = document.getElementById('contact-form') as HTMLFormElement | null;
+  if (form) {
+    const status = form.querySelector<HTMLElement>('[data-status]')!;
+    const submit = form.querySelector<HTMLButtonElement>('[data-submit]')!;
+    const fields = form.querySelector<HTMLElement>('[data-fields]')!;
+    const success = form.querySelector<HTMLElement>('[data-success]')!;
+    const openedAt = Date.now();
+
+    form.querySelectorAll<HTMLElement>('[data-err]').forEach((span) => {
+      span.id = `cerr-${span.dataset.err}`;
+      span.setAttribute('role', 'alert');
+      form.elements.namedItem(span.dataset.err!) instanceof HTMLElement && (form.elements.namedItem(span.dataset.err!) as HTMLElement).setAttribute('aria-describedby', span.id);
+    });
+
+    const rules: Record<string, (v: string) => string> = {
+      name: (v) => (v.trim().length >= 2 ? '' : 'Please enter your name.'),
+      email: (v) => (/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim()) ? '' : 'Enter a valid email address.'),
+      phone: (v) => (v.trim() === '' || v.replace(/\D/g, '').length >= 10 ? '' : 'Enter a valid phone number or leave it blank.'),
+      topic: (v) => (v ? '' : 'Please choose a topic.'),
+      message: (v) => (v.trim().length >= 10 ? '' : 'Please write a little more (at least 10 characters).'),
+      consent: () => ((form.elements.namedItem('consent') as HTMLInputElement).checked ? '' : 'Please tick to continue.'),
+    };
+    const validate = (): boolean => {
+      let first: HTMLElement | null = null;
+      for (const [name, rule] of Object.entries(rules)) {
+        const el = form.elements.namedItem(name) as HTMLInputElement;
+        const msg = rule(el.value ?? '');
+        form.querySelector<HTMLElement>(`[data-err="${name}"]`)!.textContent = msg;
+        el.setAttribute('aria-invalid', msg ? 'true' : 'false');
+        if (msg && !first) first = el;
+      }
+      first?.focus();
+      return !first;
+    };
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!validate()) return;
+      const fd = new FormData(form);
+      if (fd.get('website') || Date.now() - openedAt < 3000) { fields.hidden = true; success.hidden = false; return; } // bots: silent
+      const data: Record<string, string> = {};
+      fd.forEach((v, k) => { if (k !== 'website') data[k] = String(v); });
+      const subject = `Website enquiry: ${data.topic} (${data.name})`;
+      const { endpoint, key, email, brand } = form.dataset;
+      const mailto = () => `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(`${data.message}\n\n${data.name}\n${data.email}\n${data.phone || ''}`)}`;
+
+      submit.disabled = true;
+      status.className = 'form-status';
+      try {
+        if (!endpoint) { window.location.href = mailto(); status.className = 'form-status ok'; status.textContent = 'Your email app should open with your message ready to send.'; submit.disabled = false; return; }
+        const res = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ ...data, subject, from_name: brand ?? 'Website', ...(key ? { access_key: key } : {}) }) });
+        if (!res.ok) throw new Error('failed');
+        fields.hidden = true; success.hidden = false;
+        success.querySelector<HTMLElement>('h2')?.focus();
+      } catch {
+        const link = document.createElement('a');
+        link.href = mailto();
+        link.textContent = 'email us directly';
+        status.className = 'form-status err';
+        status.textContent = 'Sorry, we could not send your message just now. Please call us or ';
+        status.append(link, '. Your message is filled in for you.');
+        submit.disabled = false;
+      }
+    });
+  }
+</script>

@@ -19,11 +19,11 @@ Primary target: **Vercel**. Cloudflare Pages is supported as an alternative (see
 | `TO_EMAIL` | where quote requests should arrive |
 | `FROM_EMAIL` | `Loadby <quotes@loadby.co.uk>` (domain must be verified in Resend) |
 
-The build detects Vercel and points the quote form at `/api/quote` automatically. After changing variables, **redeploy** so the build picks them up.
+The build detects Vercel and points the quote form at `/api/quote` and the contact form at `/api/contact` automatically. Both use the same `TO_EMAIL` and `FROM_EMAIL` (you may want separate inboxes later; that is a small change in `server/`). After changing variables, **redeploy** so the build picks them up.
 
 ## 3. Make leads actually arrive
 1. Create a Resend account, verify `loadby.co.uk` (it gives you DNS records to add), create an API key.
-2. Redeploy, then **submit a real test quote** and confirm the email arrives. The handler is covered by unit tests and Vercel's own CLI built the function successfully, but it has not been exercised against live Vercel and Resend.
+2. Redeploy, then **submit a real test quote and a real contact message** and confirm both emails arrive. The handler is covered by unit tests and Vercel's own CLI built the function successfully, but it has not been exercised against live Vercel and Resend.
 
 ## 4. Domain (loadby.co.uk)
 1. Register `loadby.co.uk` at any registrar.

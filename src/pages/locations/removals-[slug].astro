@@ -64,9 +64,7 @@ const schema = {
     <div class="container">
       <div class="section-head"><span class="eyebrow">Services</span><h2>Removal services in {loc.name}</h2></div>
       <div class="grid cols-4">
-        {services.map((s) => (
-          <a class="card" href={`/services/${s.slug}/`}><div class="icon-box"><Icon name={s.icon} /></div><h3>{s.name}</h3><span class="more">Details <Icon name="arrow" /></span></a>
-        ))}
+        {services.map((s) => <a class="tile" href={`/services/${s.slug}/`}><Icon name={s.icon} />{s.name}</a>)}
       </div>
     </div>
   </section>
@@ -89,7 +87,7 @@ const schema = {
 
   <section class="section alt">
     <div class="container narrow">
-      <div class="section-head center"><span class="eyebrow">FAQs</span><h2>Moving in {loc.name}: your questions</h2></div>
+      <div class="section-head"><span class="eyebrow">FAQs</span><h2>Moving in {loc.name}: your questions</h2></div>
       <FaqList faqs={loc.faqs} />
     </div>
   </section>
