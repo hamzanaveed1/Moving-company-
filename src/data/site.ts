@@ -53,6 +53,7 @@ export const site = {
   // Google Search Console, "HTML tag" verification: paste ONLY the content value of the meta tag Google gives you
   // (the long code after content=). Not needed if you verify with the DNS record instead.
     googleSiteVerification: 'QfvY43LZ-1t96KzukvvOi5ttOYQdAmoKC5855Jz0KQg',
+    googleAnalyticsMeasurementId: 'G-9F0J5YY6TY',
 
   // Form endpoint (set in your host's env vars)
   // If src/data/form-provider.json has a Web3Forms key, every form posts straight to Web3Forms with it.
