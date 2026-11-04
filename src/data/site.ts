@@ -50,6 +50,10 @@ export const site = {
   adsenseClient: (import.meta.env.PUBLIC_ADSENSE_CLIENT as string | undefined) || '',
   adsenseSlot: (import.meta.env.PUBLIC_ADSENSE_SLOT as string | undefined) || '',
 
+  // Google Search Console, "HTML tag" verification: paste ONLY the content value of the meta tag Google gives you
+  // (the long code after content=). Not needed if you verify with the DNS record instead.
+  googleSiteVerification: '',
+
   // Form endpoint (set in your host's env vars)
   // If src/data/form-provider.json has a Web3Forms key, every form posts straight to Web3Forms with it.
   formEndpoint: web3formsKey ? WEB3FORMS_ENDPOINT : (import.meta.env.PUBLIC_FORM_ENDPOINT as string | undefined) || '',

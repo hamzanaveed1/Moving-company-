@@ -48,6 +48,7 @@ const jsonLd = [businessSchema(), websiteSchema(), ...schema];
     <meta name="color-scheme" content="light dark" />
     <!-- Applies the saved/system theme before first paint (no white flash in dark mode). Tiny, same-origin, cached. -->
     <script is:inline src="/theme-init.js"></script>
+    {site.googleSiteVerification && <meta name="google-site-verification" content={site.googleSiteVerification} />}
     {vercelAnalytics && <meta name="vercel-analytics" content="on" />}
     <meta name="format-detection" content="telephone=yes" />
 
