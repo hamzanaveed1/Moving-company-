@@ -13,7 +13,7 @@ Primary target: **Vercel**. Cloudflare Pages is supported as an alternative (see
 ## 2. Environment variables (Settings > Environment Variables, Production)
 | Variable | Value |
 |---|---|
-| `SITE_URL` | `https://movingpal.co.uk` |
+| `SITE_URL` | `https://www.movingpal.co.uk` |
 | `SECURITY_CONTACT` | `mailto:customersupport@movingpal.co.uk` (optional; this is the default) |
 | `RESEND_API_KEY` | from resend.com (mark as **Sensitive**). The only one you must set |
 | `TO_EMAIL` | optional: defaults to `customersupport@movingpal.co.uk` |
@@ -39,9 +39,9 @@ If a form shows "we could not send", open Vercel > your project > **Logs** and l
 ## 4. Domain (movingpal.co.uk)
 1. Register `movingpal.co.uk` at any registrar.
 2. Vercel > **Settings > Domains**: add `movingpal.co.uk` and `www.movingpal.co.uk`. Vercel shows the exact DNS records to create at your registrar (typically an A record for the apex and a CNAME for `www`). Use the values Vercel displays.
-3. Set `www.movingpal.co.uk` to **redirect to `movingpal.co.uk`** (a Redirect option next to the domain) so only one version is indexed.
+3. Make `www.movingpal.co.uk` the **primary** domain and set `movingpal.co.uk` to **redirect to `www.movingpal.co.uk`**, so only one version is indexed. The site's canonical address (`SITE_URL`) is the `www` version.
 4. Email: `customersupport@movingpal.co.uk` is shown on the site and receives every quote and contact message, so make the mailbox work (your registrar's email forwarding, Google Workspace, or Cloudflare Email Routing if DNS is on Cloudflare).
-5. Google Search Console: add the domain property, submit `https://movingpal.co.uk/sitemap-index.xml`. Claim your Google Business Profile using the exact name, address and phone from `src/data/site.ts`.
+5. Google Search Console: add the domain property, submit `https://www.movingpal.co.uk/sitemap-index.xml`. Claim your Google Business Profile using the exact name, address and phone from `src/data/site.ts`.
 
 ## 5. Lock it down
 - Vercel > **Firewall**: add a rate-limit rule for `/api/quote` (for example 5 requests per 10 minutes per IP). Availability of rules depends on your plan. The handler also has a best-effort per-instance throttle as a backstop.

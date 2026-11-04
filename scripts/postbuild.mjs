@@ -19,9 +19,15 @@ const mode = process.argv[2] || '';
 const DIST = 'dist';
 if (!mode && !existsSync(DIST)) throw new Error('Run `astro build` first');
 
-const site = (process.env.SITE_URL || 'https://movingpal.co.uk').replace(/\/$/, '');
+const site = (process.env.SITE_URL || 'https://www.movingpal.co.uk').replace(/\/$/, '');
 // A Web3Forms key in src/data/form-provider.json makes the forms post to Web3Forms, so that origin must be allowed.
 const web3formsKey = String(JSON.parse(readFileSync('src/data/form-provider.json', 'utf8')).web3formsAccessKey || '').trim();
+// Google Analytics 4 (src/data/google.json). Loaded only after the visitor accepts the consent banner, so Google's
+// origins are allowed only when an ID is configured.
+const gaId = String(JSON.parse(readFileSync('src/data/google.json', 'utf8')).analyticsMeasurementId || '').trim();
+const ga = gaId
+  ? { script: ['https://www.googletagmanager.com'], connect: ['https://*.google-analytics.com', 'https://*.analytics.google.com', 'https://*.googletagmanager.com'], img: ['https://*.google-analytics.com', 'https://*.googletagmanager.com'] }
+  : { script: [], connect: [], img: [] };
 const formEndpoint = web3formsKey ? 'https://api.web3forms.com/submit' : process.env.PUBLIC_FORM_ENDPOINT || '';
 const adsClient = process.env.PUBLIC_ADSENSE_CLIENT || '';
 const securityContact = process.env.SECURITY_CONTACT || 'mailto:customersupport@movingpal.co.uk';
@@ -36,12 +42,12 @@ if (!adsClient) {
   // 'unsafe-inline' is allowed only for style *attributes* (style="..."), which cannot run script.
   csp = {
     'default-src': ["'none'"],
-    'script-src': ["'self'"],
+    'script-src': ["'self'", ...ga.script],
     'style-src': ["'self'"],
     'style-src-attr': ["'unsafe-inline'"],
-    'img-src': ["'self'", 'data:'],
+    'img-src': ["'self'", 'data:', ...ga.img],
     'font-src': ["'self'"],
-    'connect-src': connect,
+    'connect-src': [...connect, ...ga.connect],
     'manifest-src': ["'self'"],
     'form-action': ["'self'"],
     'base-uri': ["'self'"],
@@ -55,11 +61,11 @@ if (!adsClient) {
   const g = ['https://pagead2.googlesyndication.com', 'https://partner.googleadservices.com', 'https://tpc.googlesyndication.com', 'https://www.googletagservices.com', 'https://fundingchoicesmessages.google.com', 'https://*.adtrafficquality.google', 'https://www.google.com', 'https://ep1.adtrafficquality.google', 'https://ep2.adtrafficquality.google'];
   csp = {
     'default-src': ["'none'"],
-    'script-src': ["'self'", "'unsafe-inline'", "'unsafe-eval'", ...g],
+    'script-src': ["'self'", "'unsafe-inline'", "'unsafe-eval'", ...g, ...ga.script],
     'style-src': ["'self'", "'unsafe-inline'"],
     'img-src': ["'self'", 'data:', 'https:'],
     'font-src': ["'self'", 'data:'],
-    'connect-src': [...connect, ...g, 'https://*.g.doubleclick.net', 'https://*.google.com'],
+    'connect-src': [...connect, ...g, ...ga.connect, 'https://*.g.doubleclick.net', 'https://*.google.com'],
     'frame-src': ['https://googleads.g.doubleclick.net', 'https://tpc.googlesyndication.com', 'https://*.safeframe.googlesyndication.com', 'https://www.google.com', 'https://fundingchoicesmessages.google.com'],
     'manifest-src': ["'self'"],
     'form-action': ["'self'"],

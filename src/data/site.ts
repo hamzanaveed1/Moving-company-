@@ -1,4 +1,5 @@
 import formProvider from './form-provider.json';
+import googleIds from './google.json';
 
 /**
  * Single source of truth for the business. Edit this file first.
@@ -11,7 +12,7 @@ export const site = {
   name: 'MovingPal',
   legalName: 'MovingPal', // OWNER: change to your registered compny name once incorporated, e.g. 'MovingPal Removals Ltd'
   tagline: 'Stress-free removals across the UK',
-  url: (import.meta.env.SITE as string | undefined) || 'https://movingpal.co.uk',
+  url: (import.meta.env.SITE as string | undefined) || 'https://www.movingpal.co.uk',
   locale: 'en-GB',
 
   // ---- Contact (NAP): keep identical to your Google Business Profile ----
@@ -50,10 +51,9 @@ export const site = {
   adsenseClient: (import.meta.env.PUBLIC_ADSENSE_CLIENT as string | undefined) || '',
   adsenseSlot: (import.meta.env.PUBLIC_ADSENSE_SLOT as string | undefined) || '',
 
-  // Google Search Console, "HTML tag" verification: paste ONLY the content value of the meta tag Google gives you
-  // (the long code after content=). Not needed if you verify with the DNS record instead.
-    googleSiteVerification: 'QfvY43LZ-1t96KzukvvOi5ttOYQdAmoKC5855Jz0KQg',
-    googleAnalyticsMeasurementId: 'G-9F0J5YY6TY',
+  // Google Search Console (HTML tag) and Google Analytics 4. Values live in src/data/google.json.
+  googleSiteVerification: googleIds.siteVerification as string,
+  googleAnalyticsMeasurementId: googleIds.analyticsMeasurementId as string, // GA4 loads only after the visitor accepts the consent banner
 
   // Form endpoint (set in your host's env vars)
   // If src/data/form-provider.json has a Web3Forms key, every form posts straight to Web3Forms with it.

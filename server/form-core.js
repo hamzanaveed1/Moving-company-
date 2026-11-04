@@ -8,7 +8,7 @@
  *   RESEND_API_KEY   secret
  *   TO_EMAIL         optional: where messages go (default: customersupport@movingpal.co.uk)
  *   FROM_EMAIL       optional: a sender on a domain verified in Resend (default: "MovingPal <customersupport@movingpal.co.uk>")
- *   SITE_URL         e.g. https://movingpal.co.uk  (used for the Origin check)
+ *   SITE_URL         e.g. https://www.movingpal.co.uk  (used for the Origin check)
  */
 
 /** Default mailbox for every form. Override with the TO_EMAIL / FROM_EMAIL environment variables. */

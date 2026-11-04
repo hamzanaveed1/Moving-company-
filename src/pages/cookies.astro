@@ -10,6 +10,8 @@ import { site } from '../data/site';
     <div class="container narrow prose prose-legal">
       {site.adsenseClient ? (
         <p>Our blog articles show advertising served by Google AdSense. Google and its partners may use cookies and similar technologies to show and measure ads, and to personalise them where you agree. You are asked for your choice by Google's consent message when you first visit an article, and you can change it at any time using the privacy settings link shown there. Pages other than blog articles do not load advertising.</p>
+      ) : site.googleAnalyticsMeasurementId ? (
+        <p>This website does not use advertising cookies. Google Analytics sets cookies only if you click Accept on our cookie banner; if you decline, or ignore it, nothing is set. We also count visits and measure page speed with Vercel Web Analytics and Speed Insights, which set no cookies and do not identify you.</p>
       ) : (
         <p>This website does not use advertising or tracking cookies. We count visits and measure page speed with Vercel Web Analytics and Speed Insights, which set no cookies and does not identify you, so no consent banner is shown.</p>
       )}
@@ -17,6 +19,7 @@ import { site } from '../data/site';
       <ul>
         <li><strong>Browser storage for the moving checklist.</strong> If you use our <a href="/moving-checklist/">moving checklist</a>, your ticks are saved in your own browser (local storage) so they are there when you come back. This stays on your device and is never sent to us. It is strictly necessary for the feature you asked for.</li>
         <li><strong>Visit statistics.</strong> Vercel Web Analytics and Speed Insights record which pages are viewed, the referring site, how quickly pages load, and broad device, browser and country information. It uses no cookies, does not follow you across websites and is not linked to your name or contact details. We do not collect it if your browser sends a Do Not Track signal.</li>
+        {site.googleAnalyticsMeasurementId && (<li><strong>Google Analytics (only if you accept).</strong> If you click Accept, Google Analytics 4 sets cookies (named <code>_ga</code> and <code>_ga_…</code>, which last up to 2 years) and records pages viewed, how you arrived, and broad device, browser and location information, so we can see which pages help people. Google processes this on our behalf. We turn off Google's advertising features, and your address is anonymised. You can change your mind at any time with <button type="button" class="link-btn" data-consent-open style="text-decoration:underline">Cookie settings</button>; choosing Decline removes the cookies. If your browser sends a Do Not Track or Global Privacy Control signal we do not ask and do not load it.</li>)}
         <li><strong>Hosting logs.</strong> Our host may keep basic technical logs (such as IP address and pages requested) for security and reliability.</li>
       </ul>
       {!site.adsenseClient && (<><h2>If this changes</h2>
