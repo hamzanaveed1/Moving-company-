@@ -6,7 +6,8 @@
  * Swap in real photos of your crew/vans later by replacing the files in src/assets/blog/.
  */
 import sharp from 'sharp';
-import { mkdirSync, writeFileSync } from 'node:fs';
+import opentype from 'opentype.js';
+import { mkdirSync, writeFileSync, readFileSync } from 'node:fs';
 
 const OUT_BLOG = 'src/assets/blog';
 const OUT_IMG = 'src/assets/img';
@@ -22,6 +23,45 @@ const C = {
   card: '#d9a566', cardD: '#b8803f', cardL: '#ecc48f',
   green: '#22a06b', red: '#e5484d', teal: '#14b8a6',
 };
+
+// ---------- brand mark: a road shaped like an "L", ending in a taped parcel ----------
+// "Load" (the parcel) + "by" (the route it travels). One definition, reused for the favicon, app icons,
+// social card and the vans, so the logo is identical everywhere.
+const markInner = () => `<g transform="translate(-1 1)">
+  <path d="M33 22 V51 a17 17 0 0 0 17 17 H55" fill="none" stroke="${C.amber}" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M33 30 V51 a17 17 0 0 0 17 17 H52" fill="none" stroke="#0c1f3d" stroke-opacity=".55" stroke-width="2.2" stroke-dasharray="5 4.5"/>
+  <circle cx="33" cy="22" r="8" fill="#fff4dc"/>
+  <g transform="translate(53 50)"><rect width="30" height="30" rx="7.5" fill="#fff4dc"/><rect x="11.5" width="7" height="30" fill="${C.amber}"/></g>
+</g>`;
+/** Full badge. `round` = rounded app-icon corners; `border` adds a hairline for dark backgrounds. */
+const markSvg = (size, { round = true, border = false, id = 'mk' } = {}) => `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 96 96">
+<defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1d4a85"/><stop offset="1" stop-color="#0a1a33"/></linearGradient></defs>
+<rect width="96" height="96" rx="${round ? 24 : 0}" fill="url(#${id})"/>${border ? '<rect x=".75" y=".75" width="94.5" height="94.5" rx="23.5" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="1.5"/>' : ''}
+${markInner()}
+</svg>`;
+
+// Outlined text (real Manrope glyph shapes as vector paths, so the social card needs no installed fonts)
+const manrope = (w) => { const b = readFileSync(`node_modules/@fontsource/manrope/files/manrope-latin-${w}-normal.woff`); return opentype.parse(b.buffer.slice(b.byteOffset, b.byteOffset + b.byteLength)); };
+const FONTS = { 600: manrope(600), 800: manrope(800) };
+// opentype.js's own toPathData() occasionally emits "NaN" for a valid curve (the geometry is fine), and the
+// SVG renderer then silently stops drawing the path (the headline got cut off after "Stre"). So serialise the
+// glyph commands ourselves.
+const pathData = (commands) =>
+  commands
+    .map((c) => {
+      const n = (v) => Number(v).toFixed(2);
+      if (c.type === 'M' || c.type === 'L') return `${c.type}${n(c.x)} ${n(c.y)}`;
+      if (c.type === 'Q') return `Q${n(c.x1)} ${n(c.y1)} ${n(c.x)} ${n(c.y)}`;
+      if (c.type === 'C') return `C${n(c.x1)} ${n(c.y1)} ${n(c.x2)} ${n(c.y2)} ${n(c.x)} ${n(c.y)}`;
+      return 'Z';
+    })
+    .join('');
+const outline = (text, x, y, size, fill, weight = 800, letterSpacing = -0.03) => {
+  const d = pathData(FONTS[weight].getPath(text, x, y, size, { letterSpacing }).commands);
+  if (/NaN|undefined|Infinity/.test(d)) throw new Error(`Bad glyph path for "${text}"`); // never ship a truncated logo
+  return `<path d="${d}" fill="${fill}"/>`;
+};
+const textWidth = (text, size, weight = 800, letterSpacing = -0.03) => FONTS[weight].getAdvanceWidth(text, size, { letterSpacing });
 
 // ---------- deterministic random ----------
 function rng(seed) {
@@ -117,7 +157,7 @@ const van = (x, y, s = 1, accent = C.amber) => `
     <rect x="0" y="-62" width="262" height="30" fill="${C.navy2}"/>
     <rect x="0" y="-92" width="262" height="12" fill="${accent}"/>
     <rect x="30" y="-160" width="54" height="54" rx="12" fill="${C.navy}"/>
-    <path d="M42 -144 V-114 H68" stroke="${accent}" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="51" y="-135" width="13" height="13" rx="2.5" fill="${C.amberL}"/>
+    <g transform="translate(30 -160) scale(.5625)">${markInner()}</g>
     <path d="M98 -140 h120" stroke="${C.navy2}" stroke-width="12" stroke-linecap="round"/>
     <path d="M98 -118 h80" stroke="#cfd8e6" stroke-width="10" stroke-linecap="round"/>
     <path d="M262 -150 L322 -150 Q346 -148 358 -118 L378 -84 Q386 -70 386 -50 L386 -32 L262 -32 Z" fill="#fff"/>
@@ -138,7 +178,7 @@ const lorry = (x, y, s = 1) => `
     <rect x="0" y="-92" width="430" height="54" fill="${C.navy2}"/>
     <rect x="0" y="-132" width="430" height="14" fill="${C.amber}"/>
     <rect x="44" y="-226" width="76" height="76" rx="16" fill="${C.navy}"/>
-    <path d="M60 -206 V-168 H96" stroke="${C.amber}" stroke-width="10" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="72" y="-194" width="18" height="18" rx="3.5" fill="${C.amberL}"/>
+    <g transform="translate(44 -226) scale(.7917)">${markInner()}</g>
     <path d="M150 -204 h200" stroke="${C.navy2}" stroke-width="16" stroke-linecap="round"/>
     <path d="M150 -176 h140" stroke="#cfd8e6" stroke-width="12" stroke-linecap="round"/>
     <path d="M430 -210 L500 -210 Q526 -208 540 -170 L560 -118 Q568 -100 568 -78 L568 -38 L430 -38 Z" fill="#fff"/>
@@ -328,11 +368,13 @@ scenes.og = (W = 1200, H = 630) => frame(W, H, `
   <rect x="0" y="520" width="${W}" height="110" fill="#14233c"/>
   ${road(W, 540, 80)}
   ${van(660, 610, 1.1)}
-  <g transform="translate(70 90)"><rect width="84" height="84" rx="22" fill="${C.amber}"/><path d="M25 22 V62 H62" stroke="${C.navy}" stroke-width="9" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="38" y="38" width="18" height="18" rx="3.5" fill="${C.navy}" opacity=".55"/></g>
-  <text x="176" y="148" font-family="Inter, sans-serif" font-weight="800" font-size="54" fill="#fff">Loadby</text>
-  <text x="70" y="270" font-family="Inter, sans-serif" font-weight="800" font-size="62" fill="#fff">Stress-free removals</text>
-  <text x="70" y="342" font-family="Inter, sans-serif" font-weight="800" font-size="62" fill="${C.amber}">across the UK</text>
-  <text x="70" y="404" font-family="Inter, sans-serif" font-weight="500" font-size="28" fill="#c9d6ee">House · Flat · Office · City-to-city</text>`);
+  <g transform="translate(70 80)"><svg width="88" height="88" viewBox="0 0 96 96">
+    <defs><linearGradient id="ogm" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1d4a85"/><stop offset="1" stop-color="#0a1a33"/></linearGradient></defs>
+    <rect width="96" height="96" rx="24" fill="url(#ogm)"/><rect x=".75" y=".75" width="94.5" height="94.5" rx="23.5" fill="none" stroke="#fff" stroke-opacity=".3" stroke-width="1.5"/>${markInner()}</svg></g>
+  ${outline('Load', 180, 150, 58, '#ffffff')}${outline('by', 180 + textWidth('Load', 58), 150, 58, C.amber)}
+  ${outline('Stress-free removals', 70, 272, 64, '#ffffff')}
+  ${outline('across the UK', 70, 346, 64, C.amber)}
+  ${outline('House · Flat · Office · City-to-city', 70, 410, 28, '#c9d6ee', 600, -0.01)}`);
 
 // ---------- render ----------
 const blog = [
@@ -352,9 +394,8 @@ for (const [slug, scene] of blog) {
 await sharp(Buffer.from(scenes.hero(1200, 1000))).webp({ quality: 90, effort: 5 }).toFile(`${OUT_IMG}/hero.webp`);
 await sharp(Buffer.from(scenes.og())).png().toFile('public/og-default.png');
 
-// Logo mark (SVG + PNG for schema) and favicon
-const mark = (s) => `<svg xmlns="http://www.w3.org/2000/svg" width="${s}" height="${s}" viewBox="0 0 96 96"><rect width="96" height="96" rx="24" fill="${C.navy}"/><path d="M28 24 V68 H70" stroke="${C.amber}" stroke-width="10" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="43" y="42" width="21" height="21" rx="4" fill="${C.amberL}"/></svg>`;
-writeFileSync('public/favicon.svg', mark(96));
-await sharp(Buffer.from(mark(512))).png().toFile('public/logo.png');
-await sharp(Buffer.from(mark(180))).png().toFile('public/apple-touch-icon.png');
+// Logo mark (SVG + PNG for schema) and favicon / app icons
+writeFileSync('public/favicon.svg', markSvg(96, { id: 'fav' }));
+await sharp(Buffer.from(markSvg(512, { id: 'lg' }))).png().toFile('public/logo.png');
+await sharp(Buffer.from(markSvg(180, { round: false, id: 'ap' }))).png().toFile('public/apple-touch-icon.png'); // iOS applies its own rounding
 console.log('done');

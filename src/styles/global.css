@@ -1,5 +1,4 @@
-@import '@fontsource-variable/inter';
-@import '@fontsource-variable/bricolage-grotesque';
+@import '@fontsource-variable/manrope';
 
 /* =====================================================================
    Loadby design system: minimal, light, consistent.
@@ -31,8 +30,9 @@
   --line: #e8e3d8;
   --line-strong: #d6cfbf;
 
-  --font-body: 'Inter Variable', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  --font-head: 'Bricolage Grotesque Variable', 'Inter Variable', system-ui, sans-serif;
+  /* One family, Manrope: clean, even and professional, with clear numerals for prices, miles and times. */
+  --font-body: 'Manrope Variable', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-head: var(--font-body);
 
   --radius: 16px;
   --radius-sm: 10px;
@@ -54,8 +54,8 @@ body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--f
 img, svg, picture { display: block; max-width: 100%; height: auto; }
 a { color: var(--navy-700); text-underline-offset: 3px; text-decoration-thickness: 1px; }
 a:hover { color: var(--navy-900); }
-h1, h2, h3, h4 { font-family: var(--font-head); color: var(--navy-900); line-height: 1.15; letter-spacing: -0.02em; margin: 0 0 0.55em; font-weight: 700; text-wrap: balance; }
-h1 { font-size: clamp(2.1rem, 4.6vw, 3.4rem); letter-spacing: -0.03em; }
+h1, h2, h3, h4 { font-family: var(--font-head); color: var(--navy-900); line-height: 1.18; letter-spacing: -0.025em; margin: 0 0 0.55em; font-weight: 700; text-wrap: balance; }
+h1 { font-size: clamp(2.05rem, 4.4vw, 3.25rem); letter-spacing: -0.035em; font-weight: 800; line-height: 1.12; }
 h2 { font-size: clamp(1.6rem, 2.9vw, 2.15rem); }
 h3 { font-size: 1.15rem; letter-spacing: -0.01em; }
 p { margin: 0 0 1em; text-wrap: pretty; }
@@ -111,11 +111,14 @@ ul, ol { margin: 0 0 1em; padding-left: 1.25em; }
 .site-header { position: sticky; top: 0; z-index: 50; background: rgb(250 248 244 / 0.9); backdrop-filter: saturate(1.4) blur(14px); border-bottom: 1px solid transparent; transition: border-color 0.25s, box-shadow 0.25s, background 0.25s; }
 .site-header.is-scrolled { border-bottom-color: var(--line); box-shadow: 0 6px 24px -16px rgb(12 31 61 / 0.25); background: rgb(250 248 244 / 0.96); }
 .site-header .container { display: flex; align-items: center; justify-content: space-between; min-height: var(--header-h); gap: 1rem; }
-.brand { display: inline-flex; align-items: center; gap: 0.6rem; text-decoration: none; color: var(--navy-900); font-family: var(--font-head); font-weight: 800; font-size: 1.45rem; letter-spacing: -0.03em; }
+/* Wordmark: "Load" in navy, "by" in amber (the route it travels). */
+.brand { display: inline-flex; align-items: center; gap: 0.6rem; text-decoration: none; color: var(--navy-900); font-family: var(--font-head); font-weight: 800; font-size: 1.5rem; letter-spacing: -0.04em; line-height: 1; }
 .brand:hover { color: var(--navy-900); }
-.brand svg { width: 36px; height: 36px; }
+.brand svg { width: 38px; height: 38px; flex: none; }
+.brand-name span { color: var(--amber-600); }
+.site-footer .brand-name span { color: var(--amber-500); }
 .nav { display: flex; align-items: center; gap: 0.1rem; }
-.nav a:not(.btn) { padding: 0.5rem 0.85rem; border-radius: 999px; text-decoration: none; color: var(--ink); font-weight: 500; font-size: 0.95rem; transition: background 0.2s, color 0.2s; }
+.nav a:not(.btn) { padding: 0.5rem 0.85rem; border-radius: 999px; text-decoration: none; color: var(--ink); font-weight: 600; font-size: 0.93rem; transition: background 0.2s, color 0.2s; }
 .nav a:not(.btn):hover { background: #f0ece2; }
 .nav a[aria-current='page'] { color: var(--navy-900); font-weight: 700; background: #f0ece2; }
 .nav .btn { margin-left: 0.6rem; min-height: 42px; padding: 0.6rem 1.15rem; font-size: 0.93rem; }

@@ -96,7 +96,7 @@ Everything on the site serves one of two actions: **Get a free quote** (primary)
 ## 6. Design system
 
 - **Look:** confident and friendly. Deep navy, warm amber accent, soft off-white backgrounds, generous whitespace, large rounded cards.
-- **Type:** Bricolage Grotesque (headings), Inter (body), both self-hosted.
+- **Type:** Manrope (one family for headings and body), self-hosted, preloaded.
 - **Accessibility:** WCAG 2.2 AA contrast, visible focus rings, skip link, semantic landmarks, reduced-motion support, 44px tap targets.
 - **Mobile first.** Most moving searches happen on phones.
 

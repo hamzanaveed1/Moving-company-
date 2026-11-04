@@ -1,4 +1,3 @@
-// Hashed URLs of the critical (latin) font files, so the layout can preload them.
-import inter from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
-import bricolage from '@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-wght-normal.woff2?url';
-export const criticalFonts = [inter, bricolage];
+// Hashed URL of the critical (latin) font file, so the layout can preload it. One family = one request.
+import manrope from '@fontsource-variable/manrope/files/manrope-latin-wght-normal.woff2?url';
+export const criticalFonts = [manrope];
