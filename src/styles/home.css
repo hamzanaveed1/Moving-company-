@@ -102,7 +102,9 @@
 /* ---------- Scroll journey (pinned, cinematic) ---------- */
 /* The section is a tall "stage". Its content sticks to the screen while you scroll through the extra height,
    and the van's progress follows that scroll, smoothed in JavaScript so it glides rather than snaps. */
-.journey-stage .journey-sticky { padding-block: var(--section); }
+.journey-stage .journey-sticky { padding-block: var(--section) 1.5rem; }
+/* the call-to-action sits below the pinned stage (never inside it), so it can never overlap the next section */
+.journey-cta { background: var(--bg-alt); padding-block: 0.5rem var(--section); }
 .journey-stage.is-pinned { height: calc(100svh + 190vh); padding-block: 0; }
 .journey-stage.is-pinned .journey-sticky { position: sticky; top: var(--header-h); height: calc(100svh - var(--header-h)); display: flex; flex-direction: column; justify-content: center; padding-block: 1.5rem; box-sizing: border-box; }
 @media (max-width: 760px) {

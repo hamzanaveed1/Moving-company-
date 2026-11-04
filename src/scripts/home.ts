@@ -54,11 +54,34 @@ document.querySelectorAll<HTMLElement>('[data-journey]').forEach((j) => {
   let thresholds = steps.map((_, i) => i / steps.length); // where along the road each stop sits (0..1), measured below
   let lengthPx = 600;
 
-  const canPin = () => !reduce && window.innerHeight >= 520; // short landscape phones: no pinning
+  // Phone browsers grow and shrink their toolbars while you scroll, which changes innerHeight. A hidden 100svh probe
+  // gives the stable "small viewport" height the CSS uses, so pinning never flips on and off mid-scroll.
+  const probe = document.createElement('div');
+  probe.setAttribute('aria-hidden', 'true');
+  probe.style.cssText = 'position:fixed;left:0;top:0;width:0;height:100svh;visibility:hidden;pointer-events:none';
+  document.body.appendChild(probe);
+  const content = sticky?.firstElementChild as HTMLElement | null;
+  let pinned = false;
+  const canPin = () => pinned;
+  const decidePin = (): boolean => {
+    if (reduce || !stage || !content) return false;
+    const vh = probe.offsetHeight || window.innerHeight;
+    if (vh < 520) return false; // short landscape phones: no pinning
+    const cs = getComputedStyle(document.documentElement);
+    const header = parseFloat(cs.getPropertyValue('--header-h')) || 68;
+    const bar = window.matchMedia('(max-width: 760px)').matches ? 72 : 0; // matches the CSS height of the pinned block
+    // only pin when the whole block (heading + road + steps) fits on one screen; otherwise let it scroll normally
+    const wasPinned = stage.classList.contains('is-pinned');
+    stage.classList.remove('is-pinned');
+    const need = content.offsetHeight + 48; // natural content height + the sticky block's 1.5rem top/bottom padding
+    if (wasPinned) stage.classList.add('is-pinned');
+    return need <= vh - header - bar - 8;
+  };
 
   // Put the road exactly through the centres of the stops, and continue past the last one to the "home" marker
   const measure = () => {
-    stage?.classList.toggle('is-pinned', canPin());
+    pinned = decidePin();
+    stage?.classList.toggle('is-pinned', pinned);
     const box = j.getBoundingClientRect();
     const pts = dots.map((d) => { const r = d.getBoundingClientRect(); return { x: r.left + r.width / 2 - box.left, y: r.top + r.height / 2 - box.top }; });
     const a = pts[0], z = pts[pts.length - 1];
