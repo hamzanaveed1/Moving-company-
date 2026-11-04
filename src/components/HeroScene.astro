@@ -49,19 +49,19 @@ const dashes = Array.from({ length: 9 }, (_, i) => i * 90);  // 90 period, 4 per
   <svg class="scene" viewBox="0 0 600 580" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Animated illustration: a Loadby removal van loads boxes at point A, drives across the city and delivers them at point B." focusable="false">
     <defs>
       <linearGradient id="sc-sky" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stop-color="#f59f5c" />
-        <stop offset=".5" stop-color="#fbcf98" />
-        <stop offset="1" stop-color="#fff2da" />
+        <stop class="sc-sky-a" offset="0" />
+        <stop class="sc-sky-b" offset=".5" />
+        <stop class="sc-sky-c" offset="1" />
       </linearGradient>
-      <radialGradient id="sc-sun"><stop offset="0" stop-color="#fff3c8" stop-opacity=".95" /><stop offset="1" stop-color="#fff3c8" stop-opacity="0" /></radialGradient>
+      <radialGradient id="sc-sun"><stop class="sc-sun-glow" offset="0" stop-opacity=".95" /><stop class="sc-sun-glow" offset="1" stop-opacity="0" /></radialGradient>
       <g id="sc-far">
-        {far.map((b) => <rect x={b.x.toFixed(1)} y={(372 - b.h).toFixed(1)} width={b.w.toFixed(1)} height={b.h.toFixed(1)} fill={b.h > 110 ? '#e6a98c' : '#eab99f'} />)}
+        {far.map((b) => <rect class={b.h > 110 ? 'sc-far-b' : 'sc-far-b t'} x={b.x.toFixed(1)} y={(372 - b.h).toFixed(1)} width={b.w.toFixed(1)} height={b.h.toFixed(1)} />)}
       </g>
       <g id="sc-near">
         {near.map((b) => (
           <g>
-            <rect x={b.x.toFixed(1)} y={(372 - b.h).toFixed(1)} width={b.w.toFixed(1)} height={b.h.toFixed(1)} fill="#234a82" />
-            {b.win.map((w) => <rect x={(b.x + w.x).toFixed(1)} y={(372 - b.h + w.y).toFixed(1)} width="6" height="9" rx="1.5" fill={w.on ? '#ffd27a' : '#3a66a6'} opacity={w.on ? 0.95 : 0.55} />)}
+            <rect class="sc-near-b" x={b.x.toFixed(1)} y={(372 - b.h).toFixed(1)} width={b.w.toFixed(1)} height={b.h.toFixed(1)} />
+            {b.win.map((w) => <rect class={w.on ? 'sc-w-on' : 'sc-w-off'} x={(b.x + w.x).toFixed(1)} y={(372 - b.h + w.y).toFixed(1)} width="6" height="9" rx="1.5" opacity={w.on ? 0.95 : 0.55} />)}
           </g>
         ))}
       </g>
@@ -70,10 +70,11 @@ const dashes = Array.from({ length: 9 }, (_, i) => i * 90);  // 90 period, 4 per
 
     <!-- sky, sun, clouds -->
     <rect width="600" height="580" fill="url(#sc-sky)" />
-    <g class="sc-sun"><circle cx="440" cy="150" r="120" fill="url(#sc-sun)" /><circle cx="440" cy="150" r="40" fill="#fff3c8" /></g>
-    <g class="sc-cloud c1" fill="#fff" opacity=".9"><ellipse cx="0" cy="0" rx="46" ry="14" /><ellipse cx="-18" cy="-10" rx="22" ry="15" /><ellipse cx="14" cy="-14" rx="26" ry="18" /></g>
-    <g class="sc-cloud c2" fill="#fff" opacity=".75"><ellipse cx="0" cy="0" rx="36" ry="11" /><ellipse cx="-14" cy="-8" rx="17" ry="12" /><ellipse cx="12" cy="-11" rx="20" ry="14" /></g>
-    <g class="sc-cloud c3" fill="#fff" opacity=".65"><ellipse cx="0" cy="0" rx="52" ry="15" /><ellipse cx="-20" cy="-11" rx="24" ry="16" /><ellipse cx="16" cy="-15" rx="28" ry="19" /></g>
+    <g class="sc-stars" aria-hidden="true">{[[60,40],[140,90],[230,30],[310,70],[380,25],[520,60],[560,120],[90,150],[470,35],[270,120],[20,100],[420,95]].map(([x, y], i) => <circle cx={x} cy={y} r={i % 3 === 0 ? 1.6 : 1.1} class="sc-star" style={`animation-delay:${-(i * 0.7).toFixed(1)}s`} />)}</g>
+    <g class="sc-sun"><circle cx="440" cy="150" r="120" fill="url(#sc-sun)" /><circle class="sc-sun-core" cx="440" cy="150" r="40" /></g>
+    <g class="sc-cloud c1" opacity=".9"><ellipse cx="0" cy="0" rx="46" ry="14" /><ellipse cx="-18" cy="-10" rx="22" ry="15" /><ellipse cx="14" cy="-14" rx="26" ry="18" /></g>
+    <g class="sc-cloud c2" opacity=".75"><ellipse cx="0" cy="0" rx="36" ry="11" /><ellipse cx="-14" cy="-8" rx="17" ry="12" /><ellipse cx="12" cy="-11" rx="20" ry="14" /></g>
+    <g class="sc-cloud c3" opacity=".65"><ellipse cx="0" cy="0" rx="52" ry="15" /><ellipse cx="-20" cy="-11" rx="24" ry="16" /><ellipse cx="16" cy="-15" rx="28" ry="19" /></g>
 
     <!-- skyline layers (parallax, synced to the truck) -->
     <g class="sc-layer sc-far-l">{farCopies.map((k) => <use href="#sc-far" x={k * FAR} />)}</g>

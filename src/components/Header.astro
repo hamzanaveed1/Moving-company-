@@ -17,13 +17,18 @@ const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWit
 <header class="site-header">
   <div class="container">
     <Logo />
-    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Open menu" data-menu-btn>
-      <Icon name="menu" />
-    </button>
     <nav class="nav" id="site-nav" aria-label="Main" data-nav data-open="false">
       {nav.map((n) => <a href={n.href} aria-current={isActive(n.href) ? 'page' : undefined}>{n.label}</a>)}
       <a class="btn btn-primary" href="/get-a-quote/">Get a free quote</a>
     </nav>
+    <div class="header-tools">
+      <button class="theme-btn" type="button" data-theme-toggle aria-label="Switch colour theme" title="Switch colour theme">
+        <Icon name="moon" class="i-moon" /><Icon name="sun" class="i-sun" />
+      </button>
+      <button class="menu-btn" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Open menu" data-menu-btn>
+        <Icon name="menu" />
+      </button>
+    </div>
   </div>
 </header>
 <script>

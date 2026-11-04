@@ -49,6 +49,13 @@ Needs Node 22+.
 
 Minimal and consistent by rule (documented at the top of `src/styles/global.css`): one cream page with a single white alternate, dark only for the closing call-to-action and footer, flat hairline cards, left-aligned headings, one section rhythm. Scrolling adds a soft header shadow and a gentle reveal that only starts once the visitor scrolls (so crawlers, accessibility tools and reduced-motion users always see the full page).
 
+## Light and dark mode
+
+- White light theme using the logo's navy; deep-blue dark theme; amber stays the accent in both. A sun/moon button in the header switches, remembers the choice, and (until chosen) follows the visitor's system setting live.
+- `public/theme-init.js` applies the theme before first paint (no white flash); `src/scripts/theme.ts` powers the button. Components use semantic tokens (`--bg`, `--surface`, `--heading`, `--sel` ...) defined for both themes at the top of `src/styles/global.css`. To change a colour, edit the token, not the component. The dark token block appears twice on purpose (explicit choice, and system-preference fallback); keep them identical.
+- The hero scene becomes a night scene (moon and stars), the logo swaps to its cream version, and the map and journey recolour automatically.
+- Verified with axe in both themes (0 contrast violations).
+
 ## Motion and interactivity (home page)
 
 - **Hero scene** (`src/components/HeroScene.astro`, `src/styles/home.css`): an inline SVG on one shared 12-second timeline, so van, skyline, road, wheels and route line stay in step. Each loop shows the next real route from `src/data/routes.ts`.

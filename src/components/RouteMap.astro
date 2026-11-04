@@ -75,7 +75,7 @@ const pad = 14;
 <div class="routemap" data-routemap>
   <svg class="mp" viewBox={`${-pad} ${-pad} ${(W + pad * 2).toFixed(0)} ${(H + pad * 2).toFixed(0)}`} role="group" aria-label="Map of our city-to-city routes across the UK">
     <defs>
-      <linearGradient id="mp-sea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#eaf3fb" /><stop offset="1" stop-color="#dcebf7" /></linearGradient>
+      <linearGradient id="mp-sea" x1="0" y1="0" x2="0" y2="1"><stop class="sc-sea-a" offset="0" /><stop class="sc-sea-b" offset="1" /></linearGradient>
       <filter id="mp-shadow" x="-5%" y="-5%" width="110%" height="110%"><feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#0c1f3d" flood-opacity=".14" /></filter>
     </defs>
     <rect x={-pad} y={-pad} width={(W + pad * 2).toFixed(0)} height={(H + pad * 2).toFixed(0)} fill="url(#mp-sea)" />

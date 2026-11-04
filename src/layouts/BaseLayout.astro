@@ -41,7 +41,11 @@ const jsonLd = [businessSchema(), websiteSchema(), ...schema];
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     <meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large, max-snippet:-1'} />
-    <meta name="theme-color" content="#0c1f3d" />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0a1a33" media="(prefers-color-scheme: dark)" />
+    <meta name="color-scheme" content="light dark" />
+    <!-- Applies the saved/system theme before first paint (no white flash in dark mode). Tiny, same-origin, cached. -->
+    <script is:inline src="/theme-init.js"></script>
     <meta name="format-detection" content="telephone=yes" />
 
     {criticalFonts.map((href) => <link rel="preload" as="font" type="font/woff2" href={href} crossorigin />)}
@@ -77,5 +81,6 @@ const jsonLd = [businessSchema(), websiteSchema(), ...schema];
     <main id="main"><slot /></main>
     <Footer />
     <script>import '../scripts/ui.ts';</script>
+    <script>import '../scripts/theme.ts';</script>
   </body>
 </html>

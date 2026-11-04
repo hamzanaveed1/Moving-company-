@@ -17,17 +17,17 @@
 }
 
 /* ---------- Scene card ---------- */
-.scene-card { --T: 12s; position: relative; border-radius: 22px; overflow: hidden; box-shadow: var(--shadow); aspect-ratio: 600 / 580; background: #f59f5c; isolation: isolate; }
+.scene-card { --T: 12s; position: relative; border-radius: 22px; overflow: hidden; box-shadow: var(--shadow); aspect-ratio: 600 / 580; background: var(--sc-sky-1); isolation: isolate; }
 @media (max-width: 920px) { .scene-card { border-radius: 20px; } }
 .scene-card .scene { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 
 /* overlays */
-.scene-route { position: absolute; top: 0.75rem; left: 0.75rem; max-width: calc(100% - 4.5rem); display: inline-flex; align-items: center; gap: 0.4rem; background: rgb(255 255 255 / 0.94); backdrop-filter: blur(6px); padding: 0.4rem 0.75rem 0.4rem 0.45rem; border-radius: 999px; font-weight: 700; font-size: 0.84rem; color: var(--navy-900); box-shadow: var(--shadow-sm); white-space: nowrap; animation: sc-fade var(--T) linear infinite; }
+.scene-route { position: absolute; top: 0.75rem; left: 0.75rem; max-width: calc(100% - 4.5rem); display: inline-flex; align-items: center; gap: 0.4rem; background: var(--glass); backdrop-filter: blur(6px); padding: 0.4rem 0.75rem 0.4rem 0.45rem; border-radius: 999px; font-weight: 700; font-size: 0.84rem; color: var(--heading); box-shadow: var(--shadow-sm); white-space: nowrap; animation: sc-fade var(--T) linear infinite; }
 .scene-route svg { width: 15px; height: 15px; color: var(--muted); flex: none; }
 .scene-route .pin { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; font-size: 0.72rem; font-weight: 800; color: var(--navy-950); background: var(--amber-500); flex: none; }
 .scene-route .pin.b { background: var(--green-600); color: #fff; }
-.scene-pause { position: absolute; top: 0.75rem; right: 0.75rem; width: 36px; height: 36px; border-radius: 50%; border: 0; background: rgb(255 255 255 / 0.94); color: var(--navy-900); display: grid; place-items: center; cursor: pointer; box-shadow: var(--shadow-sm); transition: transform 0.2s var(--ease), background 0.2s; }
-.scene-pause:hover { transform: scale(1.08); background: #fff; }
+.scene-pause { position: absolute; top: 0.75rem; right: 0.75rem; width: 36px; height: 36px; border-radius: 50%; border: 0; background: var(--glass); color: var(--heading); display: grid; place-items: center; cursor: pointer; box-shadow: var(--shadow-sm); transition: transform 0.2s var(--ease), background 0.2s; }
+.scene-pause:hover { transform: scale(1.08); background: var(--surface); }
 .scene-pause svg { width: 16px; height: 16px; fill: currentColor; stroke: none; }
 .scene-pause .i-play { display: none; }
 .scene-pause[aria-pressed='true'] .i-pause { display: none; }
@@ -117,13 +117,13 @@
 .journey-steps li { position: relative; padding-top: 4.2rem; }
 .journey-steps h3 { font-size: 1.08rem; margin-bottom: 0.3em; transition: color 0.5s var(--ease), transform 0.6s var(--ease); }
 .journey-steps p { margin: 0; color: var(--muted); font-size: 0.95rem; max-width: 30ch; transition: transform 0.6s var(--ease); }
-.jt-dot { position: absolute; top: 1.1rem; left: 0; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: #fff; border: 2px solid var(--line-strong); color: var(--muted); font-weight: 800; font-size: 0.95rem; z-index: 2; transition: background 0.5s var(--ease), border-color 0.5s var(--ease), color 0.4s, transform 0.6s var(--ease), box-shadow 0.5s; }
+.jt-dot { position: absolute; top: 1.1rem; left: 0; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: var(--surface); border: 2px solid var(--line-strong); color: var(--muted); font-weight: 800; font-size: 0.95rem; z-index: 2; transition: background 0.5s var(--ease), border-color 0.5s var(--ease), color 0.4s, transform 0.6s var(--ease), box-shadow 0.5s; }
 .jt-dot::after { content: ''; position: absolute; inset: -7px; border-radius: 50%; border: 2px solid var(--amber-500); opacity: 0; transform: scale(0.7); }
 
 /* the road: a hairline with dashed lane marking; the lit route fills behind the van */
 .journey-track { position: absolute; z-index: 1; top: calc(1.1rem + 20px); height: 0; left: var(--tl, 20px); right: var(--tr, 15%); pointer-events: none; }
 .jt-line, .jt-fill { position: absolute; left: 0; top: 0; height: 3px; margin-top: -1.5px; border-radius: 2px; }
-.jt-line { right: 0; background: repeating-linear-gradient(90deg, #cfc7b4 0 9px, transparent 9px 17px); }
+.jt-line { right: 0; background: repeating-linear-gradient(90deg, var(--road) 0 9px, transparent 9px 17px); }
 .jt-fill { width: calc(var(--p) * 100%); background: linear-gradient(90deg, #f5a524, #ffb73d); box-shadow: 0 0 10px rgb(245 165 36 / 0.55); }
 .jt-van .jt-top { display: none; } /* top-down van is phone-only; this selector must outrank '.jt-van svg' */
 .jt-van { position: absolute; top: 0; left: calc(var(--p) * (100% - 58px)); width: 68px; height: 42px; transform: translate(-50%, -92%); filter: drop-shadow(0 4px 5px rgb(12 31 61 / 0.2)); z-index: 3; }
@@ -133,15 +133,15 @@
 .jt-speed { position: absolute; right: 96%; top: 18%; width: 34px; height: 24px; opacity: var(--v); }
 .jt-speed i { position: absolute; right: 0; height: 2px; border-radius: 2px; background: linear-gradient(270deg, rgb(12 31 61 / 0.35), transparent); }
 .jt-speed i:nth-child(1) { top: 2px; width: 30px; } .jt-speed i:nth-child(2) { top: 11px; width: 22px; } .jt-speed i:nth-child(3) { top: 20px; width: 28px; }
-.jt-end { position: absolute; right: 0; top: 0; width: 44px; height: 44px; transform: translate(50%, -50%); border-radius: 50%; display: grid; place-items: center; background: #fff; border: 2px solid var(--line-strong); color: var(--muted); transition: background 0.6s var(--ease), color 0.6s, border-color 0.6s, box-shadow 0.6s; z-index: 1; }
+.jt-end { position: absolute; right: 0; top: 0; width: 44px; height: 44px; transform: translate(50%, -50%); border-radius: 50%; display: grid; place-items: center; background: var(--surface); border: 2px solid var(--line-strong); color: var(--muted); transition: background 0.6s var(--ease), color 0.6s, border-color 0.6s, box-shadow 0.6s; z-index: 1; }
 .jt-end svg { width: 20px; height: 20px; }
 .journey.is-done .jt-end { background: var(--green-600); border-color: var(--green-600); color: #fff; box-shadow: 0 0 0 7px rgb(28 138 92 / 0.16); }
 
 /* steps the van has reached */
-.journey-steps li.on .jt-dot { background: var(--navy-900); border-color: var(--navy-900); color: #fff; box-shadow: 0 0 0 5px rgb(12 31 61 / 0.1); }
+.journey-steps li.on .jt-dot { background: var(--sel); border-color: var(--sel); color: #fff; box-shadow: 0 0 0 5px var(--ring-soft); }
 .journey-steps li.cur .jt-dot { transform: scale(1.1); }
 .journey-steps li.cur .jt-dot::after { animation: jt-ping 1.8s var(--ease) infinite; }
-.journey-steps li.cur h3 { color: var(--navy-900); }
+.journey-steps li.cur h3 { color: var(--heading); }
 .journey.is-live .journey-steps li:not(.on) h3, .journey.is-live .journey-steps li:not(.on) p { transform: translateY(6px); } /* text stays full strength (contrast) */
 @keyframes jt-ping { 0% { opacity: 0.9; transform: scale(0.75); } 100% { opacity: 0; transform: scale(1.35); } }
 
@@ -155,7 +155,7 @@
   /* the road runs straight down through the centres of the dots */
   .journey-track { top: var(--tt, 19px); bottom: var(--tb, 4.6rem); left: 0; right: auto; width: 38px; height: auto; }
   .jt-line, .jt-fill { left: 19px; top: 0; width: 3px; margin: 0 0 0 -1.5px; border-radius: 2px; }
-  .jt-line { height: 100%; right: auto; background: repeating-linear-gradient(180deg, #cfc7b4 0 9px, transparent 9px 17px); }
+  .jt-line { height: 100%; right: auto; background: repeating-linear-gradient(180deg, var(--road) 0 9px, transparent 9px 17px); }
   .jt-fill { height: calc(var(--p) * 100%); width: 3px; background: linear-gradient(180deg, #f5a524, #ffb73d); }
   /* a top-down van drives down the road and parks just before the home marker */
   .jt-van > svg:not(.jt-top) { display: none; }
@@ -170,25 +170,25 @@
 @media (prefers-reduced-motion: reduce) { .journey-steps li.cur .jt-dot::after { animation: none; } .journey.is-live .journey-steps li:not(.on) h3, .journey.is-live .journey-steps li:not(.on) p { transform: none; } }
 
 /* ---------- UK route map ---------- */
-.routemap { background: #eaf3fb; border-radius: 22px; overflow: hidden; border: 1px solid var(--line); box-shadow: var(--shadow-sm); max-width: 440px; width: 100%; margin-inline: auto; }
+.routemap { background: var(--map-sea-1); border-radius: 22px; overflow: hidden; border: 1px solid var(--line); box-shadow: var(--shadow-sm); max-width: 440px; width: 100%; margin-inline: auto; }
 .routemap .mp { display: block; width: 100%; height: auto; }
-.mp-land { fill: #fffdf8; stroke: #d9cfb8; stroke-width: 1.2; stroke-linejoin: round; }
-.rt { fill: none; stroke: #e3a23a; stroke-opacity: 0.55; stroke-width: 1.6; stroke-linecap: round; transition: stroke-opacity 0.3s, stroke-width 0.3s, stroke 0.3s; }
+.mp-land { fill: var(--map-land); stroke: var(--map-land-line); stroke-width: 1.2; stroke-linejoin: round; }
+.rt { fill: none; stroke: var(--map-route); stroke-opacity: 0.55; stroke-width: 1.6; stroke-linecap: round; transition: stroke-opacity 0.3s, stroke-width 0.3s, stroke 0.3s; }
 .mp-van { transition: opacity 0.3s; }
 .mp-city { cursor: pointer; outline: none; }
 .mp-hit { fill: transparent; }
-.mp-node { fill: #fff; stroke: var(--navy-900); stroke-width: 2.2; transform-box: fill-box; transform-origin: center; transition: transform 0.25s var(--ease), fill 0.25s, stroke 0.25s; }
-.mp-city text { font-family: var(--font-body); font-weight: 700; font-size: 10.5px; fill: var(--navy-900); paint-order: stroke; stroke: #fffdf8; stroke-width: 3.2px; stroke-linejoin: round; pointer-events: none; }
+.mp-node { fill: var(--map-node); stroke: var(--map-label); stroke-width: 2.2; transform-box: fill-box; transform-origin: center; transition: transform 0.25s var(--ease), fill 0.25s, stroke 0.25s; }
+.mp-city text { font-family: var(--font-body); font-weight: 700; font-size: 10.5px; fill: var(--map-label); paint-order: stroke; stroke: var(--map-halo); stroke-width: 3.2px; stroke-linejoin: round; pointer-events: none; }
 .mp-city:hover .mp-node, .mp-city:focus-visible .mp-node, .mp-city.is-active .mp-node { fill: var(--amber-500); transform: scale(1.5); }
-.mp-city:focus-visible .mp-node { stroke: var(--navy-950); stroke-width: 3; }
+.mp-city:focus-visible .mp-node { stroke: var(--accent); stroke-width: 3; }
 .mp-city:focus-visible text { fill: var(--amber-700); }
 /* highlight a city's routes, dim the rest */
 .routemap[data-active] .rt { stroke-opacity: 0.12; }
-.routemap[data-active] .rt.hot { stroke-opacity: 1; stroke: var(--navy-900); stroke-width: 2.6; }
+.routemap[data-active] .rt.hot { stroke-opacity: 1; stroke: var(--map-hot); stroke-width: 2.6; }
 .routemap[data-active] .mp-van { opacity: 0.12; }
 .routemap[data-active] .mp-van.hot { opacity: 1; }
-.mp-caption { margin: 0; padding: 0.85rem 1.1rem; background: #fff; border-top: 1px solid var(--line); font-size: 0.9rem; color: var(--muted); min-height: 3.2rem; display: flex; align-items: center; flex-wrap: wrap; gap: 0.2rem 0.6rem; }
-.mp-caption strong { color: var(--navy-900); }
+.mp-caption { margin: 0; padding: 0.85rem 1.1rem; background: var(--surface); border-top: 1px solid var(--line); font-size: 0.9rem; color: var(--muted); min-height: 3.2rem; display: flex; align-items: center; flex-wrap: wrap; gap: 0.2rem 0.6rem; }
+.mp-caption strong { color: var(--heading); }
 .mp-caption a { font-weight: 700; white-space: nowrap; }
 @media (prefers-reduced-motion: reduce) { .mp-vans { display: none; } .mp-node, .rt { transition: none; } }
 
@@ -196,3 +196,26 @@
 .network { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: clamp(2rem, 5vw, 4rem); align-items: center; }
 .network .routemap { margin-inline: 0; justify-self: end; }
 @media (max-width: 900px) { .network { grid-template-columns: minmax(0, 1fr); } .network .routemap { order: 2; justify-self: stretch; max-width: none; } }
+
+
+/* ---------- Scene theming: day in light mode, night in dark mode (colours come from the theme tokens) ---------- */
+.sc-sky-a { stop-color: var(--sc-sky-1); } .sc-sky-b { stop-color: var(--sc-sky-2); } .sc-sky-c { stop-color: var(--sc-sky-3); }
+.sc-sun-glow { stop-color: var(--sc-sun); } .sc-sun-core { fill: var(--sc-sun); }
+.sc-cloud { fill: var(--sc-cloud); }
+.sc-far-b { fill: var(--sc-far); } .sc-far-b.t { fill: var(--sc-far-2); }
+.sc-near-b { fill: var(--sc-near); }
+.sc-w-on { fill: var(--sc-win-on); } .sc-w-off { fill: var(--sc-win-off); }
+.sc-sea-a { stop-color: var(--map-sea-1); } .sc-sea-b { stop-color: var(--map-sea-2); }
+:root[data-theme='dark'] .sc-w-on { filter: drop-shadow(0 0 2px rgb(255 210 122 / 0.8)); }
+:root[data-theme='dark'] .sc-sun-core { filter: drop-shadow(0 0 10px rgb(210 225 255 / 0.7)); }
+
+/* stars only exist at night */
+.sc-stars { opacity: 0; transition: opacity 0.6s; }
+.sc-star { fill: #fff; animation: sc-twinkle 4s ease-in-out infinite; }
+:root[data-theme='dark'] .sc-stars { opacity: 1; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme]) .sc-stars { opacity: 1; } }
+@keyframes sc-twinkle { 0%, 100% { opacity: 0.35; } 50% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .sc-star { animation: none; opacity: 0.8; } }
+.sc-sun > circle:first-child { transition: opacity 0.4s; }
+:root[data-theme='dark'] .sc-sun > circle:first-child { opacity: 0.32; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme]) .sc-sun > circle:first-child { opacity: 0.32; } }
