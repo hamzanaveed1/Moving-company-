@@ -92,3 +92,7 @@ src/layouts/     BaseLayout (all SEO tags + JSON-LD)
 src/styles/      global.css design system
 scripts/         image generator
 ```
+
+## Analytics (Vercel Web Analytics)
+
+The site loads `@vercel/analytics` only on Vercel builds (`VERCEL=1`), from our own bundle, so the strict CSP is unchanged. It is cookieless and skips visitors who send Do Not Track. Turn it on once in the Vercel dashboard: Project > Analytics > Enable. Cookies and privacy pages already describe it.
