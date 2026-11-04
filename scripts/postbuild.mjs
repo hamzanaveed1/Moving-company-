@@ -87,7 +87,7 @@ const vercelConfig = {
   headers: [
     { source: '/(.*)', headers: Object.entries(securityHeaders).map(([key, value]) => ({ key, value })) },
     { source: '/_astro/(.*)', headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }] },
-    ...['/logo.png', '/og-default.png', '/apple-touch-icon.png', '/favicon.svg'].map((source) => ({
+    ...['/logo.png', '/og-default.png', '/apple-touch-icon.png', '/favicon.svg', '/favicon.ico', '/icon-192.png', '/icon-512.png'].map((source) => ({
       source,
       headers: [{ key: 'Cache-Control', value: 'public, max-age=604800' }],
     })),
@@ -116,6 +116,7 @@ const block = (path, headers) => `${path}\n${Object.entries(headers).map(([k, v]
 const headersFile = [
   block('/*', securityHeaders),
   block('/_astro/*', { 'Cache-Control': 'public, max-age=31536000, immutable' }),
+  block('/favicon.ico', { 'Cache-Control': 'public, max-age=604800' }),
   block('/*.png', { 'Cache-Control': 'public, max-age=604800' }),
   block('/*.svg', { 'Cache-Control': 'public, max-age=604800' }),
   block('/.well-known/*', { 'Content-Type': 'text/plain; charset=utf-8' }),

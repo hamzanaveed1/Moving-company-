@@ -32,9 +32,9 @@ const MARK = JSON.parse(readFileSync('scripts/logo-mark.json', 'utf8'));
 const MARK_COLORS = { light: '#F5A524', dark: '#DA8418', navy: '#0C1F3D' };
 const MARK_ASPECT = MARK.viewBox[2] / MARK.viewBox[3];
 let markUid = 0;
-const markBody = ({ onDark = false } = {}) => {
+const markBody = ({ onDark = false, adaptive = false } = {}) => {
   const id = `lbm${markUid++}`;
-  const layers = MARK.layers.map((l) => `<path d="${l.d}" fill="${l.role === 'navy' && onDark ? '#FFF4DC' : MARK_COLORS[l.role]}" fill-rule="evenodd"/>`).join('');
+  const layers = MARK.layers.map((l) => `<path d="${l.d}"${adaptive && l.role === 'navy' ? ' class="n"' : ''} fill="${l.role === 'navy' && onDark ? '#FFF4DC' : MARK_COLORS[l.role]}" fill-rule="evenodd"/>`).join('');
   return `<defs><clipPath id="${id}"><path d="${MARK.clip}" clip-rule="evenodd"/></clipPath></defs><g clip-path="url(#${id})">${layers}</g>`;
 };
 /** Mark as a nested <svg> placed at (x, y) with the given height (width follows the aspect ratio). */
@@ -397,10 +397,42 @@ for (const [slug, scene] of blog) {
 await sharp(Buffer.from(scenes.hero(1200, 1000))).webp({ quality: 90, effort: 5 }).toFile(`${OUT_IMG}/hero.webp`);
 await sharp(Buffer.from(scenes.og())).png().toFile('public/og-default.png');
 
+/** Tab icon: the mark alone (no tile) filling the square, so it is as large as possible at 16px.
+ *  `adaptive` adds a dark-mode rule inside the SVG so the navy face turns cream on dark browser tabs. */
+const markSquare = (size, { pad = 0.03, adaptive = false } = {}) => {
+  const h = size * (1 - 2 * pad);
+  const w = h * MARK_ASPECT;
+  const style = adaptive ? '<style>@media (prefers-color-scheme: dark){.n{fill:#FFF4DC}}</style>' : '';
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">${style}${markEl(((size - w) / 2).toFixed(2), (size * pad).toFixed(2), h.toFixed(2), { adaptive })}</svg>`;
+};
+/** Minimal .ico writer (PNG-compressed entries, supported by every current browser). */
+const makeIco = (pngs) => {
+  const head = Buffer.alloc(6 + 16 * pngs.length);
+  head.writeUInt16LE(0, 0); head.writeUInt16LE(1, 2); head.writeUInt16LE(pngs.length, 4);
+  let offset = head.length;
+  pngs.forEach(({ size, buf }, i) => {
+    const o = 6 + 16 * i;
+    head.writeUInt8(size >= 256 ? 0 : size, o); head.writeUInt8(size >= 256 ? 0 : size, o + 1);
+    head.writeUInt8(0, o + 2); head.writeUInt8(0, o + 3);
+    head.writeUInt16LE(1, o + 4); head.writeUInt16LE(32, o + 6);
+    head.writeUInt32LE(buf.length, o + 8); head.writeUInt32LE(offset, o + 12);
+    offset += buf.length;
+  });
+  return Buffer.concat([head, ...pngs.map((p) => p.buf)]);
+};
+
 // Logo files used by the website (public/) and by search engines
 writeFileSync('public/logo-mark.svg', markDoc(120));
 writeFileSync('public/logo-mark-light.svg', markDoc(120, { onDark: true })); // for dark backgrounds (footer)
-writeFileSync('public/favicon.svg', markTile(96));
+writeFileSync('public/favicon.svg', markSquare(100, { adaptive: true })); // browser tab (modern browsers; adapts to dark tabs)
+// Raster tab icons: rendered large, then downsampled with Lanczos for the cleanest 16/32/48px result
+const big = await sharp(Buffer.from(markSquare(1024)), { density: 72 }).png().toBuffer();
+const tab = async (n) => ({ size: n, buf: await sharp(big).resize(n, n, { kernel: 'lanczos3' }).sharpen({ sigma: 0.6 }).png().toBuffer() });
+const tabs = await Promise.all([16, 32, 48].map(tab));
+writeFileSync('public/favicon.ico', makeIco(tabs)); // Safari, older browsers, and anything that requests /favicon.ico
+await sharp(big).resize(48, 48, { kernel: 'lanczos3' }).png().toFile('public/favicon-48.png'); // Google Search wants a multiple of 48px
 await sharp(Buffer.from(markTile(512, { round: 0, scale: 0.7 }))).png().toFile('public/logo.png'); // schema.org logo
+await sharp(Buffer.from(markTile(512, { round: 0, scale: 0.62 }))).png().toFile('public/icon-512.png'); // installable-app icon
+await sharp(Buffer.from(markTile(192, { round: 0, scale: 0.62 }))).png().toFile('public/icon-192.png');
 await sharp(Buffer.from(markTile(180, { round: 0, scale: 0.62 }))).png().toFile('public/apple-touch-icon.png'); // iOS applies its own rounding
 console.log('done');
