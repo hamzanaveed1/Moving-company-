@@ -3,17 +3,17 @@
  * Anything left empty ('') is hidden on the site rather than shown as a blank or made-up claim.
  */
 export const site = {
-  name: 'Loadby',
-  legalName: 'Loadby', // OWNER: change to your registered company name once incorporated, e.g. 'Loadby Removals Ltd'
+  name: 'MovingPal',
+  legalName: 'MovingPal', // OWNER: change to your registered company name once incorporated, e.g. 'MovingPal Removals Ltd'
   tagline: 'Stress-free removals across the UK',
-  url: (import.meta.env.SITE as string | undefined) || 'https://loadby.co.uk',
+  url: (import.meta.env.SITE as string | undefined) || 'https://movingpal.co.uk',
   locale: 'en-GB',
 
   // ---- Contact (NAP): keep identical to your Google Business Profile ----
   phone: '0800 000 0000',
   phoneHref: '+448000000000',
   whatsapp: '448000000000', // digits only, with country code, no +
-  email: 'hello@loadby.co.uk',
+  email: 'hello@movingpal.co.uk',
   address: {
     street: '1 Example Street',
     city: 'Manchester',

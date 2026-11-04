@@ -6,9 +6,9 @@
  *
  * Environment variables (Vercel: Project > Settings > Environment Variables; Cloudflare: Pages > Settings):
  *   RESEND_API_KEY   secret
- *   TO_EMAIL         where messages go, e.g. hello@loadby.co.uk
- *   FROM_EMAIL       a sender on a domain verified in Resend, e.g. "Loadby <quotes@loadby.co.uk>"
- *   SITE_URL         e.g. https://loadby.co.uk  (used for the Origin check)
+ *   TO_EMAIL         where messages go, e.g. hello@movingpal.co.uk
+ *   FROM_EMAIL       a sender on a domain verified in Resend, e.g. "MovingPal <quotes@movingpal.co.uk>"
+ *   SITE_URL         e.g. https://movingpal.co.uk  (used for the Origin check)
  */
 
 export const POSTCODE = /^[A-Za-z]{1,2}\d[A-Za-z\d]?(\s*\d[A-Za-z]{2})?$/;

@@ -17,7 +17,7 @@ A sensible plan: build traffic and leads first, then enable ads on the blog if t
 | Original, useful content | 6 solid articles + 8 services + 12 cities + 14 routes. **Aim for 25+ articles** before applying; thin sites are the top rejection reason |
 | About, Contact, Privacy, Terms pages | Done |
 | Clear navigation, mobile-friendly, fast, accessible | Done (Lighthouse 100 / axe 0 violations) |
-| No placeholder text or fake details | **You:** replace the placeholder phone `0800 000 0000`, `hello@loadby.co.uk` (create the mailbox) and the demo address in `src/data/site.ts` first |
+| No placeholder text or fake details | **You:** replace the placeholder phone `0800 000 0000`, `hello@movingpal.co.uk` (create the mailbox) and the demo address in `src/data/site.ts` first |
 | Privacy policy covers advertising/cookies | Done automatically when ads are enabled |
 | Consent for UK/EEA visitors | **You:** create Google's free consent message (below). A Google-certified CMP is required there |
 | `ads.txt` | Generated at build when `PUBLIC_ADSENSE_CLIENT` is set |
@@ -30,7 +30,7 @@ A sensible plan: build traffic and leads first, then enable ads on the blog if t
    - optional `PUBLIC_ADSENSE_SLOT=...` (a manual in-article ad unit ID). Without it, Google "auto ads" place ads and you control them in the AdSense console. Exclude any page you do not want ads on.
 4. **On Vercel, regenerate `vercel.json`** with the same variable and commit it (`PUBLIC_ADSENSE_CLIENT=ca-pub-... npm run vercel:config`), because Vercel reads headers from that file. Then redeploy. The build then: adds the loader to blog articles, writes `/ads.txt`, and **relaxes the Content-Security-Policy for Google** (documented in `scripts/postbuild.mjs`).
 5. Open an article in a browser with DevTools open and confirm there are no CSP errors. This relaxation was written to Google's published guidance but could not be tested against live ads from here.
-6. Check `https://loadby.co.uk/ads.txt` shows `google.com, pub-..., DIRECT, f08c47fec0942fa0`.
+6. Check `https://movingpal.co.uk/ads.txt` shows `google.com, pub-..., DIRECT, f08c47fec0942fa0`.
 
 ## Rules to keep your account safe
 - Never click your own ads or ask others to.

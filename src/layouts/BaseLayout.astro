@@ -29,7 +29,7 @@ const { title, description, image = '/og-default.png', imageAlt, noindex = false
 // Vercel Web Analytics: only on Vercel builds (Vercel sets VERCEL=1). Cookieless; needs 'Enable' in the Vercel dashboard.
 const vercelAnalytics = Boolean(process.env.VERCEL) && !noindex;
 const brandSuffix = ` | ${site.name}`;
-const fullTitle = Astro.url.pathname === '/' ? title : title.length + brandSuffix.length <= 62 ? title + brandSuffix : title;
+const fullTitle = Astro.url.pathname === '/' ? title : title.length + brandSuffix.length <= 60 ? title + brandSuffix : title;
 const canonical = abs(Astro.url.pathname);
 const ogImage = image.startsWith('http') ? image : abs(image);
 const jsonLd = [businessSchema(), websiteSchema(), ...schema];

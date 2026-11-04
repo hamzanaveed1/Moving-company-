@@ -1,4 +1,4 @@
-# Loadby: UK moving company website (loadby.co.uk)
+# MovingPal: UK moving company website (movingpal.co.uk)
 
 Fast, SEO-first lead-generation site for a UK removals company. Built with [Astro](https://astro.build) (static HTML, almost no JavaScript).
 
@@ -43,7 +43,7 @@ Needs Node 22+.
 6. **Legal pages**: privacy, terms and cookies are templates. Get them reviewed. Add a consent banner before adding GA4 or ad pixels.
 7. **Reviews**: add real reviews to `src/data/reviews.ts`. Review sections and rating schema only appear when it has entries.
 8. **Images**: the blog/hero images are original illustrations (no licensing issues). Swap in real photos by replacing files in `src/assets/blog/` and `src/assets/img/`.
-9. **Logo**: the approved parcel-with-arrow mark. The original AI-generated image is kept in `docs/brand/logo-source.jpg`; the site uses a clean vector trace of it (`scripts/logo-mark.json`), which `npm run images` turns into `public/logo-mark.svg`, `public/logo-mark-light.svg` (for dark backgrounds), the favicon, app icons, schema logo, social card and the vans in the illustrations. The header and footer use `src/components/Logo.astro` (mark + "Loadby" wordmark in Manrope). To replace the logo, re-trace the new artwork into `scripts/logo-mark.json` and run `npm run images`.
+9. **Logo**: the approved parcel-with-arrow mark. The original AI-generated image is kept in `docs/brand/logo-source.jpg`; the site uses a clean vector trace of it (`scripts/logo-mark.json`), which `npm run images` turns into `public/logo-mark.svg`, `public/logo-mark-light.svg` (for dark backgrounds), the favicon, app icons, schema logo, social card and the vans in the illustrations. The header and footer use `src/components/Logo.astro` (mark + "MovingPal" wordmark in Manrope). To replace the logo, re-trace the new artwork into `scripts/logo-mark.json` and run `npm run images`.
 
 ## Design system
 

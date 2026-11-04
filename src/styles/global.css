@@ -1,7 +1,7 @@
 @import '@fontsource-variable/manrope';
 
 /* =====================================================================
-   Loadby design system: minimal, consistent, themeable.
+   MovingPal design system: minimal, consistent, themeable.
    - Light theme: white surfaces with the logo's navy. Dark theme: deep blue. Amber is the brand accent in both.
    - Components use SEMANTIC tokens (--bg, --surface, --heading, --sel ...), never raw colours, so one switch
      (the data-theme attribute on <html>) restyles the whole site.
@@ -288,7 +288,7 @@ ul, ol { margin: 0 0 1em; padding-left: 1.25em; }
 .site-header { position: sticky; top: 0; z-index: 50; background: var(--header-bg); backdrop-filter: saturate(1.4) blur(14px); border-bottom: 1px solid transparent; transition: border-color 0.25s, box-shadow 0.25s, background 0.25s; }
 .site-header.is-scrolled { border-bottom-color: var(--line); box-shadow: 0 6px 24px -16px rgb(12 31 61 / 0.25); background: var(--header-bg-s); }
 .site-header .container { display: flex; align-items: center; justify-content: space-between; min-height: var(--header-h); gap: 1rem; }
-/* Wordmark: "Load" in navy, "by" in amber (the route it travels). */
+/* Wordmark: "Moving" in navy, "Pal" in amber (the route it travels). */
 .brand { display: inline-flex; align-items: center; gap: 0.6rem; text-decoration: none; color: var(--heading); font-family: var(--font-head); font-weight: 800; font-size: 1.5rem; letter-spacing: -0.04em; line-height: 1; }
 .brand:hover { color: var(--heading); }
 .brand-mark { height: 40px; width: auto; flex: none; }

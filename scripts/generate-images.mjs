@@ -24,7 +24,7 @@ const C = {
   green: '#22a06b', red: '#e5484d', teal: '#14b8a6',
 };
 
-// ---------- brand mark: the Loadby logo ----------
+// ---------- brand mark: the MovingPal logo ----------
 // The logo is a vector trace of the approved design (scripts/logo-mark.json: tight viewBox, silhouette clip
 // path and three flat colour layers). One definition drives every output below (site files, favicon, app icons,
 // social card, vans), so the logo is identical everywhere.
@@ -374,7 +374,7 @@ scenes.og = (W = 1200, H = 630) => frame(W, H, `
   ${road(W, 540, 80)}
   ${van(660, 610, 1.1)}
   ${markEl(70, 62, 100, { onDark: true })}
-  ${outline('Load', 184, 148, 58, '#ffffff')}${outline('by', 184 + textWidth('Load', 58), 148, 58, C.amber)}
+  ${outline('Moving', 184, 148, 58, '#ffffff')}${outline('Pal', 184 + textWidth('Moving', 58), 148, 58, C.amber)}
   ${outline('Stress-free removals', 70, 272, 64, '#ffffff')}
   ${outline('across the UK', 70, 346, 64, C.amber)}
   ${outline('House · Flat · Office · City-to-city', 70, 410, 28, '#c9d6ee', 600, -0.01)}`);

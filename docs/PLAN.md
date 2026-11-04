@@ -1,6 +1,6 @@
 # Moving Company Website: Master Plan (UK)
 
-> Brand: **Loadby** (loadby.co.uk). Brand name, contact details and claims live in one file: `src/data/site.ts`.
+> Brand: **MovingPal** (movingpal.co.uk). Brand name, contact details and claims live in one file: `src/data/site.ts`.
 
 ## 1. Goal
 

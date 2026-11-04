@@ -1,4 +1,4 @@
-# Deploying Loadby
+# Deploying MovingPal
 
 Primary target: **Vercel**. Cloudflare Pages is supported as an alternative (see the end). Both use the same code: the build writes the right headers for each, and the quote form handler (`server/quote-handler.js`) is wrapped for each host (`api/quote.js` for Vercel, `functions/api/quote.js` for Cloudflare).
 
@@ -13,24 +13,24 @@ Primary target: **Vercel**. Cloudflare Pages is supported as an alternative (see
 ## 2. Environment variables (Settings > Environment Variables, Production)
 | Variable | Value |
 |---|---|
-| `SITE_URL` | `https://loadby.co.uk` |
-| `SECURITY_CONTACT` | `mailto:security@loadby.co.uk` |
+| `SITE_URL` | `https://movingpal.co.uk` |
+| `SECURITY_CONTACT` | `mailto:security@movingpal.co.uk` |
 | `RESEND_API_KEY` | from resend.com (mark as **Sensitive**) |
 | `TO_EMAIL` | where quote requests should arrive |
-| `FROM_EMAIL` | `Loadby <quotes@loadby.co.uk>` (domain must be verified in Resend) |
+| `FROM_EMAIL` | `MovingPal <quotes@movingpal.co.uk>` (domain must be verified in Resend) |
 
 The build detects Vercel and points the quote form at `/api/quote` and the contact form at `/api/contact` automatically. Both use the same `TO_EMAIL` and `FROM_EMAIL` (you may want separate inboxes later; that is a small change in `server/`). After changing variables, **redeploy** so the build picks them up.
 
 ## 3. Make leads actually arrive
-1. Create a Resend account, verify `loadby.co.uk` (it gives you DNS records to add), create an API key.
+1. Create a Resend account, verify `movingpal.co.uk` (it gives you DNS records to add), create an API key.
 2. Redeploy, then **submit a real test quote and a real contact message** and confirm both emails arrive. The handler is covered by unit tests and Vercel's own CLI built the function successfully, but it has not been exercised against live Vercel and Resend.
 
-## 4. Domain (loadby.co.uk)
-1. Register `loadby.co.uk` at any registrar.
-2. Vercel > **Settings > Domains**: add `loadby.co.uk` and `www.loadby.co.uk`. Vercel shows the exact DNS records to create at your registrar (typically an A record for the apex and a CNAME for `www`). Use the values Vercel displays.
-3. Set `www.loadby.co.uk` to **redirect to `loadby.co.uk`** (a Redirect option next to the domain) so only one version is indexed.
-4. Email: `hello@loadby.co.uk` is shown on the site, so make it work (your registrar's email forwarding, Google Workspace, or Cloudflare Email Routing if DNS is on Cloudflare). Add `security@` too.
-5. Google Search Console: add the domain property, submit `https://loadby.co.uk/sitemap-index.xml`. Claim your Google Business Profile using the exact name, address and phone from `src/data/site.ts`.
+## 4. Domain (movingpal.co.uk)
+1. Register `movingpal.co.uk` at any registrar.
+2. Vercel > **Settings > Domains**: add `movingpal.co.uk` and `www.movingpal.co.uk`. Vercel shows the exact DNS records to create at your registrar (typically an A record for the apex and a CNAME for `www`). Use the values Vercel displays.
+3. Set `www.movingpal.co.uk` to **redirect to `movingpal.co.uk`** (a Redirect option next to the domain) so only one version is indexed.
+4. Email: `hello@movingpal.co.uk` is shown on the site, so make it work (your registrar's email forwarding, Google Workspace, or Cloudflare Email Routing if DNS is on Cloudflare). Add `security@` too.
+5. Google Search Console: add the domain property, submit `https://movingpal.co.uk/sitemap-index.xml`. Claim your Google Business Profile using the exact name, address and phone from `src/data/site.ts`.
 
 ## 5. Lock it down
 - Vercel > **Firewall**: add a rate-limit rule for `/api/quote` (for example 5 requests per 10 minutes per IP). Availability of rules depends on your plan. The handler also has a best-effort per-instance throttle as a backstop.
@@ -62,4 +62,4 @@ CI (`.github/workflows/ci.yml`) runs the same on every push.
 ---
 
 ## Alternative: Cloudflare Pages
-Free plan, global CDN, supports commercial use. Connect the repo (Workers & Pages > Create > Pages), framework Astro, build `npm run build`, output `dist`, env var `NODE_VERSION=22`. Add the same variables as above. The build detects Cloudflare, uses `dist/_headers` and routes the form to `functions/api/quote.js`. Add a WAF rate-limiting rule for `/api/quote`. Domain: add `loadby.co.uk` and `www` under Custom domains, with a redirect rule from `www` to the apex.
+Free plan, global CDN, supports commercial use. Connect the repo (Workers & Pages > Create > Pages), framework Astro, build `npm run build`, output `dist`, env var `NODE_VERSION=22`. Add the same variables as above. The build detects Cloudflare, uses `dist/_headers` and routes the form to `functions/api/quote.js`. Add a WAF rate-limiting rule for `/api/quote`. Domain: add `movingpal.co.uk` and `www` under Custom domains, with a redirect rule from `www` to the apex.

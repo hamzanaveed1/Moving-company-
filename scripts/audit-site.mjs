@@ -48,7 +48,7 @@ for (const f of files) {
   if (/\son[a-z]+="/i.test(html.replace(/<(script|style)[\s\S]*?<\/\1>/g, ''))) bad(`${url}: inline event handler attribute`);
   if (/javascript:/i.test(html)) bad(`${url}: javascript: URL`);
   if (!adsOn) {
-    const own = process.env.SITE_URL || 'https://loadby.co.uk';
+    const own = process.env.SITE_URL || 'https://movingpal.co.uk';
     for (const m of html.matchAll(/<(script|img|iframe|source|video|audio|link)\b[^>]*?\s(?:src|href|srcset)="(https?:\/\/[^"]+)"[^>]*>/g)) {
       const [tag, name, target] = m;
       // <link> may carry absolute URLs only for canonical/alternate/sitemap metadata

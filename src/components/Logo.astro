@@ -2,11 +2,12 @@
 import { site } from '../data/site';
 interface Props { light?: boolean }
 const { light = false } = Astro.props; // light = always use the version for dark backgrounds (footer)
-// Mark: the Loadby parcel-with-forward-arrow. Wordmark: "Load" + "by" in the brand font.
+// Mark: the parcel-with-forward-arrow. Wordmark: "Moving" + "Pal" in the brand font (split before the last capital letter).
 // Artwork source: scripts/logo-mark.json (rebuilt into public/logo-mark*.svg by `npm run images`).
-const name = site.name; // "Loadby"
-const head = name.slice(0, 4);
-const tail = name.slice(4);
+const name = site.name; // "MovingPal"
+const split = name.match(/^(.+?)([A-Z][a-z]*)$/);
+const head = split ? split[1] : name;
+const tail = split ? split[2] : '';
 ---
 <a href="/" class="brand" aria-label={`${name} home`}>
   {light ? (
