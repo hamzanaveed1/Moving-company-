@@ -12,8 +12,7 @@ const year = new Date().getFullYear();
       <Logo light />
       <p>{site.tagline}. House, flat and office removals, local moves and long-distance city-to-city relocations.</p>
       <p>
-        <a href={`tel:${site.phoneHref}`}><strong>{site.phone}</strong></a><br />
-        <a href={`mailto:${site.email}`}>{site.email}</a>
+        <a href={`mailto:${site.email}`}><strong>{site.email}</strong></a>
       </p>
       <address style="font-style:normal">
         {site.address.street}, {site.address.city}<br />{site.address.postcode}
@@ -58,7 +57,6 @@ const year = new Date().getFullYear();
   </div>
 </footer>
 <div class="mobile-bar" role="navigation" aria-label="Quick actions">
-  <a class="btn btn-ghost" href={`tel:${site.phoneHref}`}><Icon name="phone" /> Call</a>
-  <a class="btn btn-ghost" href={`https://wa.me/${site.whatsapp}`} rel="noopener"><Icon name="whatsapp" /> WhatsApp</a>
+  <a class="btn btn-ghost" href={`mailto:${site.email}`}><Icon name="mail" /> Email us</a>
   <a class="btn btn-primary" href="/get-a-quote/">Free quote</a>
 </div>

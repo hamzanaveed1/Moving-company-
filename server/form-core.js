@@ -6,10 +6,14 @@
  *
  * Environment variables (Vercel: Project > Settings > Environment Variables; Cloudflare: Pages > Settings):
  *   RESEND_API_KEY   secret
- *   TO_EMAIL         where messages go, e.g. hello@movingpal.co.uk
- *   FROM_EMAIL       a sender on a domain verified in Resend, e.g. "MovingPal <quotes@movingpal.co.uk>"
+ *   TO_EMAIL         optional: where messages go (default: customersupport@movingpal.co.uk)
+ *   FROM_EMAIL       optional: a sender on a domain verified in Resend (default: "MovingPal <customersupport@movingpal.co.uk>")
  *   SITE_URL         e.g. https://movingpal.co.uk  (used for the Origin check)
  */
+
+/** Default mailbox for every form. Override with the TO_EMAIL / FROM_EMAIL environment variables. */
+export const DEFAULT_TO = 'customersupport@movingpal.co.uk';
+export const DEFAULT_FROM = 'MovingPal <customersupport@movingpal.co.uk>';
 
 export const POSTCODE = /^[A-Za-z]{1,2}\d[A-Za-z\d]?(\s*\d[A-Za-z]{2})?$/;
 export const EMAIL = /^[^\s@]{1,64}@[^\s@]+\.[^\s@]{2,}$/;
@@ -94,14 +98,16 @@ export function createFormHandler(def) {
     if (errors.length) return json({ ok: false, error: 'invalid', fields: errors }, 400);
 
     // 6. Deliver
-    if (!env.RESEND_API_KEY || !env.TO_EMAIL || !env.FROM_EMAIL) return json({ ok: false, error: 'not_configured' }, 503);
+    if (!env.RESEND_API_KEY) return json({ ok: false, error: 'not_configured' }, 503);
+    const to = env.TO_EMAIL || DEFAULT_TO;
+    const from = env.FROM_EMAIL || DEFAULT_FROM;
     let res;
     try {
       res = await fetch('https://api.resend.com/emails', {
         method: 'POST',
         headers: { Authorization: `Bearer ${env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
         // Plain text only: customer-supplied content is never interpreted as HTML.
-        body: JSON.stringify({ from: env.FROM_EMAIL, to: [env.TO_EMAIL], reply_to: data[def.replyTo ?? 'email'], subject: def.subject(data).replace(/[\r\n]+/g, ' '), text: def.text(data) }),
+        body: JSON.stringify({ from, to: [to], reply_to: data[def.replyTo ?? 'email'], subject: def.subject(data).replace(/[\r\n]+/g, ' '), text: def.text(data) }),
       });
     } catch {
       return json({ ok: false, error: 'upstream' }, 502);

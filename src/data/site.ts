@@ -10,10 +10,8 @@ export const site = {
   locale: 'en-GB',
 
   // ---- Contact (NAP): keep identical to your Google Business Profile ----
-  phone: '0800 000 0000',
-  phoneHref: '+448000000000',
-  whatsapp: '448000000000', // digits only, with country code, no +
-  email: 'hello@movingpal.co.uk',
+  // No public phone number: customers contact us by email, the contact form or the quote form.
+  email: 'customersupport@movingpal.co.uk',
   address: {
     street: '1 Example Street',
     city: 'Manchester',

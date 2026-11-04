@@ -51,7 +51,7 @@ export const services: Service[] = [
       'People who want one team to pack, move, unpack and clear',
     ],
     process: [
-      { title: 'Tell us about the move', text: 'Complete the quote form or call. We ask about rooms, large items, access, parking and your date.' },
+      { title: 'Tell us about the move', text: 'Complete the quote form. We ask about rooms, large items, access, parking and your date.' },
       { title: 'Get a fixed written quote', text: 'You receive a clear price, the van and crew we plan to send, and what is and is not included.' },
       { title: 'Plan and pack', text: 'We confirm timings, agree any packing help, and send a checklist so nothing is missed.' },
       { title: 'Moving day', text: 'We protect, load, drive and unload in a planned order, then place furniture where you want it.' },
@@ -64,7 +64,7 @@ export const services: Service[] = [
     faqs: [
       { q: 'How much does a house removal cost?', a: 'It depends on the volume of belongings, the distance, access at both ends, crew size and any packing or storage. Local 2 to 3 bedroom moves usually cost less than a long-distance move of the same size. We give a fixed written quote after you tell us the details, so there are no surprises on the day.' },
       { q: 'Are my belongings insured while being moved?', a: 'Ask any removal company for the exact wording of their goods-in-transit policy, including the cover limit and excess, before you book. We will send ours with your quote so you can compare it fairly.' },
-      { q: 'Can you move me at short notice?', a: 'Often yes, especially midweek. Call us with your date and we will tell you honestly what we can do. Same-week moves are usually possible outside peak days.' },
+      { q: 'Can you move me at short notice?', a: 'Often yes, especially midweek. Email us your date and we will tell you honestly what we can do. Same-week moves are usually possible outside peak days.' },
       { q: 'Do you dismantle and rebuild furniture?', a: 'Yes. Beds, wardrobes, desks and most flat-pack pieces are taken apart, protected, and rebuilt in the new home as part of a standard house move.' },
     ],
     relatedPosts: ['moving-house-checklist-uk', 'how-much-does-moving-house-cost-uk', 'how-to-pack-for-a-house-move'],

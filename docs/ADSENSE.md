@@ -17,7 +17,7 @@ A sensible plan: build traffic and leads first, then enable ads on the blog if t
 | Original, useful content | 6 solid articles + 8 services + 12 cities + 14 routes. **Aim for 25+ articles** before applying; thin sites are the top rejection reason |
 | About, Contact, Privacy, Terms pages | Done |
 | Clear navigation, mobile-friendly, fast, accessible | Done (Lighthouse 100 / axe 0 violations) |
-| No placeholder text or fake details | **You:** replace the placeholder phone `0800 000 0000`, `hello@movingpal.co.uk` (create the mailbox) and the demo address in `src/data/site.ts` first |
+| No placeholder text or fake details | **You:** create the `customersupport@movingpal.co.uk` mailbox and replace the demo address in `src/data/site.ts` first |
 | Privacy policy covers advertising/cookies | Done automatically when ads are enabled |
 | Consent for UK/EEA visitors | **You:** create Google's free consent message (below). A Google-certified CMP is required there |
 | `ads.txt` | Generated at build when `PUBLIC_ADSENSE_CLIENT` is set |

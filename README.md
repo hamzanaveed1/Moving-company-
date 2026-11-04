@@ -35,7 +35,7 @@ Needs Node 22+.
 
 ## Before launch: edit these
 
-1. **`src/data/site.ts`**: brand name, phone, WhatsApp, email, address, hours, company/VAT number, insurance/trade-body claims. Empty trust fields are hidden, not shown blank.
+1. **`src/data/site.ts`**: brand name, email (no public phone number), address, hours, company/VAT number, insurance/trade-body claims. Empty trust fields are hidden, not shown blank.
 2. **Domain**: set `SITE_URL` in your host's environment variables (see `.env.example`). Canonicals, sitemap and social tags use it.
 3. **Lead delivery**: on Vercel or Cloudflare Pages set `RESEND_API_KEY`, `TO_EMAIL`, `FROM_EMAIL`, `SITE_URL` (see `docs/DEPLOY.md`). Elsewhere set `PUBLIC_FORM_ENDPOINT`. With no endpoint the form falls back to the visitor's email app. **Test a real submission before you spend on ads.**
 4. **Claims review**: service pages describe things like tail-lift vans, storage security, same-day delivery and quote turnaround. Check every operational statement is true for your business and edit `src/data/services.ts`, `locations.ts` and `routes.ts`. Remove cities and routes you do not serve.

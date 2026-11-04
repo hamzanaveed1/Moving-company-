@@ -1,8 +1,8 @@
 import type { Faq } from './services';
 
 export const generalFaqs: Faq[] = [
-  { q: 'How do I get a quote?', a: 'Complete our short quote form with your postcodes, property size and preferred date, or call us. We review your details, ask any follow-up questions, and send a clear written fixed-price quote, usually within a few hours.' },
-  { q: 'How far in advance should I book?', a: 'Four to six weeks is ideal, especially for Fridays, month-end and school holidays. We can often help at shorter notice, so call and ask.' },
+  { q: 'How do I get a quote?', a: 'Complete our short quote form with your postcodes, property size and preferred date. We review your details, ask any follow-up questions, and send a clear written fixed-price quote, usually within a few hours.' },
+  { q: 'How far in advance should I book?', a: 'Four to six weeks is ideal, especially for Fridays, month-end and school holidays. We can often help at shorter notice, so get in touch and ask.' },
   { q: 'What affects the price of a removal?', a: 'Mainly the volume of belongings, the distance, access at both ends (stairs, lifts, parking), the number of crew needed, and any extras such as packing or storage. We explain what is included in every quote.' },
   { q: 'Are my belongings insured?', a: 'You should always ask a removal company for the exact wording of its goods-in-transit insurance, including the cover limit, excess and exclusions. We provide ours with every quote.' },
   { q: 'Do you provide packing materials?', a: 'Yes. We can deliver boxes, wardrobe cartons, tape and packing paper ahead of the move, or pack for you with our packing service.' },

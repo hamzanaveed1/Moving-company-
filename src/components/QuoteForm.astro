@@ -352,7 +352,7 @@ const stepNames = ['Your move', 'Addresses', 'Date & extras', 'Contact'];
           const lines = Object.entries(data).map(([k, v]) => `${k}: ${v}`).join('\n');
           window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines)}`;
           status.className = 'form-status ok';
-          status.textContent = 'Your email app should open with your details ready to send. If it did not, please call us instead.';
+          status.textContent = 'Your email app should open with your details ready to send. If it did not, please email us instead.';
           submit.disabled = false;
         }
       } catch {
@@ -362,7 +362,7 @@ const stepNames = ['Your move', 'Addresses', 'Date & extras', 'Contact'];
         link.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines)}`;
         link.textContent = 'email us your details';
         status.className = 'form-status err';
-        status.textContent = 'Sorry, we could not send your request just now. Please call us or ';
+        status.textContent = 'Sorry, we could not send your request just now. Please ';
         status.append(link, '. Your details are filled in for you.');
         submit.disabled = false;
       }

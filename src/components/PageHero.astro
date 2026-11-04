@@ -15,7 +15,7 @@ const { eyebrow, h1, lead, crumbs, quoteHref = '/get-a-quote/', actions = true }
     {actions && (
       <div class="actions">
         <a class="btn btn-primary btn-lg" href={quoteHref}>Get a free quote <Icon name="arrow" /></a>
-        <a class="btn btn-ghost btn-lg" href={`tel:${site.phoneHref}`}><Icon name="phone" /> {site.phone}</a>
+        <a class="btn btn-ghost btn-lg" href={`mailto:${site.email}`}><Icon name="mail" /> Email us</a>
       </div>
     )}
     <slot />

@@ -21,7 +21,7 @@ const crumbs = [{ name: 'Home', href: '/' }, { name: 'About', href: '/about/' }]
         <div class="card"><div class="icon-box"><Icon name="list" /></div><h3>Plan first</h3><p>Access, stairs, parking and timings are agreed before moving day.</p></div>
         <div class="card"><div class="icon-box"><Icon name="shield" /></div><h3>Protect everything</h3><p>Blankets, wrap and floor protection as standard, and loads secured for the road.</p></div>
         <div class="card"><div class="icon-box"><Icon name="pound" /></div><h3>Price honestly</h3><p>Written fixed quotes that say what is included. If something changes, we tell you before, not after.</p></div>
-        <div class="card"><div class="icon-box"><Icon name="users" /></div><h3>Be reachable</h3><p>A real person who knows your move, on the phone or WhatsApp.</p></div>
+        <div class="card"><div class="icon-box"><Icon name="users" /></div><h3>Be reachable</h3><p>A real person who knows your move and answers your emails promptly.</p></div>
       </div>
     </div>
   </section>
@@ -34,7 +34,7 @@ const crumbs = [{ name: 'Home', href: '/' }, { name: 'About', href: '/about/' }]
         {site.companyNumber && (<><dt><strong>Company number</strong></dt><dd style="margin:0">{site.companyNumber}</dd></>)}
         {site.vatNumber && (<><dt><strong>VAT number</strong></dt><dd style="margin:0">{site.vatNumber}</dd></>)}
         <dt><strong>Address</strong></dt><dd style="margin:0">{site.address.street}, {site.address.city}, {site.address.postcode}</dd>
-        <dt><strong>Phone</strong></dt><dd style="margin:0"><a href={`tel:${site.phoneHref}`}>{site.phone}</a></dd>
+        <dt><strong>Email</strong></dt><dd style="margin:0"><a href={`mailto:${site.email}`}>{site.email}</a></dd>
         {site.trust.insuredText && (<><dt><strong>Insurance</strong></dt><dd style="margin:0">{site.trust.insuredText}</dd></>)}
         {site.trust.tradeBody && (<><dt><strong>Trade body</strong></dt><dd style="margin:0">{site.trust.tradeBody}</dd></>)}
       </dl>

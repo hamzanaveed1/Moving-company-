@@ -36,7 +36,6 @@ export const businessSchema = () => {
     url: abs('/'),
     logo: abs('/logo.png'),
     image: abs('/og-default.png'),
-    telephone: site.phoneHref,
     email: site.email,
     description:
       'Professional house, flat and office removals across the UK, including local moves and long-distance city-to-city relocations.',

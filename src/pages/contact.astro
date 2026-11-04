@@ -8,15 +8,13 @@ import { breadcrumbSchema } from '../lib/seo';
 const crumbs = [{ name: 'Home', href: '/' }, { name: 'Contact', href: '/contact/' }];
 const contactSchema = { '@context': 'https://schema.org', '@type': 'ContactPage', name: `Contact ${site.name}`, mainEntity: { '@id': abs('/#business') } };
 ---
-<BaseLayout title="Contact Us | Call, WhatsApp, Email or Message" description={`Contact ${site.name} by phone, WhatsApp, email or the contact form, or request a quote online. Open ${site.hours}.`} schema={[breadcrumbSchema(crumbs), contactSchema]}>
-  <PageHero eyebrow="Contact" h1="Talk to a real person about your move" lead="Call, message or send us the details. We reply quickly, and we will tell you honestly if we are not the right fit." crumbs={crumbs} actions={false} />
+<BaseLayout title="Contact Us | Email or Send a Message" description={`Contact ${site.name} by email or the contact form, or request a quote online. We reply within one working day.`} schema={[breadcrumbSchema(crumbs), contactSchema]}>
+  <PageHero eyebrow="Contact" h1="Talk to a real person about your move" lead="Email or send us the details. We reply quickly, and we will tell you honestly if we are not the right fit." crumbs={crumbs} actions={false} />
   <section class="section">
     <div class="container contact-layout">
       <div>
         <ul class="contact-list">
-          <li><Icon name="phone" /><div><strong>Call us</strong><a href={`tel:${site.phoneHref}`}>{site.phone}</a><span>{site.hours}</span></div></li>
-          <li><Icon name="whatsapp" /><div><strong>WhatsApp</strong><a href={`https://wa.me/${site.whatsapp}`} rel="noopener">Start a chat</a><span>Send photos of large items or your inventory.</span></div></li>
-          <li><Icon name="mail" /><div><strong>Email</strong><a href={`mailto:${site.email}`}>{site.email}</a><span>We aim to reply within one working day.</span></div></li>
+          <li><Icon name="mail" /><div><strong>Email</strong><a href={`mailto:${site.email}`}>{site.email}</a><span>We aim to reply within one working day. Photos of large items are welcome.</span></div></li>
           <li><Icon name="pin" /><div><strong>Address</strong><address>{site.legalName}<br />{site.address.street}<br />{site.address.city}, {site.address.postcode}</address></div></li>
         </ul>
         <p class="mt-2">Want a price? <a href="/get-a-quote/">Our quote form</a> takes about two minutes.</p>

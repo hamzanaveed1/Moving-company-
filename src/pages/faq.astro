@@ -8,7 +8,7 @@ import { breadcrumbSchema, faqSchema } from '../lib/seo';
 const crumbs = [{ name: 'Home', href: '/' }, { name: 'FAQs', href: '/faq/' }];
 ---
 <BaseLayout title="Removals FAQs | Your Moving Questions Answered" description="Answers to common questions about UK removals: quotes, pricing, insurance, packing, booking dates and what we can and cannot move." schema={[breadcrumbSchema(crumbs), faqSchema(generalFaqs)]}>
-  <PageHero eyebrow="FAQs" h1="Frequently asked questions" lead="Straight answers to the questions we hear most. If yours is not here, call or message us." crumbs={crumbs} actions={false} />
+  <PageHero eyebrow="FAQs" h1="Frequently asked questions" lead="Straight answers to the questions we hear most. If yours is not here, email us." crumbs={crumbs} actions={false} />
   <section class="section"><div class="container narrow"><FaqList faqs={generalFaqs} /></div></section>
   <CtaBand />
 </BaseLayout>

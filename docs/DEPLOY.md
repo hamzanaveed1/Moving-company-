@@ -14,10 +14,10 @@ Primary target: **Vercel**. Cloudflare Pages is supported as an alternative (see
 | Variable | Value |
 |---|---|
 | `SITE_URL` | `https://movingpal.co.uk` |
-| `SECURITY_CONTACT` | `mailto:security@movingpal.co.uk` |
-| `RESEND_API_KEY` | from resend.com (mark as **Sensitive**) |
-| `TO_EMAIL` | where quote requests should arrive |
-| `FROM_EMAIL` | `MovingPal <quotes@movingpal.co.uk>` (domain must be verified in Resend) |
+| `SECURITY_CONTACT` | `mailto:customersupport@movingpal.co.uk` (optional; this is the default) |
+| `RESEND_API_KEY` | from resend.com (mark as **Sensitive**). The only one you must set |
+| `TO_EMAIL` | optional: defaults to `customersupport@movingpal.co.uk` |
+| `FROM_EMAIL` | optional: defaults to `MovingPal <customersupport@movingpal.co.uk>` (domain must be verified in Resend) |
 
 The build detects Vercel and points the quote form at `/api/quote` and the contact form at `/api/contact` automatically. Both use the same `TO_EMAIL` and `FROM_EMAIL` (you may want separate inboxes later; that is a small change in `server/`). After changing variables, **redeploy** so the build picks them up.
 
@@ -29,7 +29,7 @@ The build detects Vercel and points the quote form at `/api/quote` and the conta
 1. Register `movingpal.co.uk` at any registrar.
 2. Vercel > **Settings > Domains**: add `movingpal.co.uk` and `www.movingpal.co.uk`. Vercel shows the exact DNS records to create at your registrar (typically an A record for the apex and a CNAME for `www`). Use the values Vercel displays.
 3. Set `www.movingpal.co.uk` to **redirect to `movingpal.co.uk`** (a Redirect option next to the domain) so only one version is indexed.
-4. Email: `hello@movingpal.co.uk` is shown on the site, so make it work (your registrar's email forwarding, Google Workspace, or Cloudflare Email Routing if DNS is on Cloudflare). Add `security@` too.
+4. Email: `customersupport@movingpal.co.uk` is shown on the site and receives every quote and contact message, so make the mailbox work (your registrar's email forwarding, Google Workspace, or Cloudflare Email Routing if DNS is on Cloudflare).
 5. Google Search Console: add the domain property, submit `https://movingpal.co.uk/sitemap-index.xml`. Claim your Google Business Profile using the exact name, address and phone from `src/data/site.ts`.
 
 ## 5. Lock it down

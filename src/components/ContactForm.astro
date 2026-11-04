@@ -48,7 +48,7 @@ const topics = ['General question', 'Existing booking', 'Business / office move'
   <div class="form-success" data-success hidden>
     <div class="icon-box"><Icon name="check" /></div>
     <h2 tabindex="-1" style="font-size:1.5rem">Thanks, we have your message</h2>
-    <p>We aim to reply within one working day. For anything urgent, call <a href={`tel:${site.phoneHref}`}>{site.phone}</a>.</p>
+    <p>We aim to reply within one working day. You can also email us at <a href={`mailto:${site.email}`}>{site.email}</a>.</p>
   </div>
 </form>
 
@@ -112,7 +112,7 @@ const topics = ['General question', 'Existing booking', 'Business / office move'
         link.href = mailto();
         link.textContent = 'email us directly';
         status.className = 'form-status err';
-        status.textContent = 'Sorry, we could not send your message just now. Please call us or ';
+        status.textContent = 'Sorry, we could not send your message just now. Please ';
         status.append(link, '. Your message is filled in for you.');
         submit.disabled = false;
       }

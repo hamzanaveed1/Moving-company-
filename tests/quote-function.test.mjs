@@ -65,7 +65,7 @@ test('control characters are stripped and long fields truncated', () => {
   assert.equal(data.notes.length, 1000);
 });
 
-test('503 when email provider is not configured, 502 when provider fails', async () => {
+test('503 when the email API key is missing, 502 when provider fails', async () => {
   assert.equal((await call({ request: req(good), env: { SITE_URL: env.SITE_URL } })).status, 503);
   const res = await withFetch(async () => new Response('x', { status: 500 }), () => call({ request: req(good), env }));
   assert.equal(res.status, 502);
@@ -101,4 +101,16 @@ test('client IP is read from Vercel and Cloudflare headers', () => {
   assert.equal(clientIp(h({ 'x-real-ip': '198.51.100.2' })), '198.51.100.2');
   assert.equal(clientIp(h({ 'cf-connecting-ip': '192.0.2.5', 'x-forwarded-for': '1.1.1.1' })), '192.0.2.5');
   assert.equal(clientIp(h({})), 'unknown');
+});
+
+test('leads go to customersupport@movingpal.co.uk by default, and TO_EMAIL overrides it', async () => {
+  const base = { RESEND_API_KEY: 'k', SITE_URL: env.SITE_URL };
+  let sent;
+  const grab = async (_u, init) => { sent = JSON.parse(init.body); return new Response('{}', { status: 200 }); };
+  await withFetch(grab, () => call({ request: req(good, { 'CF-Connecting-IP': '198.51.100.1' }), env: base }));
+  assert.deepEqual(sent.to, ['customersupport@movingpal.co.uk']);
+  assert.match(sent.from, /customersupport@movingpal\.co\.uk/);
+  assert.equal(sent.reply_to, 't@example.com');
+  await withFetch(grab, () => call({ request: req(good, { 'CF-Connecting-IP': '198.51.100.2' }), env: { ...base, TO_EMAIL: 'other@example.com' } }));
+  assert.deepEqual(sent.to, ['other@example.com']);
 });
