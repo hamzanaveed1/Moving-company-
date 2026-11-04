@@ -3,7 +3,7 @@
 
 const root = document.documentElement;
 const KEY = 'theme';
-const COLORS = { light: '#ffffff', dark: '#0a1a33' }; // browser UI colour (mobile address bar)
+const COLORS = { light: '#ffffff', dark: '#0d1016' }; // browser UI colour (mobile address bar)
 
 const stored = (): 'light' | 'dark' | null => {
   try { const v = localStorage.getItem(KEY); return v === 'light' || v === 'dark' ? v : null; } catch { return null; }
@@ -28,7 +28,12 @@ apply(stored() ?? (systemDark() ? 'dark' : 'light'));
 document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]').forEach((b) =>
   b.addEventListener('click', () => {
     const next = current() === 'dark' ? 'light' : 'dark';
-    try { localStorage.setItem(KEY, next); } catch { /* private mode: the choice lasts for this visit only */ }
+    // Choosing the same theme the phone is already using goes back to "automatic" (follow the phone from now on);
+    // choosing the opposite is remembered as an override.
+    try {
+      if ((next === 'dark') === systemDark()) localStorage.removeItem(KEY);
+      else localStorage.setItem(KEY, next);
+    } catch { /* private mode: the choice lasts for this visit only */ }
     // A short cross-fade so the switch feels smooth (skipped for reduced motion)
     if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       root.classList.add('theme-fade');
