@@ -40,15 +40,17 @@ export const businessSchema = () => {
     description:
       'Professional house, flat and office removals across the UK, including local moves and long-distance city-to-city relocations.',
     priceRange: '££',
-    address: {
-      '@type': 'PostalAddress',
-      streetAddress: site.address.street,
-      addressLocality: site.address.city,
-      addressRegion: site.address.region,
-      postalCode: site.address.postcode,
-      addressCountry: site.address.country,
-    },
-    geo: { '@type': 'GeoCoordinates', latitude: site.geo.lat, longitude: site.geo.lng },
+    ...(site.address && {
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress: site.address.street,
+        addressLocality: site.address.city,
+        addressRegion: site.address.region,
+        postalCode: site.address.postcode,
+        addressCountry: site.address.country,
+      },
+    }),
+    ...(site.geo && { geo: { '@type': 'GeoCoordinates', latitude: site.geo.lat, longitude: site.geo.lng } }),
     areaServed: { '@type': 'Country', name: 'United Kingdom' },
     openingHoursSpecification: site.hoursSpec.map((h) => ({
       '@type': 'OpeningHoursSpecification',

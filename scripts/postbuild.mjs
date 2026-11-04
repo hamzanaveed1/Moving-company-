@@ -86,6 +86,7 @@ const securityHeaders = {
 const vercelConfig = {
   $schema: 'https://openapi.vercel.sh/vercel.json',
   trailingSlash: true,
+  redirects: [{ source: '/quote', destination: '/get-a-quote/', permanent: true }],
   headers: [
     { source: '/(.*)', headers: Object.entries(securityHeaders).map(([key, value]) => ({ key, value })) },
     { source: '/_astro/(.*)', headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }] },

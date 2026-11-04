@@ -19,7 +19,7 @@ const adsOn = Boolean(process.env.PUBLIC_ADSENSE_CLIENT);
 for (const f of files) {
   const html = readFileSync(f, 'utf8');
   const url = urlOf(f);
-  const is404 = url.includes('404');
+  const is404 = url.includes('404') || /http-equiv="refresh"/.test(html); // 404 page and tiny redirect pages
   const title = html.match(/<title>(.*?)<\/title>/s)?.[1] ?? '';
   const desc = html.match(/<meta name="description" content="(.*?)"/s)?.[1] ?? '';
 

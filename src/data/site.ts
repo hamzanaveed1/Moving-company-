@@ -17,13 +17,9 @@ export const site = {
   // ---- Contact (NAP): keep identical to your Google Business Profile ----
   // No public phone number: customers contact us by email, the contact form or the quote form.
   email: 'customersupport@movingpal.co.uk',
-  address: {
-    street: '1 Example Street',
-    city: 'Manchester',
-    region: 'Greater Manchester',
-    postcode: 'M1 1AA',
-    country: 'GB',
-  },
+  // No public business address yet, so none is shown anywhere. When you have one, fill it in, for example:
+  //   { street: '12 High Street', city: 'Manchester', region: 'Greater Manchester', postcode: 'M1 1AA', country: 'GB' }
+  address: null as { street: string; city: string; region: string; postcode: string; country: string } | null,
   hours: 'Mon-Sat 7am-7pm, Sun 9am-5pm',
   hoursSpec: [
     { days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'], opens: '07:00', closes: '19:00' },
@@ -46,7 +42,8 @@ export const site = {
   social: [] as string[],
 
   // ---- Geo (used in LocalBusiness schema) ----
-  geo: { lat: 53.4808, lng: -2.2426 },
+  // Only used with an address above; leave null until then.
+  geo: null as { lat: number; lng: number } | null,
 
   // Google AdSense (OFF by default). Set PUBLIC_ADSENSE_CLIENT=ca-pub-XXXXXXXXXXXXXXXX only after your
   // AdSense account is approved. See docs/ADSENSE.md. Ads only ever load on blog articles.

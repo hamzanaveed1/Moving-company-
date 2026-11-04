@@ -15,7 +15,7 @@ const contactSchema = { '@context': 'https://schema.org', '@type': 'ContactPage'
       <div>
         <ul class="contact-list">
           <li><Icon name="mail" /><div><strong>Email</strong><a href={`mailto:${site.email}`}>{site.email}</a><span>We aim to reply within one working day. Photos of large items are welcome.</span></div></li>
-          <li><Icon name="pin" /><div><strong>Address</strong><address>{site.legalName}<br />{site.address.street}<br />{site.address.city}, {site.address.postcode}</address></div></li>
+          {site.address && <li><Icon name="pin" /><div><strong>Address</strong><address>{site.legalName}<br />{site.address.street}<br />{site.address.city}, {site.address.postcode}</address></div></li>}
         </ul>
         <p class="mt-2">Want a price? <a href="/get-a-quote/">Our quote form</a> takes about two minutes.</p>
       </div>

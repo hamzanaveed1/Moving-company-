@@ -14,9 +14,11 @@ const year = new Date().getFullYear();
       <p>
         <a href={`mailto:${site.email}`}><strong>{site.email}</strong></a>
       </p>
-      <address style="font-style:normal">
-        {site.address.street}, {site.address.city}<br />{site.address.postcode}
-      </address>
+      {site.address && (
+        <address style="font-style:normal">
+          {site.address.street}, {site.address.city}<br />{site.address.postcode}
+        </address>
+      )}
     </div>
     <div>
       <h2>Services</h2>

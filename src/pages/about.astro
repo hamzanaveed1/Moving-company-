@@ -33,7 +33,7 @@ const crumbs = [{ name: 'Home', href: '/' }, { name: 'About', href: '/about/' }]
         <dt><strong>Legal name</strong></dt><dd style="margin:0">{site.legalName}</dd>
         {site.companyNumber && (<><dt><strong>Company number</strong></dt><dd style="margin:0">{site.companyNumber}</dd></>)}
         {site.vatNumber && (<><dt><strong>VAT number</strong></dt><dd style="margin:0">{site.vatNumber}</dd></>)}
-        <dt><strong>Address</strong></dt><dd style="margin:0">{site.address.street}, {site.address.city}, {site.address.postcode}</dd>
+        {site.address && (<><dt><strong>Address</strong></dt><dd style="margin:0">{site.address.street}, {site.address.city}, {site.address.postcode}</dd></>)}
         <dt><strong>Email</strong></dt><dd style="margin:0"><a href={`mailto:${site.email}`}>{site.email}</a></dd>
         {site.trust.insuredText && (<><dt><strong>Insurance</strong></dt><dd style="margin:0">{site.trust.insuredText}</dd></>)}
         {site.trust.tradeBody && (<><dt><strong>Trade body</strong></dt><dd style="margin:0">{site.trust.tradeBody}</dd></>)}

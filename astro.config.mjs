@@ -7,6 +7,9 @@ const site = process.env.SITE_URL || 'https://movingpal.co.uk';
 // On Cloudflare Pages and Vercel the bundled /api/quote function handles the form, so wire it up automatically.
 if ((process.env.CF_PAGES || process.env.VERCEL) && !process.env.PUBLIC_FORM_ENDPOINT) process.env.PUBLIC_FORM_ENDPOINT = '/api/quote';
 
+// /quote is a common guess for the quote page: send it to the real one.
+const redirects = { '/quote': '/get-a-quote/' };
+
 /** Wrap markdown tables in a keyboard-focusable scroll container (WCAG 2.1.1). */
 function rehypeScrollTables() {
   const walk = (node) => {
@@ -36,6 +39,7 @@ try {
 export default defineConfig({
   site,
   trailingSlash: 'always',
+  redirects,
   build: {
     format: 'directory',
     // Never inline CSS: keeps the Content-Security-Policy strict (style-src 'self') and the CSS cacheable.
