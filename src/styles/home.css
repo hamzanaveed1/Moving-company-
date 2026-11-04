@@ -99,20 +99,10 @@
   .sc-cloud.c1 { transform: translate(120px, 78px); } .sc-cloud.c2 { transform: translate(380px, 138px); } .sc-cloud.c3 { transform: translate(250px, 196px); }
 }
 
-/* ---------- Scroll journey (pinned, cinematic) ---------- */
-/* The section is a tall "stage". Its content sticks to the screen while you scroll through the extra height,
-   and the van's progress follows that scroll, smoothed in JavaScript so it glides rather than snaps. */
-.journey-stage .journey-sticky { padding-block: var(--section) 1.5rem; }
-/* the call-to-action sits below the pinned stage (never inside it), so it can never overlap the next section */
+/* ---------- "How it works" journey (compact; the van drives once when it scrolls into view) ---------- */
+.journey-stage { padding-bottom: 1.5rem; }
+/* the call-to-action sits just below the road */
 .journey-cta { background: var(--bg-alt); padding-block: 0.5rem var(--section); }
-.journey-stage.is-pinned { height: calc(100svh + 190vh); padding-block: 0; }
-.journey-stage.is-pinned .journey-sticky { position: sticky; top: var(--header-h); height: calc(100svh - var(--header-h)); display: flex; flex-direction: column; justify-content: center; padding-block: 1.5rem; box-sizing: border-box; }
-@media (max-width: 760px) {
-  .journey-stage.is-pinned { height: calc(100svh + 150vh); }
-  .journey-stage.is-pinned .journey-sticky { height: calc(100svh - var(--header-h) - 72px); }
-  .journey-stage.is-pinned .journey-sticky .section-head { margin-bottom: 1.25rem; }
-  .journey-stage.is-pinned .journey-sticky h2 { font-size: 1.55rem; }
-}
 
 .journey { position: relative; --p: 1; --v: 0; --rot: 0; padding-bottom: 0.5rem; }
 .journey-steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; position: relative; }
