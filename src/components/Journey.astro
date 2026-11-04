@@ -1,0 +1,36 @@
+---
+// Scroll-driven "how it works": a van drives along the route as you scroll and each stop lights up as it arrives.
+// Progress (--p, 0..1) is set by src/scripts/home.ts. Without JavaScript every step is simply shown.
+const steps = [
+  { t: 'Tell us about your move', p: 'Two minutes online or one call. Postcodes, size, date and any access issues.' },
+  { t: 'Get a fixed quote', p: 'A clear written price, the van and crew we plan to send, and what is included.' },
+  { t: 'We plan the details', p: 'Timings, parking, lift bookings and optional packing are agreed before the day.' },
+  { t: 'Moving day, handled', p: 'We protect, load, drive, unload and place everything where you want it.' },
+];
+---
+<div class="journey" data-journey>
+  <div class="journey-track" aria-hidden="true">
+    <span class="jt-line"></span>
+    <span class="jt-fill"></span>
+    <span class="jt-van">
+      <svg viewBox="0 0 64 40" width="64" height="40" focusable="false">
+        <ellipse cx="30" cy="38" rx="26" ry="2.6" fill="#0c1f3d" opacity=".18" />
+        <rect x="2" y="6" width="38" height="24" rx="4" fill="#fff" stroke="#0c1f3d" stroke-width="1.6" />
+        <rect x="2" y="21" width="38" height="5" fill="#12305c" /><rect x="2" y="15" width="38" height="2.4" fill="#f5a524" />
+        <path d="M40 11h9.5a5 5 0 0 1 4 2l5 7.5a4 4 0 0 1 .8 2.4V30H40V11Z" fill="#fff" stroke="#0c1f3d" stroke-width="1.6" stroke-linejoin="round" />
+        <path d="M44 14.5h5a3 3 0 0 1 2.4 1.2l3 4.3H44v-5.5Z" fill="#a9d4f0" />
+        <circle class="jt-wheel" cx="14" cy="31" r="5.2" fill="#161b27" /><circle class="jt-wheel" cx="49" cy="31" r="5.2" fill="#161b27" />
+        <circle cx="14" cy="31" r="2" fill="#cfd6e4" /><circle cx="49" cy="31" r="2" fill="#cfd6e4" />
+      </svg>
+    </span>
+  </div>
+  <ol class="journey-steps">
+    {steps.map((s, i) => (
+      <li data-step>
+        <span class="jt-dot" aria-hidden="true"><b>{i + 1}</b></span>
+        <h3>{s.t}</h3>
+        <p>{s.p}</p>
+      </li>
+    ))}
+  </ol>
+</div>

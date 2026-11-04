@@ -52,3 +52,5 @@ if (!reduce) {
   };
   window.addEventListener('scroll', start, { passive: true });
 }
+
+export {}; // makes this file a module so its top-level names are private

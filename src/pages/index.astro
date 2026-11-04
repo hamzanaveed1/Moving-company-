@@ -1,12 +1,14 @@
 ---
-import { Picture } from 'astro:assets';
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon from '../components/Icon.astro';
 import FaqList from '../components/FaqList.astro';
 import CtaBand from '../components/CtaBand.astro';
 import PostCard from '../components/PostCard.astro';
-import hero from '../assets/img/hero.webp';
+import HeroScene from '../components/HeroScene.astro';
+import Journey from '../components/Journey.astro';
+import RouteMap from '../components/RouteMap.astro';
+import '../styles/home.css';
 import { site } from '../data/site';
 import { services } from '../data/services';
 import { locations } from '../data/locations';
@@ -31,12 +33,14 @@ const trustExtras = [
   schema={[faqSchema(faqs)]}
 >
   <section class="hero">
-    <div class="container">
-      <div>
+    <div class="container hero-grid">
+      <div class="hero-copy">
         <span class="eyebrow">UK removals · house, flat &amp; office</span>
         <h1>Moving made <em>simple</em>, anywhere in the UK</h1>
         <p class="lead">Local moves, city-to-city relocations and everything in between. A planned day, a careful crew and a fixed price you agree before we lift a box.</p>
-
+      </div>
+      <HeroScene />
+      <div class="hero-form">
         <form class="quickquote" action="/get-a-quote/" method="get" aria-label="Start your quote">
           <div>
             <label for="q-from">Moving from</label>
@@ -62,10 +66,6 @@ const trustExtras = [
           <li><Icon name="tick" />Trained, uniformed crews</li>
           <li><Icon name="tick" />No obligation</li>
         </ul>
-      </div>
-      <div class="hero-art">
-        <Picture formats={['avif', 'webp']} src={hero} alt="Removal van driving through a city skyline at sunset with moving boxes" width={900} height={750} widths={[480, 720, 900]} sizes="(max-width: 920px) 92vw, 540px" loading="eager" fetchpriority="high" />
-        <div class="hero-badge"><Icon name="shield" /><div><strong>Planned, not guessed</strong>We ask about access, stairs and parking before we quote.</div></div>
       </div>
     </div>
   </section>
@@ -106,12 +106,7 @@ const trustExtras = [
         <span class="eyebrow">How it works</span>
         <h2>Four steps from first call to the last box</h2>
       </div>
-      <ol class="steps">
-        <li><h3>Tell us about your move</h3><p>Two minutes online or one call. Postcodes, size, date and any access issues.</p></li>
-        <li><h3>Get a fixed quote</h3><p>A clear written price, the van and crew we plan to send, and what is included.</p></li>
-        <li><h3>We plan the details</h3><p>Timings, parking, lift bookings and optional packing are agreed before the day.</p></li>
-        <li><h3>Moving day, handled</h3><p>We protect, load, drive, unload and place everything where you want it.</p></li>
-      </ol>
+      <Journey />
       <p class="mt-2"><a class="btn btn-primary btn-lg" href="/get-a-quote/">Start my quote <Icon name="arrow" /></a></p>
     </div>
   </section>
@@ -138,15 +133,16 @@ const trustExtras = [
   </section>
 
   <section class="section alt">
-    <div class="container">
-      <div class="section-head">
+    <div class="container network">
+      <div>
         <span class="eyebrow">Where we work</span>
         <h2>Local expertise in cities across the UK</h2>
-        <p class="lead">Every city has its own streets, parking rules and property types. We plan each move around the place you are in.</p>
+        <p class="lead">Every city has its own streets, parking rules and property types. We plan each move around the place you are in, and run planned routes between them.</p>
+        <ul class="pills" style="margin-top:1.5rem">
+          {locations.map((l) => <li><a class="pill" href={`/locations/removals-${l.slug}/`}>Removals {l.name}</a></li>)}
+        </ul>
       </div>
-      <ul class="pills">
-        {locations.map((l) => <li><a class="pill" href={`/locations/removals-${l.slug}/`}>Removals {l.name}</a></li>)}
-      </ul>
+      <RouteMap />
     </div>
   </section>
 
@@ -190,4 +186,5 @@ const trustExtras = [
   </section>
 
   <CtaBand />
+  <script>import '../scripts/home.ts';</script>
 </BaseLayout>

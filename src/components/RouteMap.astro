@@ -1,0 +1,108 @@
+---
+import { locations } from '../data/locations';
+import { routes } from '../data/routes';
+
+// Stylised map of Great Britain (cropped at the Scottish Highlands), generated from real coordinates.
+// Cities and routes come from src/data, so adding a route there adds a line (and a driving van) here.
+const latMax = 56.7, latMin = 49.9, lonMin = -6.4, lonMax = 1.9;
+const k = 62; // px per degree of latitude
+const kx = k * Math.cos((54.5 * Math.PI) / 180); // shrink longitude so the shape is not stretched
+const W = (lonMax - lonMin) * kx;
+const H = (latMax - latMin) * k;
+const proj = (lat: number, lon: number): [number, number] => [(lon - lonMin) * kx, (latMax - lat) * k];
+
+// Coastline, clockwise from Land's End, as [lat, lon]
+const coast: [number, number][] = [
+  [50.07, -5.72], [50.12, -5.48], [50.15, -5.1], [50.3, -4.9], [50.33, -4.4], [50.37, -4.15], [50.6, -3.45], [50.7, -3.0], [50.6, -2.45], [50.72, -1.95],
+  [50.78, -1.3], [50.78, -0.75], [50.8, -0.2], [50.76, 0.28], [50.9, 0.7], [50.95, 1.0], [51.13, 1.35], [51.38, 1.45], [51.38, 1.0], [51.5, 0.6],
+  [51.6, 0.85], [51.75, 1.1], [51.95, 1.3], [52.45, 1.75], [52.95, 1.3], [52.95, 0.55], [52.85, 0.3], [53.05, 0.25], [53.35, 0.2], [53.58, 0.12],
+  [53.7, -0.25], [54.12, -0.08], [54.45, -0.6], [54.6, -1.15], [55.0, -1.4], [55.45, -1.6], [55.77, -2.0], [56.0, -2.6], [56.05, -3.1], [56.25, -2.6],
+  [56.4, -2.75], [56.7, -2.45], [57.15, -2.05], [57.5, -1.77], [57.7, -2.5], [57.65, -3.3], [57.6, -4.05], [57.85, -3.95], [58.15, -3.1], [58.64, -3.07],
+  [58.6, -4.0], [58.62, -5.0], [58.15, -5.15], [57.9, -5.2], [57.3, -5.75], [57.0, -5.8], [56.5, -5.45], [56.0, -5.6], [55.55, -5.65], [55.3, -5.78],
+  [55.55, -5.1], [55.45, -4.65], [55.0, -5.1], [54.85, -5.2], [54.65, -4.95], [54.85, -4.3], [54.95, -3.6], [54.95, -3.2], [54.6, -3.55], [54.2, -3.3],
+  [54.05, -3.2], [53.85, -3.05], [53.4, -3.05], [53.3, -3.45], [53.32, -3.85], [53.4, -4.45], [53.3, -4.65], [53.05, -4.4], [52.8, -4.7], [52.55, -4.1],
+  [52.1, -4.65], [51.88, -5.3], [51.65, -4.95], [51.6, -4.2], [51.62, -3.8], [51.45, -3.2], [51.55, -2.7], [51.45, -2.65], [51.25, -3.0], [51.2, -3.6],
+  [51.2, -4.2], [50.99, -4.53], [50.85, -4.55], [50.55, -4.95], [50.2, -5.48],
+];
+// Chaikin corner-cutting (2 passes) turns the rough polygon into a soft, natural-looking coastline
+let pts = coast.map(([la, lo]) => proj(la, lo));
+for (let pass = 0; pass < 2; pass++) {
+  const next: [number, number][] = [];
+  for (let i = 0; i < pts.length; i++) {
+    const a = pts[i], b = pts[(i + 1) % pts.length];
+    next.push([0.75 * a[0] + 0.25 * b[0], 0.75 * a[1] + 0.25 * b[1]], [0.25 * a[0] + 0.75 * b[0], 0.25 * a[1] + 0.75 * b[1]]);
+  }
+  pts = next;
+}
+const land = 'M' + pts.map(([x, y]) => `${x.toFixed(1)} ${y.toFixed(1)}`).join('L') + 'Z';
+
+// City positions and label placement [dx, dy, anchor]
+const geo: Record<string, { lat: number; lon: number; l: [number, number, 'start' | 'end' | 'middle'] }> = {
+  london: { lat: 51.51, lon: -0.13, l: [9, 14, 'start'] },
+  manchester: { lat: 53.48, lon: -2.24, l: [-8, -7, 'end'] },
+  birmingham: { lat: 52.48, lon: -1.9, l: [-9, 4, 'end'] },
+  leeds: { lat: 53.8, lon: -1.55, l: [9, -4, 'start'] },
+  liverpool: { lat: 53.41, lon: -2.98, l: [-8, 11, 'end'] },
+  bristol: { lat: 51.45, lon: -2.59, l: [3, 17, 'middle'] },
+  sheffield: { lat: 53.38, lon: -1.47, l: [9, 8, 'start'] },
+  newcastle: { lat: 54.98, lon: -1.61, l: [9, 3, 'start'] },
+  nottingham: { lat: 52.95, lon: -1.15, l: [9, 8, 'start'] },
+  glasgow: { lat: 55.86, lon: -4.25, l: [-9, 3, 'end'] },
+  edinburgh: { lat: 55.95, lon: -3.19, l: [9, -4, 'start'] },
+  cardiff: { lat: 51.48, lon: -3.18, l: [-9, 4, 'end'] },
+};
+const cities = locations
+  .filter((l) => geo[l.slug])
+  .map((l) => {
+    const g = geo[l.slug];
+    const [x, y] = proj(g.lat, g.lon);
+    const n = routes.filter((r) => r.fromSlug === l.slug || r.toSlug === l.slug).length;
+    return { slug: l.slug, name: l.name, x, y, label: g.l, n };
+  });
+const byslug = Object.fromEntries(cities.map((c) => [c.slug, c]));
+
+const lines = routes
+  .filter((r) => byslug[r.fromSlug] && byslug[r.toSlug])
+  .map((r, i) => {
+    const a = byslug[r.fromSlug], b = byslug[r.toSlug];
+    const dx = b.x - a.x, dy = b.y - a.y, len = Math.hypot(dx, dy) || 1;
+    const bow = (i % 2 ? 1 : -1) * len * 0.16;
+    const cx = (a.x + b.x) / 2 + (-dy / len) * bow, cy = (a.y + b.y) / 2 + (dx / len) * bow;
+    return { id: `rt-${i}`, from: r.fromSlug, to: r.toSlug, d: `M${a.x.toFixed(1)} ${a.y.toFixed(1)} Q${cx.toFixed(1)} ${cy.toFixed(1)} ${b.x.toFixed(1)} ${b.y.toFixed(1)}`, dur: (4 + (i % 5) * 1.1 + len / 90).toFixed(1), begin: ((i * 0.83) % 5).toFixed(1) };
+  });
+const pad = 14;
+---
+<div class="routemap" data-routemap>
+  <svg class="mp" viewBox={`${-pad} ${-pad} ${(W + pad * 2).toFixed(0)} ${(H + pad * 2).toFixed(0)}`} role="group" aria-label="Map of our city-to-city routes across the UK">
+    <defs>
+      <linearGradient id="mp-sea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#eaf3fb" /><stop offset="1" stop-color="#dcebf7" /></linearGradient>
+      <filter id="mp-shadow" x="-5%" y="-5%" width="110%" height="110%"><feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#0c1f3d" flood-opacity=".14" /></filter>
+    </defs>
+    <rect x={-pad} y={-pad} width={(W + pad * 2).toFixed(0)} height={(H + pad * 2).toFixed(0)} fill="url(#mp-sea)" />
+    <path class="mp-land" d={land} filter="url(#mp-shadow)" />
+    <g class="mp-routes">
+      {lines.map((l) => <path id={l.id} class="rt" data-from={l.from} data-to={l.to} d={l.d} />)}
+    </g>
+    <g class="mp-vans" aria-hidden="true">
+      {lines.map((l) => (
+        <g class="mp-van" data-from={l.from} data-to={l.to}>
+          <circle r="3.4" fill="#f5a524" stroke="#fff" stroke-width="1.6" opacity="0">
+            <!-- invisible until its start time, so no van sits parked at the map's corner -->
+            <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;.08;.9;1" dur={`${l.dur}s`} begin={`${l.begin}s`} repeatCount="indefinite" />
+          </circle>
+          <animateMotion dur={`${l.dur}s`} begin={`${l.begin}s`} repeatCount="indefinite" calcMode="spline" keyTimes="0;1" keySplines=".45 .05 .35 1"><mpath href={`#${l.id}`} /></animateMotion>
+        </g>
+      ))}
+    </g>
+    <g class="mp-cities">
+      {cities.map((c) => (
+        <a class="mp-city" href={`/locations/removals-${c.slug}/`} data-slug={c.slug} data-name={c.name} data-n={c.n} aria-label={`Removals in ${c.name}, ${c.n} routes`}>
+          <circle class="mp-hit" cx={c.x.toFixed(1)} cy={c.y.toFixed(1)} r="15" />
+          <circle class="mp-node" cx={c.x.toFixed(1)} cy={c.y.toFixed(1)} r="5" />
+          <text x={(c.x + c.label[0]).toFixed(1)} y={(c.y + c.label[1]).toFixed(1)} text-anchor={c.label[2]}>{c.name}</text>
+        </a>
+      ))}
+    </g>
+  </svg>
+  <p class="mp-caption" data-caption aria-live="polite"><span>Tap or hover a city to see its routes.</span></p>
+</div>

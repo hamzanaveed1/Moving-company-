@@ -25,7 +25,7 @@ Needs Node 22+.
 
 | Section | Pages |
 |---|---|
-| Home | conversion hub, hero quick-quote, services, routes, cities, guides, FAQ |
+| Home | conversion hub: animated hero scene (a van drives from A to B, cycling through your real routes), quick-quote, services, scroll-driven "how it works" journey, interactive UK route map, guides, FAQ |
 | Services | index + 8 service pages (house, flat, office, long-distance, local, packing, storage, man and van) |
 | Locations | index + 12 city pages with local access/parking/property content |
 | Routes | index + 14 city-to-city route pages (distance, drive time, plan) |
@@ -48,6 +48,13 @@ Needs Node 22+.
 ## Design system
 
 Minimal and consistent by rule (documented at the top of `src/styles/global.css`): one cream page with a single white alternate, dark only for the closing call-to-action and footer, flat hairline cards, left-aligned headings, one section rhythm. Scrolling adds a soft header shadow and a gentle reveal that only starts once the visitor scrolls (so crawlers, accessibility tools and reduced-motion users always see the full page).
+
+## Motion and interactivity (home page)
+
+- **Hero scene** (`src/components/HeroScene.astro`, `src/styles/home.css`): an inline SVG on one shared 12-second timeline, so van, skyline, road, wheels and route line stay in step. Each loop shows the next real route from `src/data/routes.ts`.
+- **Journey** (`Journey.astro`): the van drives along the steps as you scroll.
+- **Route map** (`RouteMap.astro`): generated from the cities and routes in `src/data`; hover or tap a city to highlight its routes.
+- **Accessibility and battery**: a visible Pause button (WCAG 2.2.2), animation stops automatically when off-screen, and with "reduce motion" enabled everything is a still image. Scripts: `src/scripts/home.ts`.
 
 ## Security, speed and accessibility
 

@@ -1,0 +1,165 @@
+/* =====================================================================
+   Home page: animated hero scene, scroll journey, UK route map.
+   Rules: transform/opacity only, one shared timeline (--T) for the scene,
+   everything pauses off-screen / on request, and prefers-reduced-motion gets a still image.
+   ===================================================================== */
+
+/* ---------- Hero layout: copy, scene, form (scene sits between copy and form on phones) ---------- */
+.hero .container.hero-grid { display: grid; grid-template-columns: minmax(0, 1.02fr) minmax(0, 0.98fr); grid-template-areas: 'copy art' 'form art'; column-gap: clamp(2rem, 5vw, 4rem); row-gap: 0; align-items: start; }
+.hero-copy { grid-area: copy; align-self: end; }
+.hero-form { grid-area: form; }
+.hero-grid .scene-card { grid-area: art; align-self: center; }
+.hero-copy .lead { margin-bottom: 1.5rem; }
+@media (max-width: 920px) {
+  .hero .container.hero-grid { grid-template-columns: minmax(0, 1fr); grid-template-areas: 'copy' 'art' 'form'; row-gap: 1.25rem; }
+  .hero-copy .lead { margin-bottom: 0; }
+  .hero-form .quickquote { margin-top: 0.25rem; }
+}
+
+/* ---------- Scene card ---------- */
+.scene-card { --T: 12s; position: relative; border-radius: 22px; overflow: hidden; box-shadow: var(--shadow); aspect-ratio: 600 / 580; background: #f59f5c; isolation: isolate; }
+@media (max-width: 920px) { .scene-card { border-radius: 20px; } }
+.scene-card .scene { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+
+/* overlays */
+.scene-route { position: absolute; top: 0.75rem; left: 0.75rem; max-width: calc(100% - 4.5rem); display: inline-flex; align-items: center; gap: 0.4rem; background: rgb(255 255 255 / 0.94); backdrop-filter: blur(6px); padding: 0.4rem 0.75rem 0.4rem 0.45rem; border-radius: 999px; font-weight: 700; font-size: 0.84rem; color: var(--navy-900); box-shadow: var(--shadow-sm); white-space: nowrap; animation: sc-fade var(--T) linear infinite; }
+.scene-route svg { width: 15px; height: 15px; color: var(--muted); flex: none; }
+.scene-route .pin { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; font-size: 0.72rem; font-weight: 800; color: var(--navy-950); background: var(--amber-500); flex: none; }
+.scene-route .pin.b { background: var(--green-600); color: #fff; }
+.scene-pause { position: absolute; top: 0.75rem; right: 0.75rem; width: 36px; height: 36px; border-radius: 50%; border: 0; background: rgb(255 255 255 / 0.94); color: var(--navy-900); display: grid; place-items: center; cursor: pointer; box-shadow: var(--shadow-sm); transition: transform 0.2s var(--ease), background 0.2s; }
+.scene-pause:hover { transform: scale(1.08); background: #fff; }
+.scene-pause svg { width: 16px; height: 16px; fill: currentColor; stroke: none; }
+.scene-pause .i-play { display: none; }
+.scene-pause[aria-pressed='true'] .i-pause { display: none; }
+.scene-pause[aria-pressed='true'] .i-play { display: block; }
+.scene-foot { position: absolute; left: 0.75rem; right: 0.75rem; bottom: 0.75rem; display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; background: rgb(12 31 61 / 0.88); backdrop-filter: blur(8px); color: #e6edf9; padding: 0.55rem 0.55rem 0.55rem 1rem; border-radius: 14px; font-size: 0.85rem; animation: sc-fade var(--T) linear infinite; }
+.scene-stats { display: inline-flex; gap: 0.6rem; align-items: baseline; flex-wrap: wrap; }
+.scene-stats b { color: #fff; font-weight: 800; }
+.scene-link { display: inline-flex; align-items: center; gap: 0.35rem; background: var(--amber-500); color: var(--navy-950); font-weight: 700; font-size: 0.82rem; text-decoration: none; padding: 0.4rem 0.8rem; border-radius: 999px; white-space: nowrap; transition: background 0.2s; }
+.scene-link:hover { background: #ffb73d; color: var(--navy-950); }
+.scene-link svg { width: 14px; height: 14px; }
+.scene-done { position: absolute; right: 0.75rem; top: 3.9rem; display: inline-flex; align-items: center; gap: 0.35rem; background: var(--green-600); color: #fff; font-weight: 700; font-size: 0.82rem; padding: 0.4rem 0.8rem 0.4rem 0.6rem; border-radius: 999px; box-shadow: var(--shadow-sm); opacity: 0; animation: sc-done var(--T) cubic-bezier(0.22, 0.7, 0.2, 1) infinite; }
+.scene-done svg { width: 16px; height: 16px; stroke-width: 2.6; }
+@media (max-width: 420px) { .scene-route { font-size: 0.78rem; } .scene-stats { font-size: 0.8rem; } .scene-link { padding: 0.4rem 0.65rem; } }
+
+/* ---------- Scene animation: one shared timeline, ease-in-out between "loading", "driving", "unloading" ---------- */
+.scene-card { --ease-drive: cubic-bezier(0.55, 0.05, 0.3, 1); }
+.sc-truck { animation: sc-truck var(--T) var(--ease-drive) infinite; }
+.sc-wheel { transform-box: view-box; animation: sc-wheel var(--T) var(--ease-drive) infinite; }
+.sc-far-l { animation: sc-far var(--T) var(--ease-drive) infinite; }
+.sc-near-l { animation: sc-near var(--T) var(--ease-drive) infinite; }
+.sc-lamp-l { animation: sc-lamp var(--T) var(--ease-drive) infinite; }
+.sc-dash-l { animation: sc-dash var(--T) var(--ease-drive) infinite; }
+.sc-progress { stroke-dasharray: 1 1; animation: sc-progress var(--T) var(--ease-drive) infinite; }
+.sc-pile { transform-box: fill-box; transform-origin: 50% 100%; }
+.sc-pile-a { animation: sc-pile-a var(--T) ease infinite; }
+.sc-pile-b { animation: sc-pile-b var(--T) ease infinite; }
+.sc-fx { animation: sc-fx var(--T) linear infinite; }
+.sc-body { animation: sc-idle 0.5s ease-in-out infinite; }
+.sc-sun { transform-box: fill-box; transform-origin: center; animation: sc-sunpulse 7s ease-in-out infinite; }
+.sc-cloud { animation: sc-cloud 70s linear infinite; }
+.sc-cloud.c1 { transform: translate(-200px, 78px); animation-duration: 64s; animation-delay: -18s; }
+.sc-cloud.c2 { transform: translate(-200px, 138px); animation-duration: 90s; animation-delay: -52s; --y: 138px; }
+.sc-cloud.c3 { transform: translate(-200px, 196px); animation-duration: 118s; animation-delay: -30s; --y: 196px; }
+.sc-cloud.c1 { --y: 78px; }
+.sc-ring { transform-box: fill-box; transform-origin: center; animation: sc-ring 2.2s ease-out infinite; }
+.sc-ring.r2 { animation-delay: -1.1s; }
+
+@keyframes sc-truck { 0% { transform: translateX(0); opacity: 0; } 3% { opacity: 1; } 12% { transform: translateX(0); } 78% { transform: translateX(330px); } 94% { transform: translateX(330px); opacity: 1; } 99% { transform: translateX(330px); opacity: 0; } 100% { transform: translateX(0); opacity: 0; } }
+@keyframes sc-wheel { 0%, 12% { transform: rotate(0deg); } 78%, 100% { transform: rotate(1485deg); } }
+@keyframes sc-far { 0%, 12% { transform: translateX(0); } 78%, 100% { transform: translateX(-200px); } }
+@keyframes sc-near { 0%, 12% { transform: translateX(0); } 78%, 100% { transform: translateX(-300px); } }
+@keyframes sc-lamp { 0%, 12% { transform: translateX(0); } 78%, 100% { transform: translateX(-450px); } }
+@keyframes sc-dash { 0%, 12% { transform: translateX(0); } 78%, 100% { transform: translateX(-360px); } }
+@keyframes sc-progress { 0%, 12% { stroke-dashoffset: 1; opacity: 1; } 78% { stroke-dashoffset: 0; opacity: 1; } 94% { opacity: 1; } 99%, 100% { stroke-dashoffset: 0; opacity: 0; } }
+@keyframes sc-pile-a { 0% { opacity: 0; transform: scale(0.8); } 4% { opacity: 1; transform: none; } 12% { opacity: 1; transform: none; } 18% { opacity: 0; transform: translate(34px, -4px) scale(0.5); } 100% { opacity: 0; } }
+@keyframes sc-pile-b { 0%, 80% { opacity: 0; transform: scale(0.55); } 88% { opacity: 1; transform: scale(1); } 96% { opacity: 1; transform: scale(1); } 99%, 100% { opacity: 0; transform: scale(1); } }
+@keyframes sc-fx { 0%, 16% { opacity: 0; } 26%, 66% { opacity: 1; } 78%, 100% { opacity: 0; } }
+@keyframes sc-fade { 0% { opacity: 0; } 3% { opacity: 1; } 96% { opacity: 1; } 99%, 100% { opacity: 0; } }
+@keyframes sc-done { 0%, 82% { opacity: 0; transform: translateY(10px) scale(0.9); } 88%, 96% { opacity: 1; transform: none; } 99%, 100% { opacity: 0; transform: none; } }
+@keyframes sc-idle { 50% { transform: translateY(-0.9px); } }
+@keyframes sc-sunpulse { 50% { transform: scale(1.07); } }
+@keyframes sc-cloud { from { transform: translate(-200px, var(--y)); } to { transform: translate(800px, var(--y)); } }
+@keyframes sc-ring { 0% { transform: scale(0.6); opacity: 0.9; } 100% { transform: scale(2.2); opacity: 0; } }
+
+/* Pause: by button, and automatically when the scene is off-screen (saves battery) */
+.scene-card.is-paused *, .scene-card.is-offscreen * { animation-play-state: paused !important; }
+
+/* Still image for people who prefer reduced motion: the van is mid-route, nothing moves */
+@media (prefers-reduced-motion: reduce) {
+  .scene-card * { animation: none !important; }
+  .scene-pause { display: none; }
+  .sc-truck { transform: translateX(200px); opacity: 1; }
+  .sc-wheel { transform: none; }
+  .sc-progress { stroke-dashoffset: 0.42; opacity: 1; }
+  .sc-pile-a { opacity: 0; } .sc-pile-b { opacity: 0; }
+  .sc-fx { opacity: 0; }
+  .scene-done { display: none; }
+  .scene-route, .scene-foot { opacity: 1; }
+  .sc-cloud.c1 { transform: translate(120px, 78px); } .sc-cloud.c2 { transform: translate(380px, 138px); } .sc-cloud.c3 { transform: translate(250px, 196px); }
+}
+
+/* ---------- Scroll journey ---------- */
+.journey { position: relative; --p: 1; }
+.journey-steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; position: relative; }
+.journey-steps li { position: relative; padding-top: 3.9rem; }
+.journey-steps h3 { font-size: 1.08rem; margin-bottom: 0.3em; }
+.journey-steps p { margin: 0; color: var(--muted); font-size: 0.95rem; max-width: 30ch; }
+.jt-dot { position: absolute; top: 1.1rem; left: 0; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: #fff; border: 2px solid var(--line-strong); color: var(--muted); font-weight: 800; font-size: 0.9rem; z-index: 2; transition: background 0.4s var(--ease), border-color 0.4s var(--ease), color 0.4s, transform 0.4s var(--ease), box-shadow 0.4s; }
+.journey-steps li h3, .journey-steps li p { transition: opacity 0.5s var(--ease), transform 0.5s var(--ease); }
+
+/* the road (horizontal on desktop): from the centre of dot 1 to the centre of dot 4 */
+.journey-track { position: absolute; z-index: 1; top: 1.1rem; height: 34px; left: var(--tl, 17px); right: var(--tr, calc(25% - 1.125rem - 17px)); pointer-events: none; } /* --tl/--tr are measured from the real dots by home.ts */
+.jt-line, .jt-fill { position: absolute; left: 0; top: 50%; height: 4px; margin-top: -2px; border-radius: 2px; }
+.jt-line { right: 0; background: repeating-linear-gradient(90deg, var(--line-strong) 0 10px, transparent 10px 18px); }
+.jt-fill { width: calc(var(--p) * 100%); background: var(--amber-500); }
+.jt-van { position: absolute; top: 50%; left: calc(var(--p) * 100%); transform: translate(-50%, -62%); filter: drop-shadow(0 3px 4px rgb(12 31 61 / 0.18)); will-change: left; }
+.jt-van svg { display: block; width: 64px; height: auto; }
+.jt-wheel { transform-box: fill-box; transform-origin: center; }
+
+/* steps reached by the van */
+/* Not-yet-reached steps sit slightly lower; text stays at full strength so it always meets contrast rules */
+.journey.is-live .journey-steps li:not(.on) h3, .journey.is-live .journey-steps li:not(.on) p { transform: translateY(5px); }
+.journey-steps li.on .jt-dot { background: var(--navy-900); border-color: var(--navy-900); color: #fff; box-shadow: 0 0 0 5px rgb(12 31 61 / 0.1); transform: scale(1.06); }
+
+@media (max-width: 760px) {
+  .journey-steps { grid-template-columns: 1fr; gap: 1.6rem; padding-left: 3.4rem; }
+  .journey-steps li { padding-top: 0; min-height: 3.2rem; }
+  .jt-dot { top: 0; left: -3.4rem; }
+  /* the road runs down the left, from dot 1 to dot 4 */
+  .journey-track { top: var(--tt, 17px); bottom: var(--tb, 4rem); left: 16px; right: auto; width: 34px; height: auto; }
+  .jt-line, .jt-fill { left: 50%; top: 0; width: 4px; margin: 0 0 0 -2px; border-radius: 2px; }
+  .jt-line { height: 100%; right: auto; background: repeating-linear-gradient(180deg, var(--line-strong) 0 10px, transparent 10px 18px); }
+  .jt-fill { height: calc(var(--p) * 100%); width: 4px; }
+  .jt-van { left: 50%; top: calc(var(--p) * 100%); transform: translate(-50%, -50%) rotate(90deg); will-change: top; }
+  .jt-van svg { width: 58px; }
+}
+@media (prefers-reduced-motion: reduce) { .jt-van { transition: none; } .journey.is-live .journey-steps li:not(.on) h3, .journey.is-live .journey-steps li:not(.on) p { transform: none; } }
+
+/* ---------- UK route map ---------- */
+.routemap { background: #eaf3fb; border-radius: 22px; overflow: hidden; border: 1px solid var(--line); box-shadow: var(--shadow-sm); max-width: 440px; width: 100%; margin-inline: auto; }
+.routemap .mp { display: block; width: 100%; height: auto; }
+.mp-land { fill: #fffdf8; stroke: #d9cfb8; stroke-width: 1.2; stroke-linejoin: round; }
+.rt { fill: none; stroke: #e3a23a; stroke-opacity: 0.55; stroke-width: 1.6; stroke-linecap: round; transition: stroke-opacity 0.3s, stroke-width 0.3s, stroke 0.3s; }
+.mp-van { transition: opacity 0.3s; }
+.mp-city { cursor: pointer; outline: none; }
+.mp-hit { fill: transparent; }
+.mp-node { fill: #fff; stroke: var(--navy-900); stroke-width: 2.2; transform-box: fill-box; transform-origin: center; transition: transform 0.25s var(--ease), fill 0.25s, stroke 0.25s; }
+.mp-city text { font-family: var(--font-body); font-weight: 700; font-size: 10.5px; fill: var(--navy-900); paint-order: stroke; stroke: #fffdf8; stroke-width: 3.2px; stroke-linejoin: round; pointer-events: none; }
+.mp-city:hover .mp-node, .mp-city:focus-visible .mp-node, .mp-city.is-active .mp-node { fill: var(--amber-500); transform: scale(1.5); }
+.mp-city:focus-visible .mp-node { stroke: var(--navy-950); stroke-width: 3; }
+.mp-city:focus-visible text { fill: var(--amber-700); }
+/* highlight a city's routes, dim the rest */
+.routemap[data-active] .rt { stroke-opacity: 0.12; }
+.routemap[data-active] .rt.hot { stroke-opacity: 1; stroke: var(--navy-900); stroke-width: 2.6; }
+.routemap[data-active] .mp-van { opacity: 0.12; }
+.routemap[data-active] .mp-van.hot { opacity: 1; }
+.mp-caption { margin: 0; padding: 0.85rem 1.1rem; background: #fff; border-top: 1px solid var(--line); font-size: 0.9rem; color: var(--muted); min-height: 3.2rem; display: flex; align-items: center; flex-wrap: wrap; gap: 0.2rem 0.6rem; }
+.mp-caption strong { color: var(--navy-900); }
+.mp-caption a { font-weight: 700; white-space: nowrap; }
+@media (prefers-reduced-motion: reduce) { .mp-vans { display: none; } .mp-node, .rt { transition: none; } }
+
+/* Home "where we work" layout */
+.network { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: clamp(2rem, 5vw, 4rem); align-items: center; }
+.network .routemap { margin-inline: 0; justify-self: end; }
+@media (max-width: 900px) { .network { grid-template-columns: minmax(0, 1fr); } .network .routemap { order: 2; justify-self: stretch; max-width: none; } }
