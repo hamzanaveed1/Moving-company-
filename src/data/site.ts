@@ -56,8 +56,11 @@ export const site = {
   googleAnalyticsMeasurementId: googleIds.analyticsMeasurementId as string, // GA4 loads only after the visitor accepts the consent banner
 
   // Form endpoint (set in your host's env vars)
-  // If src/data/form-provider.json has a Web3Forms key, every form posts straight to Web3Forms with it.
-  formEndpoint: web3formsKey ? WEB3FORMS_ENDPOINT : (import.meta.env.PUBLIC_FORM_ENDPOINT as string | undefined) || '',
+  // Forms post to our own function first (/api/quote on Vercel), which emails the company AND sends the customer an
+  // instant confirmation (needs RESEND_API_KEY). If that is unavailable, they fall back to Web3Forms using the key in
+  // src/data/form-provider.json, so a lead is never lost.
+  formEndpoint: (import.meta.env.PUBLIC_FORM_ENDPOINT as string | undefined) || '',
+  formFallbackEndpoint: web3formsKey ? WEB3FORMS_ENDPOINT : '',
   formAccessKey: web3formsKey || (import.meta.env.PUBLIC_FORM_ACCESS_KEY as string | undefined) || '',
   // Contact form posts to /api/contact when the bundled functions are in use; otherwise to the external endpoint.
   contactEndpoint: '',

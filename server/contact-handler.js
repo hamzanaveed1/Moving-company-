@@ -17,6 +17,7 @@ const contact = createFormHandler({
     consent: [10, (v) => v.length > 0],
   },
   multiline: ['message'],
+  autoReply: 'contact',
   subject: (d) => `Website enquiry: ${d.topic} (${d.name})`,
   text: (d) =>
     [`Name: ${d.name}`, `Email: ${d.email}`, `Phone: ${d.phone || 'not given'}`, `Topic: ${d.topic}`, '', d.message, '', `Consent given: ${d.consent ? 'yes' : 'no'}`, `Submitted: ${new Date().toISOString()}`].join('\n'),

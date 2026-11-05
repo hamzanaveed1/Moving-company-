@@ -14,6 +14,9 @@
 /** Default mailbox for every form. Override with the TO_EMAIL / FROM_EMAIL environment variables. */
 export const DEFAULT_TO = 'customersupport@movingpal.co.uk';
 export const DEFAULT_FROM = 'MovingPal <customersupport@movingpal.co.uk>';
+const DEFAULT_SITE = 'https://www.movingpal.co.uk';
+
+import { buildAutoReply } from './auto-reply.js';
 
 export const POSTCODE = /^[A-Za-z]{1,2}\d[A-Za-z\d]?(\s*\d[A-Za-z]{2})?$/;
 export const EMAIL = /^[^\s@]{1,64}@[^\s@]+\.[^\s@]{2,}$/;
@@ -43,10 +46,12 @@ export const clientIp = (request) =>
  * @param {string[]} [def.multiline]   fields allowed to contain newlines
  * @param {(d:object)=>string} def.subject
  * @param {(d:object)=>string} def.text   plain-text email body
+ * @param {'quote'|'contact'} [def.autoReply]  also email the customer an instant confirmation (see auto-reply.js)
  * @param {string} [def.replyTo]       field holding the sender's email address
  * @param {number} [def.maxPerWindow]
  */
 export function createFormHandler(def) {
+  const kind = def.autoReply;
   const MAX_BODY = 8 * 1024;
   const WINDOW_MS = 10 * 60 * 1000;
   const MAX_PER_WINDOW = def.maxPerWindow ?? 5;
@@ -119,6 +124,30 @@ export function createFormHandler(def) {
       try { reason = (await res.text()).slice(0, 300); } catch { /* ignore */ }
       console.error(`[form] Not sent: Resend rejected the email (HTTP ${res.status}). ${reason}`);
       return json({ ok: false, error: 'upstream' }, 502);
+    }
+
+    // 7. Instant confirmation to the customer. The lead has already reached us, so a failure here is logged, never reported.
+    if (kind) {
+      try {
+        const supportEmail = to;
+        const mail = buildAutoReply(kind, data, { supportEmail, siteUrl: env.SITE_URL || DEFAULT_SITE });
+        const ar = await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            from, to: [data[def.replyTo ?? 'email']], reply_to: supportEmail,
+            subject: mail.subject, text: mail.text, html: mail.html,
+            headers: { 'Auto-Submitted': 'auto-replied', 'X-Auto-Response-Suppress': 'All' }, // stops mail loops with other auto-responders
+          }),
+        });
+        if (!ar.ok) {
+          let why = '';
+          try { why = (await ar.text()).slice(0, 300); } catch { /* ignore */ }
+          console.error(`[form] Lead delivered, but the customer confirmation was not sent (HTTP ${ar.status}). ${why}`);
+        }
+      } catch (err) {
+        console.error('[form] Lead delivered, but the customer confirmation failed.', err?.message || '');
+      }
     }
     return json({ ok: true });
   }

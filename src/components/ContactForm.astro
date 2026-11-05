@@ -3,7 +3,7 @@ import Icon from './Icon.astro';
 import { site } from '../data/site';
 const topics = ['General question', 'Existing booking', 'Business / office move', 'Feedback or complaint', 'Something else'];
 ---
-<form class="form-card" id="contact-form" novalidate data-endpoint={site.contactEndpoint} data-key={site.formAccessKey} data-email={site.email} data-brand={site.name}>
+<form class="form-card" id="contact-form" novalidate data-endpoint={site.contactEndpoint} data-fallback={site.formFallbackEndpoint} data-key={site.formAccessKey} data-email={site.email} data-brand={site.name}>
   <div class="hp" aria-hidden="true"><label>Website<input type="text" name="website" tabindex="-1" autocomplete="off" /></label></div>
   <div data-fields>
     <h2 id="contact-heading" style="font-size:1.5rem">Send us a message</h2>
@@ -53,6 +53,7 @@ const topics = ['General question', 'Existing booking', 'Business / office move'
 </form>
 
 <script>
+  import { sendLead } from '../scripts/send-lead';
   const form = document.getElementById('contact-form') as HTMLFormElement | null;
   if (form) {
     const status = form.querySelector<HTMLElement>('[data-status]')!;
@@ -96,15 +97,14 @@ const topics = ['General question', 'Existing booking', 'Business / office move'
       const data: Record<string, string> = {};
       fd.forEach((v, k) => { if (k !== 'website') data[k] = String(v); });
       const subject = `Website enquiry: ${data.topic} (${data.name})`;
-      const { endpoint, key, email, brand } = form.dataset;
+      const { endpoint, fallback, key, email, brand } = form.dataset;
       const mailto = () => `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(`${data.message}\n\n${data.name}\n${data.email}\n${data.phone || ''}`)}`;
 
       submit.disabled = true;
       status.className = 'form-status';
       try {
-        if (!endpoint) { window.location.href = mailto(); status.className = 'form-status ok'; status.textContent = 'Your email app should open with your message ready to send.'; submit.disabled = false; return; }
-        const res = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ ...data, subject, from_name: brand ?? 'Website', ...(key ? { access_key: key } : {}) }) });
-        if (!res.ok) throw new Error('failed');
+        if (!endpoint && !(fallback && key)) { window.location.href = mailto(); status.className = 'form-status ok'; status.textContent = 'Your email app should open with your message ready to send.'; submit.disabled = false; return; }
+        await sendLead({ endpoint, fallback, key, body: { ...data, subject, from_name: brand ?? 'Website' } });
         fields.hidden = true; success.hidden = false;
         success.querySelector<HTMLElement>('h2')?.focus();
       } catch {

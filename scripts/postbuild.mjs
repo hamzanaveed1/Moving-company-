@@ -28,13 +28,14 @@ const gaId = String(JSON.parse(readFileSync('src/data/google.json', 'utf8')).ana
 const ga = gaId
   ? { script: ['https://www.googletagmanager.com'], connect: ['https://*.google-analytics.com', 'https://*.analytics.google.com', 'https://*.googletagmanager.com'], img: ['https://*.google-analytics.com', 'https://*.googletagmanager.com'] }
   : { script: [], connect: [], img: [] };
-const formEndpoint = web3formsKey ? 'https://api.web3forms.com/submit' : process.env.PUBLIC_FORM_ENDPOINT || '';
+const formEndpoint = process.env.PUBLIC_FORM_ENDPOINT || '';
 const adsClient = process.env.PUBLIC_ADSENSE_CLIENT || '';
 const securityContact = process.env.SECURITY_CONTACT || 'mailto:customersupport@movingpal.co.uk';
 
 // ---------- Content-Security-Policy ----------
 const connect = ["'self'"];
 if (/^https:\/\//.test(formEndpoint)) connect.push(new URL(formEndpoint).origin);
+if (web3formsKey) connect.push('https://api.web3forms.com'); // fallback route for the forms
 
 let csp;
 if (!adsClient) {

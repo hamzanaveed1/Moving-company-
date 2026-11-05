@@ -20,16 +20,46 @@ const req = (body, headers = {}) =>
   });
 const withFetch = async (impl, fn) => { const o = globalThis.fetch; globalThis.fetch = impl; try { return await fn(); } finally { globalThis.fetch = o; } };
 
-test('valid request is emailed as plain text and succeeds', async () => {
-  let sent;
-  const res = await withFetch(async (url, init) => { sent = { url, init }; return new Response('{}', { status: 200 }); }, () => call({ request: req(good), env }));
+test('valid request is emailed to the company as plain text and succeeds', async () => {
+  const calls = [];
+  const res = await withFetch(async (url, init) => { calls.push({ url, init }); return new Response('{}', { status: 200 }); }, () => call({ request: req(good), env }));
   assert.equal(res.status, 200);
+  const sent = calls[0]; // the notification to the company is sent first
   assert.equal(sent.url, 'https://api.resend.com/emails');
   const payload = JSON.parse(sent.init.body);
+  assert.deepEqual(payload.to, ['to@x.co.uk']);
   assert.equal(payload.reply_to, 't@example.com');
   assert.equal(payload.html, undefined);
   assert.match(payload.text, /From: M1 1AA/);
   assert.equal(sent.init.headers.Authorization, 'Bearer k');
+});
+
+test('the customer instantly gets a confirmation email from the company mailbox', async () => {
+  const calls = [];
+  const res = await withFetch(async (url, init) => { calls.push(JSON.parse(init.body)); return new Response('{}', { status: 200 }); }, () => call({ request: req({ ...good, name: '<b>Ann Lee' }), env }));
+  assert.equal(res.status, 200);
+  assert.equal(calls.length, 2);
+  const mail = calls[1];
+  assert.deepEqual(mail.to, ['t@example.com']);            // to the customer
+  assert.equal(mail.from, 'Site <from@x.co.uk>');            // from the configured company sender
+  assert.equal(mail.reply_to, 'to@x.co.uk');                 // replies reach the company mailbox
+  assert.match(mail.subject, /received your quote request/);
+  assert.match(mail.text, /within one business day/);
+  assert.match(mail.text, /M1 1AA/);
+  assert.equal(mail.headers['Auto-Submitted'], 'auto-replied');
+  assert.ok(!mail.html.includes('<b>Ann'), 'customer-supplied name must be HTML-escaped');
+  assert.ok(mail.html.includes('&lt;b&gt;Ann'));
+});
+
+test('a failed confirmation email never fails the request, and none is sent if the lead itself failed', async () => {
+  let n = 0;
+  const res = await withFetch(async () => (++n === 1 ? new Response('{}', { status: 200 }) : new Response('nope', { status: 500 })), () => call({ request: req(good), env }));
+  assert.equal(res.status, 200);
+  assert.equal(n, 2);
+  n = 0;
+  const bad = await withFetch(async () => { n++; return new Response('x', { status: 500 }); }, () => call({ request: req(good), env }));
+  assert.equal(bad.status, 502);
+  assert.equal(n, 1); // no confirmation is promised when the lead did not go through
 });
 
 test('rejects cross-site and missing Origin', async () => {
@@ -105,12 +135,15 @@ test('client IP is read from Vercel and Cloudflare headers', () => {
 
 test('leads go to customersupport@movingpal.co.uk by default, and TO_EMAIL overrides it', async () => {
   const base = { RESEND_API_KEY: 'k', SITE_URL: env.SITE_URL };
-  let sent;
-  const grab = async (_u, init) => { sent = JSON.parse(init.body); return new Response('{}', { status: 200 }); };
+  const calls = [];
+  const grab = async (_u, init) => { calls.push(JSON.parse(init.body)); return new Response('{}', { status: 200 }); };
   await withFetch(grab, () => call({ request: req(good, { 'CF-Connecting-IP': '198.51.100.1' }), env: base }));
-  assert.deepEqual(sent.to, ['customersupport@movingpal.co.uk']);
-  assert.match(sent.from, /customersupport@movingpal\.co\.uk/);
-  assert.equal(sent.reply_to, 't@example.com');
+  assert.deepEqual(calls[0].to, ['customersupport@movingpal.co.uk']);
+  assert.match(calls[0].from, /customersupport@movingpal\.co\.uk/);
+  assert.equal(calls[0].reply_to, 't@example.com');
+  assert.deepEqual(calls[1].to, ['t@example.com']);            // confirmation to the customer
+  assert.equal(calls[1].reply_to, 'customersupport@movingpal.co.uk');
+  calls.length = 0;
   await withFetch(grab, () => call({ request: req(good, { 'CF-Connecting-IP': '198.51.100.2' }), env: { ...base, TO_EMAIL: 'other@example.com' } }));
-  assert.deepEqual(sent.to, ['other@example.com']);
+  assert.deepEqual(calls[0].to, ['other@example.com']);
 });

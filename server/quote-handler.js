@@ -24,6 +24,7 @@ const quote = createFormHandler({
     consent: [10, (v) => v.length > 0],
   },
   multiline: ['notes'],
+  autoReply: 'quote',
   subject: (d) => `New quote request: ${d.moveType} (${d.fromPostcode} to ${d.toPostcode})`,
   text: (d) =>
     [

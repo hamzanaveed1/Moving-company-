@@ -25,6 +25,11 @@ The build detects Vercel and points the quote form at `/api/quote` and the conta
 1. Create a Resend account, verify `movingpal.co.uk` (it gives you DNS records to add), create an API key.
 2. Redeploy, then **submit a real test quote and a real contact message** and confirm both emails arrive. The handler is covered by unit tests and Vercel's own CLI built the function successfully, but it has not been exercised against live Vercel and Resend.
 
+### Automatic confirmation email to customers
+When a customer submits the quote or contact form, the server function (`/api/quote`, `/api/contact`) emails the company **and** instantly emails the customer a confirmation from `customersupport@movingpal.co.uk`, saying they will be contacted within one business day. Replies go to the same mailbox. To change the promise to "two business days", edit `RESPONSE_TIME` in `server/auto-reply.js`.
+
+It needs Resend: set `RESEND_API_KEY` in Vercel and verify `movingpal.co.uk` in Resend (add the DNS records it shows), then redeploy. Until then the forms fall back to Web3Forms (`src/data/form-provider.json`): the company still gets every lead, but customers receive no automatic confirmation. The confirmation is never sent if the lead itself failed, and a failed confirmation never blocks the lead (it is logged in Vercel Logs).
+
 ### Quickest option: Web3Forms (no Resend, no Vercel settings)
 1. Go to web3forms.com, enter the address that should receive leads (for example `customersupport@movingpal.co.uk`) and copy the access key they email you.
 2. Paste it into `src/data/form-provider.json` as `web3formsAccessKey`.

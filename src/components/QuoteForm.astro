@@ -21,7 +21,7 @@ const access = [
 const extras = ['Packing service', 'Boxes and materials', 'Dismantle / rebuild furniture', 'Storage', 'Disconnect appliances', 'Piano / very heavy items'];
 const stepNames = ['Your move', 'Addresses', 'Date & extras', 'Contact'];
 ---
-<form class="form-card qf" id="quote-form" novalidate data-endpoint={site.formEndpoint} data-key={site.formAccessKey} data-email={site.email} data-brand={site.name}>
+<form class="form-card qf" id="quote-form" novalidate data-endpoint={site.formEndpoint} data-fallback={site.formFallbackEndpoint} data-key={site.formAccessKey} data-email={site.email} data-brand={site.name}>
   <!-- Honeypot: real people never see or fill this -->
   <div class="hp" aria-hidden="true"><label>Website<input type="text" name="website" tabindex="-1" autocomplete="off" /></label></div>
 
@@ -196,6 +196,7 @@ const stepNames = ['Your move', 'Addresses', 'Date & extras', 'Contact'];
 </form>
 
 <script>
+  import { sendLead } from '../scripts/send-lead';
   const form = document.getElementById('quote-form') as HTMLFormElement | null;
   if (form) {
     const steps = [...form.querySelectorAll<HTMLElement>('.step')];
@@ -337,15 +338,13 @@ const stepNames = ['Your move', 'Addresses', 'Date & extras', 'Contact'];
       data.extras = fd.getAll('extras').join(', ') || 'None';
       data.page = location.href;
       const subject = `New quote request: ${data.moveType} (${data.fromPostcode} → ${data.toPostcode})`;
-      const { endpoint, key, email, brand } = form.dataset;
+      const { endpoint, fallback, key, email, brand } = form.dataset;
 
       submit.disabled = true;
       status.className = 'form-status';
       try {
-        if (endpoint) {
-          const body: Record<string, string> = { ...data, subject, from_name: brand ?? 'Website', ...(key ? { access_key: key } : {}) };
-          const res = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(body) });
-          if (!res.ok) throw new Error('Request failed');
+        if (endpoint || (fallback && key)) {
+          await sendLead({ endpoint, fallback, key, body: { ...data, subject, from_name: brand ?? 'Website' } });
           window.location.href = '/thank-you/';
         } else {
           // No endpoint configured yet: fall back to the visitor's email app so the lead is never lost.

@@ -17,14 +17,29 @@ const req = (body, headers = {}) =>
 const withFetch = async (impl, fn) => { const o = globalThis.fetch; globalThis.fetch = impl; try { return await fn(); } finally { globalThis.fetch = o; } };
 const ok = async () => new Response('{}', { status: 200 });
 
-test('valid contact message is emailed as plain text with reply-to', async () => {
-  let sent;
-  const res = await withFetch(async (u, i) => { sent = JSON.parse(i.body); return new Response('{}'); }, () => handleContact(req(good), env));
+test('valid contact message is emailed to the company as plain text with reply-to', async () => {
+  const calls = [];
+  const res = await withFetch(async (u, i) => { calls.push(JSON.parse(i.body)); return new Response('{}'); }, () => handleContact(req(good), env));
   assert.equal(res.status, 200);
+  const sent = calls[0];
   assert.equal(sent.reply_to, 's@example.com');
   assert.equal(sent.html, undefined);
   assert.match(sent.text, /do you cover Cardiff/);
   assert.match(sent.subject, /General question/);
+});
+
+test('the person who wrote in instantly gets a confirmation from the company mailbox', async () => {
+  const calls = [];
+  const res = await withFetch(async (u, i) => { calls.push(JSON.parse(i.body)); return new Response('{}'); }, () => handleContact(req(good), env));
+  assert.equal(res.status, 200);
+  assert.equal(calls.length, 2);
+  const mail = calls[1];
+  assert.deepEqual(mail.to, ['s@example.com']);
+  assert.equal(mail.from, 'Site <from@x.co.uk>');
+  assert.equal(mail.reply_to, 'to@x.co.uk');
+  assert.match(mail.subject, /received your message/);
+  assert.match(mail.text, /within one business day/);
+  assert.match(mail.text, /Hi Sam,/);
 });
 
 test('phone is optional but validated when present; topic must be from the list', async () => {
