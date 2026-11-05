@@ -13,7 +13,8 @@
     "audit:site": "node scripts/audit-site.mjs",
     "a11y": "node scripts/a11y.mjs",
     "vercel:config": "node scripts/postbuild.mjs --write-vercel",
-    "vercel:check": "node scripts/postbuild.mjs --check-vercel"
+    "vercel:check": "node scripts/postbuild.mjs --check-vercel",
+    "media-kit": "node scripts/generate-media-kit.mjs"
   },
   "dependencies": {
     "@astrojs/markdown-remark": "^7.3.5",
