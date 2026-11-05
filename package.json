@@ -32,7 +32,7 @@
     "axe-core": "^4.14.0",
     "opentype.js": "^2.0.0",
     "smtp-server": "^3.21.3",
-    "typescript": "^6.0.3"
+    "typescript": "^7.0.2"
   },
   "engines": {
     "node": "22.x"
