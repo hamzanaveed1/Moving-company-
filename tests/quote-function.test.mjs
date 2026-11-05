@@ -49,6 +49,7 @@ test('the customer instantly gets a confirmation email from the company mailbox'
   assert.equal(mail.headers['Auto-Submitted'], 'auto-replied');
   assert.ok(!mail.html.includes('<b>Ann'), 'customer-supplied name must be HTML-escaped');
   assert.ok(mail.html.includes('&lt;b&gt;Ann'));
+  assert.ok(mail.html.includes('https://www.x.co.uk/email-logo.png'), 'the logo is shown at the end of the email');
 });
 
 test('a failed confirmation email never fails the request, and none is sent if the lead itself failed', async () => {

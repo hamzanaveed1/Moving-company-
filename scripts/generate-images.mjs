@@ -440,4 +440,17 @@ await sharp(Buffer.from(markTile(512, { round: 0, scale: 0.7 }))).png().toFile('
 await sharp(Buffer.from(markTile(512, { round: 0, scale: 0.62 }))).png().toFile('public/icon-512.png'); // installable-app icon
 await sharp(Buffer.from(markTile(192, { round: 0, scale: 0.62 }))).png().toFile('public/icon-192.png');
 await sharp(Buffer.from(markTile(180, { round: 0, scale: 0.62 }))).png().toFile('public/apple-touch-icon.png'); // iOS applies its own rounding
+
+// Email signature logo: mark + "MovingPal" wordmark, PNG (email apps do not reliably show SVG). Shown at ~200px wide.
+{
+  const H = 176, pad = 6, markH = 120, gap = 26, size = 92;
+  const markW = markH * MARK_ASPECT;
+  const w1 = textWidth('Moving', size), w2 = textWidth('Pal', size);
+  const W = Math.ceil(pad + markW + gap + w1 + w2 + pad);
+  const baseline = H / 2 + size * 0.36;
+  const art = `${markEl(pad, (H - markH) / 2, markH)}${outline('Moving', pad + markW + gap, baseline, size, '#0c1f3d')}${outline('Pal', pad + markW + gap + w1, baseline, size, '#b36200')}`;
+  const doc = (bg) => `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">${bg ? `<rect width="${W}" height="${H}" fill="#ffffff"/>` : ''}${art}</svg>`;
+  await sharp(Buffer.from(doc(true)), { density: 72 }).png().toFile('public/email-logo.png'); // white background: safe in dark-mode mail apps
+  await sharp(Buffer.from(doc(false)), { density: 72 }).png().toFile('public/email-logo-transparent.png'); // for your own email signature / documents
+}
 console.log('done');
