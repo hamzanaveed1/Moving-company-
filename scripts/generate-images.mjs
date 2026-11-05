@@ -453,4 +453,49 @@ await sharp(Buffer.from(markTile(180, { round: 0, scale: 0.62 }))).png().toFile(
   await sharp(Buffer.from(doc(true)), { density: 72 }).png().toFile('public/email-logo.png'); // white background: safe in dark-mode mail apps
   await sharp(Buffer.from(doc(false)), { density: 72 }).png().toFile('public/email-logo-transparent.png'); // for your own email signature / documents
 }
+
+// Round profile picture for WhatsApp Business / Google Business Profile / social media (docs/brand/, not part of the website).
+{
+  const S = 1024, mid = 512, rIn = 478, amber = '#f5a524', ink = '#0c1f3d';
+  // lockup: mark + wordmark, centred near the top
+  const lockSize = 100, markH = 100, gap = 18;
+  const markW = markH * MARK_ASPECT, w1 = textWidth('Moving', lockSize), w2 = textWidth('Pal', lockSize);
+  const lockW = markW + gap + w1 + w2, lx = (S - lockW) / 2, lcy = 232, lbase = lcy + lockSize * 0.36;
+  const lockup = `${markEl(lx, lcy - markH / 2, markH)}${outline('Moving', lx + markW + gap, lbase, lockSize, ink)}${outline('Pal', lx + markW + gap + w1, lbase, lockSize, '#b36200')}`;
+  // tagline between two amber rules
+  const tag = 'STRESS-FREE REMOVALS ACROSS THE UK', tSize = 25, tLS = 0.07, tW = textWidth(tag, tSize, 800, tLS), tx = (S - tW) / 2, ty = 334;
+  const tagline = `<rect x="${tx - 86}" y="${ty - 10}" width="70" height="4" rx="2" fill="${amber}"/><rect x="${tx + tW + 16}" y="${ty - 10}" width="70" height="4" rx="2" fill="${amber}"/>${outline(tag, tx, ty, tSize, ink, 800, tLS)}`;
+  // benefits row (the same promises the website makes)
+  const cy = 792, cols = [-215, -72, 72, 215].map((d) => mid + d);
+  const ring = (cx) => `<circle cx="${cx}" cy="${cy}" r="35" fill="none" stroke="${amber}" stroke-width="3.5"/>`;
+  const gw = textWidth('£', 44), glyphs = [
+    outline('£', cols[0] - gw / 2, cy + 15, 44, amber),
+    `<g fill="${amber}"><circle cx="${cols[1] - 10}" cy="${cy - 9}" r="7.5"/><circle cx="${cols[1] + 10}" cy="${cy - 9}" r="7.5"/><path d="M${cols[1] - 24} ${cy + 17} q4 -17 14 -17 q10 0 14 17 Z"/><path d="M${cols[1] - 2} ${cy + 17} q4 -17 14 -17 q10 0 14 17 Z"/></g>`,
+    `<path d="M${cols[2]} ${cy + 20} C${cols[2] - 20} ${cy + 2} ${cols[2] - 15} ${cy - 20} ${cols[2]} ${cy - 20} C${cols[2] + 15} ${cy - 20} ${cols[2] + 20} ${cy + 2} ${cols[2]} ${cy + 20} Z" fill="${amber}"/><circle cx="${cols[2]}" cy="${cy - 5}" r="6" fill="${ink}"/>`,
+    `<path d="M${cols[3] - 14} ${cy + 1} L${cols[3] - 4} ${cy + 12} L${cols[3] + 16} ${cy - 11}" fill="none" stroke="${amber}" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>`,
+  ];
+  const labels = [['FIXED', 'PRICES'], ['TRAINED', 'CREWS'], ['UK', 'WIDE'], ['FREE', 'QUOTES']];
+  const lab = (cx, [a, b]) => outline(a, cx - textWidth(a, 22, 800, 0.05) / 2, cy + 68, 22, '#ffffff', 800, 0.05) + outline(b, cx - textWidth(b, 22, 800, 0.05) / 2, cy + 94, 22, '#ffffff', 800, 0.05);
+  const url = 'www.movingpal.co.uk', uW = textWidth(url, 27, 800, 0.02);
+  const doc = `<svg xmlns="http://www.w3.org/2000/svg" width="${S}" height="${S}" viewBox="0 0 ${S} ${S}">
+    <defs><clipPath id="inner"><circle cx="${mid}" cy="${mid}" r="${rIn}"/></clipPath></defs>
+    <rect width="${S}" height="${S}" fill="${ink}"/>
+    <circle cx="${mid}" cy="${mid}" r="${mid}" fill="${ink}"/>
+    <circle cx="${mid}" cy="${mid}" r="${rIn + 12}" fill="none" stroke="${amber}" stroke-width="3"/>
+    <g clip-path="url(#inner)">
+      <rect width="${S}" height="${S}" fill="#f4f7fc"/>
+      ${skyline(S, 700, { seed: 5, color: '#dbe5f4', minH: 190, maxH: 320, minW: 60, maxW: 110 })}
+      ${skyline(S, 700, { seed: 13, color: '#bccde7', minH: 100, maxH: 210, minW: 50, maxW: 100 })}
+      ${road(S, 696, 50)}
+      ${van(mid - 268, 718, 1.39)}
+      <rect x="0" y="744" width="${S}" height="300" fill="${ink}"/>
+      <rect x="0" y="744" width="${S}" height="12" fill="${amber}"/>
+      ${lockup}${tagline}
+      ${cols.map(ring).join('')}${glyphs.join('')}${labels.map((l, i) => lab(cols[i], l)).join('')}
+      ${outline(url, (S - uW) / 2, 944, 27, amber, 800, 0.02)}
+    </g></svg>`;
+  mkdirSync('docs/brand', { recursive: true });
+  await sharp(Buffer.from(doc), { density: 72 }).png().toFile('docs/brand/movingpal-profile-1024.png');
+  await sharp(Buffer.from(doc), { density: 72 }).resize(640, 640).png().toFile('docs/brand/movingpal-profile-640.png');
+}
 console.log('done');
