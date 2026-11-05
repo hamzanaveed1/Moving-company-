@@ -112,7 +112,7 @@ export function createFormHandler(def) {
         method: 'POST',
         headers: { Authorization: `Bearer ${env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
         // Plain text only: customer-supplied content is never interpreted as HTML.
-        body: JSON.stringify({ from, to: [to], reply_to: data[def.replyTo ?? 'email'], subject: def.subject(data).replace(/[\r\n]+/g, ' '), text: def.text(data) }),
+        body: JSON.stringify({ from, to: [to], reply_to: data[def.replyTo ?? 'email'], subject: def.subject(data).replace(/[\r\n]+/g, ' '), text: def.text(data), headers: { 'Auto-Submitted': 'auto-generated' } }), // tells mailbox auto-responders not to reply to this internal lead email
       });
     } catch (err) {
       console.error('[form] Not sent: could not reach Resend.', err?.message || '');

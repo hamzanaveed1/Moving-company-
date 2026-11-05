@@ -31,6 +31,7 @@ test('valid request is emailed to the company as plain text and succeeds', async
   assert.equal(payload.reply_to, 't@example.com');
   assert.equal(payload.html, undefined);
   assert.match(payload.text, /From: M1 1AA/);
+  assert.equal(payload.headers['Auto-Submitted'], 'auto-generated'); // so a mailbox auto-reply never answers our own lead email
   assert.equal(sent.init.headers.Authorization, 'Bearer k');
 });
 
