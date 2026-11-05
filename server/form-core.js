@@ -2,9 +2,14 @@
  * Host-independent form engine shared by every form (quote, contact). Each form supplies a small
  * definition (fields, subject, email body); this file supplies all the security behaviour:
  * same-origin check, JSON only, 8 KB cap, honeypot, per-IP throttle, server-side validation,
- * control-character stripping (header injection), plain-text email through Resend.
+ * control-character stripping (header injection), plain-text email to the company, then an instant HTML confirmation to the customer.
  *
- * Environment variables (Vercel: Project > Settings > Environment Variables; Cloudflare: Pages > Settings):
+ * Environment variables (Vercel: Project > Settings > Environment Variables; Cloudflare: Pages > Settings).
+ * Set EITHER the SMTP trio (your own mailbox, e.g. Hostinger) OR RESEND_API_KEY (see mailer.js):
+ *   SMTP_HOST        e.g. smtp.hostinger.com
+ *   SMTP_PORT        optional, default 465
+ *   SMTP_USER        the mailbox, e.g. customersupport@movingpal.co.uk
+ *   SMTP_PASS        the mailbox password (secret)
  *   RESEND_API_KEY   secret
  *   TO_EMAIL         optional: where messages go (default: customersupport@movingpal.co.uk)
  *   FROM_EMAIL       optional: a sender on a domain verified in Resend (default: "MovingPal <customersupport@movingpal.co.uk>")
@@ -17,6 +22,7 @@ export const DEFAULT_FROM = 'MovingPal <customersupport@movingpal.co.uk>';
 const DEFAULT_SITE = 'https://www.movingpal.co.uk';
 
 import { buildAutoReply } from './auto-reply.js';
+import { sendMail, mailConfigured } from './mailer.js';
 
 export const POSTCODE = /^[A-Za-z]{1,2}\d[A-Za-z\d]?(\s*\d[A-Za-z]{2})?$/;
 export const EMAIL = /^[^\s@]{1,64}@[^\s@]+\.[^\s@]{2,}$/;
@@ -102,52 +108,31 @@ export function createFormHandler(def) {
     const { data, errors } = validate(body);
     if (errors.length) return json({ ok: false, error: 'invalid', fields: errors }, 400);
 
-    // 6. Deliver
-    if (!env.RESEND_API_KEY) { console.error('[form] Not sent: RESEND_API_KEY is not set in the environment variables.'); return json({ ok: false, error: 'not_configured' }, 503); }
+    // 6. Deliver the lead to the company mailbox
+    if (!mailConfigured(env)) { console.error('[form] Not sent: email is not configured. Set SMTP_HOST, SMTP_USER and SMTP_PASS (your mailbox), or RESEND_API_KEY.'); return json({ ok: false, error: 'not_configured' }, 503); }
     const to = env.TO_EMAIL || DEFAULT_TO;
     const from = env.FROM_EMAIL || DEFAULT_FROM;
-    let res;
-    try {
-      res = await fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
-        // Plain text only: customer-supplied content is never interpreted as HTML.
-        body: JSON.stringify({ from, to: [to], reply_to: data[def.replyTo ?? 'email'], subject: def.subject(data).replace(/[\r\n]+/g, ' '), text: def.text(data), headers: { 'Auto-Submitted': 'auto-generated' } }), // tells mailbox auto-responders not to reply to this internal lead email
-      });
-    } catch (err) {
-      console.error('[form] Not sent: could not reach Resend.', err?.message || '');
-      return json({ ok: false, error: 'upstream' }, 502);
-    }
-    if (!res.ok) {
-      // Log Resend's reason (for example "domain is not verified") so it shows in the host's logs. No customer data is logged.
-      let reason = '';
-      try { reason = (await res.text()).slice(0, 300); } catch { /* ignore */ }
-      console.error(`[form] Not sent: Resend rejected the email (HTTP ${res.status}). ${reason}`);
+    // Plain text only: customer-supplied content is never interpreted as HTML.
+    const lead = await sendMail(env, {
+      from, to: [to], reply_to: data[def.replyTo ?? 'email'],
+      subject: def.subject(data).replace(/[\r\n]+/g, ' '), text: def.text(data),
+      headers: { 'Auto-Submitted': 'auto-generated' }, // tells mailbox auto-responders not to reply to this internal lead email
+    });
+    if (!lead.ok) {
+      console.error(`[form] Not sent: ${lead.reason}`); // shows in the host's logs; contains no customer data
       return json({ ok: false, error: 'upstream' }, 502);
     }
 
     // 7. Instant confirmation to the customer. The lead has already reached us, so a failure here is logged, never reported.
     if (kind) {
-      try {
-        const supportEmail = to;
-        const mail = buildAutoReply(kind, data, { supportEmail, siteUrl: env.SITE_URL || DEFAULT_SITE });
-        const ar = await fetch('https://api.resend.com/emails', {
-          method: 'POST',
-          headers: { Authorization: `Bearer ${env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            from, to: [data[def.replyTo ?? 'email']], reply_to: supportEmail,
-            subject: mail.subject, text: mail.text, html: mail.html,
-            headers: { 'Auto-Submitted': 'auto-replied', 'X-Auto-Response-Suppress': 'All' }, // stops mail loops with other auto-responders
-          }),
-        });
-        if (!ar.ok) {
-          let why = '';
-          try { why = (await ar.text()).slice(0, 300); } catch { /* ignore */ }
-          console.error(`[form] Lead delivered, but the customer confirmation was not sent (HTTP ${ar.status}). ${why}`);
-        }
-      } catch (err) {
-        console.error('[form] Lead delivered, but the customer confirmation failed.', err?.message || '');
-      }
+      const supportEmail = to;
+      const mail = buildAutoReply(kind, data, { supportEmail, siteUrl: env.SITE_URL || DEFAULT_SITE });
+      const ar = await sendMail(env, {
+        from, to: [data[def.replyTo ?? 'email']], reply_to: supportEmail,
+        subject: mail.subject, text: mail.text, html: mail.html,
+        headers: { 'Auto-Submitted': 'auto-replied', 'X-Auto-Response-Suppress': 'All' }, // stops mail loops with other auto-responders
+      });
+      if (!ar.ok) console.error(`[form] Lead delivered, but the customer confirmation was not sent. ${ar.reason}`);
     }
     return json({ ok: true });
   }

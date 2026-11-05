@@ -28,7 +28,21 @@ The build detects Vercel and points the quote form at `/api/quote` and the conta
 ### Automatic confirmation email to customers
 When a customer submits the quote or contact form, the server function (`/api/quote`, `/api/contact`) emails the company **and** instantly emails the customer a confirmation from `customersupport@movingpal.co.uk`, saying they will be contacted within one business day. Replies go to the same mailbox. To change the promise to "two business days", edit `RESPONSE_TIME` in `server/auto-reply.js`.
 
-It needs Resend: set `RESEND_API_KEY` in Vercel and verify `movingpal.co.uk` in Resend (add the DNS records it shows), then redeploy. Until then the forms fall back to Web3Forms (`src/data/form-provider.json`): the company still gets every lead, but customers receive no automatic confirmation. The confirmation is never sent if the lead itself failed, and a failed confirmation never blocks the lead (it is logged in Vercel Logs).
+It needs ONE of these two ways to send email (SMTP is checked first):
+
+**A. Your own mailbox over SMTP (simplest if the mailbox is on Hostinger).** In Vercel > Settings > Environment Variables (mark the password **Sensitive**), add:
+| Variable | Value |
+|---|---|
+| `SMTP_HOST` | `smtp.hostinger.com` |
+| `SMTP_PORT` | `465` |
+| `SMTP_USER` | `customersupport@movingpal.co.uk` |
+| `SMTP_PASS` | the password of that mailbox |
+
+Then redeploy. Emails are sent as `customersupport@movingpal.co.uk` through Hostinger, so no extra DNS records are needed. `FROM_EMAIL` (if you set it) must be that same mailbox address.
+
+**B. Resend.** Set `RESEND_API_KEY` and verify `movingpal.co.uk` in Resend (add the DNS records it shows), then redeploy. (Cloudflare Pages cannot use SMTP: use Resend there.)
+
+Until one of these is set, the forms fall back to Web3Forms (`src/data/form-provider.json`): the company still gets every lead, but customers receive no automatic confirmation. The confirmation is never sent if the lead itself failed, and a failed confirmation never blocks the lead (the reason is logged in Vercel Logs, for example "Invalid login" for a wrong mailbox password).
 
 ### Quickest option: Web3Forms (no Resend, no Vercel settings)
 1. Go to web3forms.com, enter the address that should receive leads (for example `customersupport@movingpal.co.uk`) and copy the access key they email you.
