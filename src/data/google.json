@@ -1,5 +1,5 @@
 {
   "_note": "Google IDs. siteVerification = the content value of the Search Console HTML tag. analyticsMeasurementId = GA4 id (G-XXXXXXXXXX). GA4 only loads after a visitor accepts the consent banner. After changing analyticsMeasurementId run: npm run vercel:config, and commit.",
   "siteVerification": "QfvY43LZ-1t96KzukvvOi5ttOYQdAmoKC5855Jz0KQg",
-  "analyticsMeasurementId": "G-9F0J5YY6TY"
+  "analyticsMeasurementId": "G-W6EZQKYJB"
 }
